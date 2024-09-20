@@ -1,101 +1,178 @@
-import Image from "next/image";
+"use client";
+import { useState, useEffect } from "react";
+import { ThemeProvider, createTheme } from "@mui/material/styles";
+import Box from "@mui/material/Box";
+import CssBaseline from "@mui/material/CssBaseline";
+import Divider from "@mui/material/Divider";
+import DropDown from "@/components/DropDown";
+import RadioButtons from "@/components/RadioButtons";
+import SelectFromList from "@/components/SelectFromList";
+
+import Table from "@mui/material/Table";
+import TableBody from "@mui/material/TableBody";
+import TableCell from "@mui/material/TableCell";
+import TableContainer from "@mui/material/TableContainer";
+import TableHead from "@mui/material/TableHead";
+import TableRow from "@mui/material/TableRow";
+
+import races from "@/data/races";
+import type { Race } from "@/data/races";
+import birthsigns from "@/data/birthsigns";
+import type { Birthsign } from "@/data/birthsigns";
+import attributes from "@/data/attributes";
+import type { Attribute } from "@/data/attributes";
+import skills from "@/data/skills";
+import type { Skill } from "@/data/skills";
+import specializations from "@/data/specializations";
+import type { Specialization } from "@/data/specializations";
+import genders from "@/data/genders";
+import type { Gender } from "@/data/genders";
+import baseAttributes from "@/data/baseAttributes";
+import attributeRaceModifiers from "@/data/attributeRaceModifiers";
 
 export default function Home() {
-  return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="https://nextjs.org/icons/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
+  const NUM_MAJOR_SKILLS = 7;
+  const NUM_FAVORED_ATTRIBUTES = 2;
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="https://nextjs.org/icons/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
+  const [race, setRace] = useState<Race>(races[0]);
+  const [gender, setGender] = useState<Gender>(genders[0]);
+  const [birthsign, setBirthsign] = useState<Birthsign>(birthsigns[0]);
+  const [specialization, setSpecialization] = useState<Specialization>(
+    specializations[0],
+  );
+  const [favoredAttributes, setFavoredAttributes] = useState<Attribute[]>(
+    attributes.slice(0, NUM_FAVORED_ATTRIBUTES),
+  );
+  const [favoredAttributesError, setFavoredAttributesError] = useState<
+    string | null
+  >(null);
+  const [majorSkills, setMajorSkills] = useState<Skill[]>(
+    skills.slice(0, NUM_MAJOR_SKILLS),
+  );
+  const [majorSkillsError, setMajorSkillsError] = useState<string | null>(null);
+
+  const [computedAttributes, setComputedAttributes] = useState<{
+    [key in Attribute]?: number;
+  }>({});
+
+  // validation
+  useEffect(() => {
+    if (favoredAttributes.length !== NUM_FAVORED_ATTRIBUTES) {
+      setFavoredAttributesError(
+        `you must choose exactly ${NUM_FAVORED_ATTRIBUTES} favored attributes`,
+      );
+    } else {
+      setFavoredAttributesError(null);
+    }
+  }, [favoredAttributes]);
+  useEffect(() => {
+    if (majorSkills.length !== NUM_MAJOR_SKILLS) {
+      setMajorSkillsError(
+        `you must choose exactly ${NUM_MAJOR_SKILLS} major skills`,
+      );
+    } else {
+      setMajorSkillsError(null);
+    }
+  }, [majorSkills]);
+
+  useEffect(() => {
+    const newAttributes: { [key in Attribute]?: number } = {};
+    attributes.forEach((attribute) => {
+      const modifier: number =
+        attributeRaceModifiers[race][gender][attribute] ?? 0;
+      newAttributes[attribute] = baseAttributes[attribute] + modifier;
+    });
+    setComputedAttributes(newAttributes);
+  }, [race, gender, birthsign, specialization, favoredAttributes]);
+
+  const darkTheme = createTheme({
+    palette: {
+      mode: "dark",
+    },
+  });
+
+  return (
+    <ThemeProvider theme={darkTheme}>
+      <CssBaseline />
+      <div className="p-2 font-[family-name:var(--font-geist-sans)]">
+        <Box className="p-6">
+          <Box className="p-2">
+            <h2 className="text-3xl my-2">Character</h2>
+            <DropDown
+              label="Race"
+              value={race}
+              options={races}
+              onChangeHandler={setRace as (a: string) => void}
             />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
-        </div>
-      </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
+            <RadioButtons
+              name="Gender"
+              value={gender}
+              options={genders}
+              onChangeHandler={setGender as (a: string) => void}
+            />
+          </Box>
+          <Divider className="my-4" />
+          <Box className="p-2">
+            <h2 className="text-3xl my-2">Class</h2>
+            <DropDown
+              label="Birthsign"
+              value={birthsign}
+              options={birthsigns}
+              onChangeHandler={setBirthsign as (a: string) => void}
+            />
+            <RadioButtons
+              label="Specialization"
+              name="Specialization"
+              value={specialization}
+              options={specializations}
+              onChangeHandler={setSpecialization as (a: string) => void}
+            />
+            <SelectFromList
+              label="Favored Attributes"
+              selectedOptions={favoredAttributes}
+              error={favoredAttributesError}
+              onChangeHandler={setFavoredAttributes as (a: string[]) => void}
+              options={attributes}
+            />
+            <SelectFromList
+              label="Major Skills"
+              selectedOptions={majorSkills}
+              error={majorSkillsError}
+              onChangeHandler={setMajorSkills as (a: string[]) => void}
+              options={skills}
+            />
+          </Box>
+          <Divider className="my-4" />
+          <Box className="p-2">
+            <h2 className="text-3xl my-2">Leveling</h2>
+            <TableContainer>
+              <Table sx={{ maxWidth: 350 }} aria-label="simple table">
+                <TableHead>
+                  <TableRow>
+                    <TableCell>Level</TableCell>
+                    <TableCell align="right">1</TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {attributes.map((attribute) => (
+                    <TableRow
+                      key={attribute}
+                      sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
+                    >
+                      <TableCell component="th" scope="row">
+                        {attribute}
+                      </TableCell>
+                      <TableCell align="right">
+                        {computedAttributes[attribute]}
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </TableContainer>
+          </Box>
+        </Box>
+      </div>
+    </ThemeProvider>
   );
 }
