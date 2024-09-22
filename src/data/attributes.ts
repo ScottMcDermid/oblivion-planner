@@ -1,19 +1,6 @@
-export type Attribute = {
-  name: AttributeName;
-  code: AttributeCode;
-};
+import type { Skill } from "@/data/skills";
 
-export type AttributeName =
-  | "Strength"
-  | "Intelligence"
-  | "Willpower"
-  | "Agility"
-  | "Speed"
-  | "Endurance"
-  | "Personality"
-  | "Luck";
-
-export type AttributeCode =
+export type Attribute =
   | "STR"
   | "INT"
   | "WIL"
@@ -24,7 +11,7 @@ export type AttributeCode =
   | "LCK";
 
 export type AttributesModifier = {
-  [key in AttributeCode]?: number;
+  [key in Attribute]?: number;
 };
 
 export const baseAttributes: AttributesModifier = {
@@ -38,19 +25,18 @@ export const baseAttributes: AttributesModifier = {
   LCK: 50,
 };
 
-export function getAttributeNameFromCode(
-  code: AttributeCode,
-): AttributeName | undefined {
-  return attributes.find((attribute) => attribute.code === code)?.name;
-}
+export const skillsByAttribute: { [key in Attribute]: Skill[] } = {
+  STR: ["Blade", "Blunt", "Hand-to-Hand"],
+  INT: ["Alchemy", "Conjuration", "Mysticism"],
+  WIL: ["Alteration", "Destruction", "Restoration"],
+  AGL: ["Security", "Sneak", "Marksmanship"],
+  SPD: ["Athletics", "Acrobatics", "Light Armor"],
+  END: ["Armorer", "Block", "Heavy Armor"],
+  PER: ["Mercantile", "Speechcraft", "Illusion"],
+  LCK: [],
+};
 
-export function getAttributeCodeFromName(
-  name: AttributeName,
-): AttributeCode | undefined {
-  return attributes.find((attribute) => attribute.name === name)?.code;
-}
-
-export const attributeCodes: AttributeCode[] = [
+const attributes: Attribute[] = [
   "STR",
   "INT",
   "WIL",
@@ -59,17 +45,6 @@ export const attributeCodes: AttributeCode[] = [
   "END",
   "PER",
   "LCK",
-];
-
-export const attributes: Attribute[] = [
-  { name: "Strength", code: "STR" },
-  { name: "Intelligence", code: "INT" },
-  { name: "Willpower", code: "WIL" },
-  { name: "Agility", code: "AGL" },
-  { name: "Speed", code: "SPD" },
-  { name: "Endurance", code: "END" },
-  { name: "Personality", code: "PER" },
-  { name: "Luck", code: "LCK" },
 ];
 
 export default attributes;

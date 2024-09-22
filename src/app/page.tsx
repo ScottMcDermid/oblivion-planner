@@ -25,7 +25,7 @@ import type { Race } from "@/data/races";
 import birthsigns, { birthsignModifiers } from "@/data/birthsigns";
 import type { Birthsign } from "@/data/birthsigns";
 import attributes, { baseAttributes } from "@/data/attributes";
-import type { AttributeCode, AttributesModifier } from "@/data/attributes";
+import type { Attribute, AttributesModifier } from "@/data/attributes";
 import skills, { baseSkills } from "@/data/skills";
 import type { SkillsModifier, Skill } from "@/data/skills";
 import specializations from "@/data/specializations";
@@ -41,16 +41,14 @@ export default function Home() {
   const NUM_FAVORED_ATTRIBUTES = 2;
   const NUM_MAJOR_SKILLS = 7;
 
-  const attributeCodes = attributes.map((attribute) => attribute.code);
-
   const [race, setRace] = useState<Race>(races[0]);
   const [gender, setGender] = useState<Gender>(genders[0]);
   const [birthsign, setBirthsign] = useState<Birthsign>(birthsigns[0]);
   const [specialization, setSpecialization] = useState<Specialization>(
     specializations[0],
   );
-  const [favoredAttributes, setFavoredAttributes] = useState<AttributeCode[]>(
-    attributeCodes.slice(0, NUM_FAVORED_ATTRIBUTES),
+  const [favoredAttributes, setFavoredAttributes] = useState<Attribute[]>(
+    attributes.slice(0, NUM_FAVORED_ATTRIBUTES),
   );
   const [favoredAttributesError, setFavoredAttributesError] = useState<
     string | null
@@ -58,14 +56,14 @@ export default function Home() {
   const [majorSkills, setMajorSkills] = useState<Skill[]>(
     skills.slice(0, NUM_MAJOR_SKILLS),
   );
-  const [majorSkillsError, setMajorSkillsError] = useState<string>(null);
+  const [majorSkillsError, setMajorSkillsError] = useState<string>("");
   const [openLevelUpDialog, setOpenLevelUpDialog] = useState<boolean>(false);
 
   const [levels, setLevels] = useState<Level[]>([]);
   const [levelUps, setLevelUps] = useState<LevelUp[]>([]);
   const [currentLevel, setCurrentLevel] = useState<Level | undefined>();
 
-  const addLevelUp = function (levelUp: LevelUp): void {
+  const addLevelUp = function(levelUp: LevelUp): void {
     setLevelUps(levelUps.slice(0).concat(levelUp));
   };
 
@@ -94,14 +92,13 @@ export default function Home() {
       birthsignModifiers[birthsign].attributes ?? {};
     const newAttributes: AttributesModifier = attributes.reduce(
       (newAttributes, attribute) => {
-        const base = baseAttributes[attribute.code] ?? 0;
-        const birthsignModifier =
-          birthsignAttributeModifiers[attribute.code] ?? 0;
+        const base = baseAttributes[attribute] ?? 0;
+        const birthsignModifier = birthsignAttributeModifiers[attribute] ?? 0;
         const modifier: number =
-          raceModifiers[race].attributes[gender][attribute.code] ?? 0;
+          raceModifiers[race].attributes[gender][attribute] ?? 0;
         return {
           ...newAttributes,
-          [attribute.code]: base + modifier + birthsignModifier,
+          [attribute]: base + modifier + birthsignModifier,
         };
       },
       {},
@@ -188,7 +185,7 @@ export default function Home() {
               selectedOptions={favoredAttributes}
               error={favoredAttributesError}
               onChangeHandler={setFavoredAttributes as (a: string[]) => void}
-              options={attributeCodes}
+              options={attributes}
             />
             <SelectFromList
               label="Major Skills"
@@ -210,12 +207,8 @@ export default function Home() {
                       Level
                     </TableCell>
                     {attributes.map((attribute) => (
-                      <TableCell
-                        component="th"
-                        align="right"
-                        key={attribute.code}
-                      >
-                        {attribute.code}
+                      <TableCell component="th" align="right" key={attribute}>
+                        {attribute}
                       </TableCell>
                     ))}
                     <TableCell align="right" component="th">
@@ -236,7 +229,7 @@ export default function Home() {
                   {levels.map((level) => (
                     <TableRow key={level.level}>
                       <TableCell align="right">{level.level}</TableCell>
-                      {(Object.keys(level.attributes) as AttributeCode[]).map(
+                      {(Object.keys(level.attributes) as Attribute[]).map(
                         (attribute) => (
                           <TableCell key={attribute} align="right">
                             {level.attributes[attribute]}
