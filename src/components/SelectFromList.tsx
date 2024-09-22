@@ -1,4 +1,4 @@
-import Checkbox, { CheckboxChangeEvent } from "@mui/material/Checkbox";
+import Checkbox from "@mui/material/Checkbox";
 import FormControl from "@mui/material/FormControl";
 import FormHelperText from "@mui/material/FormHelperText";
 import FormLabel from "@mui/material/FormLabel";
@@ -41,7 +41,7 @@ export default function SelectFromList({
         variant="standard"
       >
         <FormLabel component="legend">{label}</FormLabel>
-        <FormGroup className="m-2 grid grid-rows-8 grid-flow-col">
+        <FormGroup className="m-2">
           {options.map((option) => (
             <FormControlLabel
               key={option}
