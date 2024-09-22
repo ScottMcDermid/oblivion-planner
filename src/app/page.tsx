@@ -58,7 +58,7 @@ export default function Home() {
   const [majorSkills, setMajorSkills] = useState<Skill[]>(
     skills.slice(0, NUM_MAJOR_SKILLS),
   );
-  const [majorSkillsError, setMajorSkillsError] = useState<string | null>(null);
+  const [majorSkillsError, setMajorSkillsError] = useState<string>(null);
   const [openLevelUpDialog, setOpenLevelUpDialog] = useState<boolean>(false);
 
   const [levels, setLevels] = useState<Level[]>([]);
@@ -76,7 +76,7 @@ export default function Home() {
         `you must choose exactly ${NUM_FAVORED_ATTRIBUTES} favored attributes`,
       );
     } else {
-      setFavoredAttributesError(null);
+      setFavoredAttributesError("");
     }
   }, [favoredAttributes]);
   useEffect(() => {
@@ -85,7 +85,7 @@ export default function Home() {
         `you must choose exactly ${NUM_MAJOR_SKILLS} major skills`,
       );
     } else {
-      setMajorSkillsError(null);
+      setMajorSkillsError("");
     }
   }, [majorSkills]);
 
@@ -272,7 +272,7 @@ export default function Home() {
           <LevelUpDialog
             currentLevel={currentLevel}
             majorSkills={majorSkills}
-            onLevelUp={addLevelUp}
+            handleLevelUp={addLevelUp}
           />
         ) : null}
       </div>

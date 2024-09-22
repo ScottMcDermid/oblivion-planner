@@ -58,7 +58,7 @@ export default function SelectFromList({
             />
           ))}
         </FormGroup>
-        <FormHelperText>{error}</FormHelperText>
+        <FormHelperText className="h-4">{error}</FormHelperText>
       </FormControl>
     </Box>
   );

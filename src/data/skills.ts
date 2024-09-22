@@ -31,7 +31,7 @@ export type SkillsModifier = {
   [key in Skill]?: number;
 };
 
-export const baseSkills = {
+export const baseSkills: SkillsModifier = {
   Acrobatics: 0,
   Agility: 0,
   Alchemy: 0,

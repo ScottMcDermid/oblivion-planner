@@ -50,6 +50,17 @@ export function getAttributeCodeFromName(
   return attributes.find((attribute) => attribute.name === name)?.code;
 }
 
+export const attributeCodes: AttributeCode[] = [
+  "STR",
+  "INT",
+  "WIL",
+  "AGL",
+  "SPD",
+  "END",
+  "PER",
+  "LCK",
+];
+
 export const attributes: Attribute[] = [
   { name: "Strength", code: "STR" },
   { name: "Intelligence", code: "INT" },
