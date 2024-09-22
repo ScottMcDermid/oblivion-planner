@@ -90,14 +90,18 @@ export default function Home() {
   }, [majorSkills]);
 
   useEffect(() => {
+    const birthsignAttributeModifiers =
+      birthsignModifiers[birthsign].attributes ?? {};
     const newAttributes: AttributesModifier = attributes.reduce(
       (newAttributes, attribute) => {
         const base = baseAttributes[attribute.code] ?? 0;
+        const birthsignModifier =
+          birthsignAttributeModifiers[attribute.code] ?? 0;
         const modifier: number =
           raceModifiers[race].attributes[gender][attribute.code] ?? 0;
         return {
           ...newAttributes,
-          [attribute.code]: base + modifier,
+          [attribute.code]: base + modifier + birthsignModifier,
         };
       },
       {},

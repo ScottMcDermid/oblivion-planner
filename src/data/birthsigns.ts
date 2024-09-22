@@ -10,8 +10,8 @@ export const birthsignModifiers: {
   },
   "The Lady": {
     attributes: {
-      Willpower: 10,
-      Endurance: 10,
+      WIL: 10,
+      END: 10,
     },
   },
   "The Lord": {},
@@ -24,21 +24,21 @@ export const birthsignModifiers: {
   "The Shadow": {},
   "The Steed": {
     attributes: {
-      Speed: 20,
+      SPD: 20,
     },
   },
   "The Thief": {
     attributes: {
-      Agility: 10,
-      Luck: 10,
-      Speed: 10,
+      AGL: 10,
+      LCK: 10,
+      SPD: 10,
     },
   },
   "The Tower": {},
   "The Warrior": {
     attributes: {
-      Endurance: 10,
-      Strength: 10,
+      END: 10,
+      STR: 10,
     },
   },
 };
