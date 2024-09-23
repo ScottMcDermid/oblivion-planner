@@ -63,7 +63,7 @@ export default function Home() {
   const [levelUps, setLevelUps] = useState<LevelUp[]>([]);
   const [currentLevel, setCurrentLevel] = useState<Level | undefined>();
 
-  const addLevelUp = function (levelUp: LevelUp): void {
+  const addLevelUp = function(levelUp: LevelUp): void {
     setLevelUps(levelUps.concat(levelUp));
   };
 
@@ -207,16 +207,16 @@ export default function Home() {
               options={genders}
               onChangeHandler={setGender as (a: string) => void}
             />
-          </Box>
-          <Divider className="my-4" />
-          <Box className="p-2">
-            <Typography className="text-3xl my-2">Class</Typography>
             <DropDown
               label="Birthsign"
               value={birthsign}
               options={birthsigns}
               onChangeHandler={setBirthsign as (a: string) => void}
             />
+          </Box>
+          <Divider className="my-4" />
+          <Box className="p-2">
+            <Typography className="text-3xl my-2">Class</Typography>
             <RadioButtons
               label="Specialization"
               name="Specialization"
@@ -277,8 +277,8 @@ export default function Home() {
                         <TableCell key={attribute} align="right">
                           <Typography
                             {...(level.attributes[attribute] &&
-                            levels[i - 1] &&
-                            level.attributes[attribute] >
+                              levels[i - 1] &&
+                              level.attributes[attribute] >
                               levels[i - 1].attributes[attribute]!
                               ? { color: "primary" }
                               : {})}
