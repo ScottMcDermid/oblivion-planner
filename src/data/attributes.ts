@@ -36,6 +36,14 @@ export const skillsByAttribute: { [key in Attribute]: Skill[] } = {
   LCK: [],
 };
 
+export function getAttributeBonusFromSkillUps(numSkillUps: number): number {
+  if (numSkillUps <= 0) return 1;
+  if (numSkillUps <= 4) return 2;
+  if (numSkillUps <= 7) return 3;
+  if (numSkillUps <= 9) return 4;
+  return 5;
+}
+
 const attributes: Attribute[] = [
   "STR",
   "INT",

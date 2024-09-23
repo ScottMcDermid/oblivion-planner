@@ -33,6 +33,7 @@ import type { Specialization } from "@/data/specializations";
 import genders from "@/data/genders";
 import type { Gender } from "@/data/genders";
 import type { Level, LevelUp } from "@/types/level";
+import { Typography } from "@mui/material";
 
 export default function Home() {
   const ENCUMBRANCE_MULTIPLIER = 5;
@@ -58,13 +59,12 @@ export default function Home() {
   );
   const [majorSkillsError, setMajorSkillsError] = useState<string>("");
   const [openLevelUpDialog, setOpenLevelUpDialog] = useState<boolean>(false);
-
   const [levels, setLevels] = useState<Level[]>([]);
   const [levelUps, setLevelUps] = useState<LevelUp[]>([]);
   const [currentLevel, setCurrentLevel] = useState<Level | undefined>();
 
-  const addLevelUp = function(levelUp: LevelUp): void {
-    setLevelUps(levelUps.slice(0).concat(levelUp));
+  const addLevelUp = function (levelUp: LevelUp): void {
+    setLevelUps(levelUps.concat(levelUp));
   };
 
   // validation
@@ -88,6 +88,7 @@ export default function Home() {
   }, [majorSkills]);
 
   useEffect(() => {
+    // compute base level
     const birthsignAttributeModifiers =
       birthsignModifiers[birthsign].attributes ?? {};
     const newAttributes: AttributesModifier = attributes.reduce(
@@ -127,18 +128,61 @@ export default function Home() {
     // compute base encumbrance
     const encumbrance: number = STR * ENCUMBRANCE_MULTIPLIER;
 
-    setLevels([
-      {
-        attributes: newAttributes,
-        encumbrance,
-        health,
-        level: 1,
-        magicka,
-        skills: newSkills,
-        stamina,
+    const baseLevel = {
+      attributes: newAttributes,
+      encumbrance,
+      health,
+      level: 1,
+      magicka,
+      skills: newSkills,
+      stamina,
+    };
+
+    const restOfLevels: Level[] = levelUps.reduce(
+      (restOfLevels: Level[], levelUp) => {
+        const previousLevel =
+          restOfLevels.length === 0
+            ? baseLevel
+            : restOfLevels[restOfLevels.length - 1];
+
+        const newAttributes: AttributesModifier = attributes.reduce(
+          (newAttributes, attribute) => {
+            const previousAttribute = previousLevel.attributes[attribute] ?? 0;
+            const modifier = levelUp.attributes[attribute] ?? 0;
+            return {
+              ...newAttributes,
+              [attribute]: previousAttribute + modifier,
+            };
+          },
+          {},
+        );
+
+        const newSkills: SkillsModifier = skills.reduce((newSkills, skill) => {
+          const previousSkill = previousLevel.skills[skill] ?? 0;
+          const modifier = levelUp.skills[skill] ?? 0;
+          return {
+            ...newSkills,
+            [skill]: previousSkill + modifier,
+          };
+        }, {});
+
+        const nextLevel: Level = {
+          level: restOfLevels.length + 2,
+          attributes: newAttributes,
+          skills: newSkills,
+          health: 0,
+          magicka: 0,
+          stamina: 0,
+          encumbrance: 0,
+        };
+
+        return [...restOfLevels, nextLevel];
       },
-    ]);
-  }, [race, gender, birthsign, specialization, favoredAttributes]);
+      [],
+    );
+
+    setLevels([baseLevel, ...restOfLevels]);
+  }, [race, gender, birthsign, specialization, favoredAttributes, levelUps]);
 
   useEffect(() => {
     setCurrentLevel(levels[levels.length - 1]);
@@ -148,9 +192,9 @@ export default function Home() {
     <ThemeProvider theme={theme}>
       <CssBaseline />
       <div className="p-2 font-[family-name:var(--font-geist-sans)] flex flex-row">
-        <Box className="p-6">
+        <Box className="p-3">
           <Box className="p-2">
-            <h2 className="text-3xl my-2">Character</h2>
+            <Typography className="text-3xl my-2">Character</Typography>
             <DropDown
               label="Race"
               value={race}
@@ -166,7 +210,7 @@ export default function Home() {
           </Box>
           <Divider className="my-4" />
           <Box className="p-2">
-            <h2 className="text-3xl my-2">Class</h2>
+            <Typography className="text-3xl my-2">Class</Typography>
             <DropDown
               label="Birthsign"
               value={birthsign}
@@ -196,9 +240,9 @@ export default function Home() {
             />
           </Box>
         </Box>
-        <Box className="p-2 flex-grow">
-          <h2 className="text-3xl my-2">Leveling</h2>
-          {levels.length > 0 ? (
+        <Box className="p-3 flex-grow">
+          <Typography className="text-3xl my-2">Leveling</Typography>
+          {levels.length > 0 && currentLevel ? (
             <TableContainer>
               <Table sx={{ maxWidth: 350 }} aria-label="simple table">
                 <TableHead>
@@ -226,25 +270,42 @@ export default function Home() {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {levels.map((level) => (
+                  {levels.map((level, i) => (
                     <TableRow key={level.level}>
                       <TableCell align="right">{level.level}</TableCell>
-                      {(Object.keys(level.attributes) as Attribute[]).map(
-                        (attribute) => (
-                          <TableCell key={attribute} align="right">
+                      {attributes.map((attribute: Attribute) => (
+                        <TableCell key={attribute} align="right">
+                          <Typography
+                            {...(level.attributes[attribute] &&
+                            levels[i - 1] &&
+                            level.attributes[attribute] >
+                              levels[i - 1].attributes[attribute]!
+                              ? { color: "primary" }
+                              : {})}
+                          >
                             {level.attributes[attribute]}
-                          </TableCell>
-                        ),
-                      )}
-                      <TableCell align="right">{level.health}</TableCell>
-                      <TableCell align="right">{level.magicka}</TableCell>
-                      <TableCell align="right">{level.stamina}</TableCell>
-                      <TableCell align="right">{level.encumbrance}</TableCell>
+                          </Typography>
+                        </TableCell>
+                      ))}
+                      <TableCell align="right">
+                        <Typography>{level.health}</Typography>
+                      </TableCell>
+                      <TableCell align="right">
+                        <Typography>{level.magicka}</Typography>
+                      </TableCell>
+                      <TableCell align="right">
+                        <Typography>{level.stamina}</Typography>
+                      </TableCell>
+                      <TableCell align="right">
+                        <Typography>{level.encumbrance}</Typography>
+                      </TableCell>
                     </TableRow>
                   ))}
                 </TableBody>
                 <TableFooter>
-                  <TableRow>
+                  <TableRow
+                    sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
+                  >
                     <TableCell align="center" colSpan={attributes.length + 5}>
                       <Button
                         variant="outlined"
@@ -252,7 +313,7 @@ export default function Home() {
                         className="w-full"
                         onClick={() => setOpenLevelUpDialog(true)}
                       >
-                        Plan Next Level
+                        Plan Level {currentLevel.level + 1}
                       </Button>
                     </TableCell>
                   </TableRow>
@@ -270,6 +331,9 @@ export default function Home() {
             currentLevel={currentLevel}
             majorSkills={majorSkills}
             handleLevelUp={addLevelUp}
+            handleClose={() => {
+              setOpenLevelUpDialog(false);
+            }}
           />
         ) : null}
       </div>
