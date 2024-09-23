@@ -31,8 +31,9 @@ import type { Specialization } from "@/data/specializations";
 import genders from "@/data/genders";
 import type { Gender } from "@/data/genders";
 import { Level, levelTemplate, LevelUp, levelUpTemplate } from "@/types/level";
-import { Typography } from "@mui/material";
+import { Drawer, Fab, Tooltip, Typography } from "@mui/material";
 import ArrowUpwardIcon from "@mui/icons-material/ArrowUpward";
+import PersonIcon from "@mui/icons-material/Person";
 import AddIcon from "@mui/icons-material/Add";
 import { applyLevelUpToLevel, getBaseLevel } from "@/services/Level";
 import races from "@/data/races";
@@ -66,6 +67,8 @@ export default function Home() {
   const [nextLevel, setNextLevel] = useState<Level>(levelTemplate);
   const [nextLevelUp, setNextLevelUp] = useState<LevelUp>(levelUpTemplate);
   const [isLevelingUp, setIsLevelingUp] = useState<boolean>(false);
+  const [isCharacterCreationOpen, setIsCharacterCreationOpen] =
+    useState<boolean>(true);
 
   const addLevelUp = (levelUp: LevelUp): void => {
     setLevelUps(levelUps.concat(levelUp));
@@ -145,60 +148,88 @@ export default function Home() {
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      <div className="p-2 font-[family-name:var(--font-geist-sans)] flex flex-row">
-        <Box className="p-3">
-          <Box className="p-2">
-            <Typography className="text-3xl my-2">Character</Typography>
-            <DropDown
-              label="Race"
-              value={race}
-              options={races}
-              onChangeHandler={setRace as (a: string) => void}
-            />
-            <RadioButtons
-              name="Gender"
-              value={gender}
-              options={genders}
-              onChangeHandler={setGender as (a: string) => void}
-            />
-            <DropDown
-              label="Birthsign"
-              value={birthsign}
-              options={birthsigns}
-              onChangeHandler={setBirthsign as (a: string) => void}
-            />
-          </Box>
-          <Divider className="my-4" />
-          <Box className="p-2">
-            <Typography className="text-3xl my-2">Class</Typography>
-            <RadioButtons
-              label="Specialization"
-              name="Specialization"
-              value={specialization}
-              options={specializations}
-              onChangeHandler={setSpecialization as (a: string) => void}
-            />
-            <SelectFromList
-              label="Favored Attributes"
-              selectedOptions={favoredAttributes}
-              error={favoredAttributesError}
-              onChangeHandler={setFavoredAttributes as (a: string[]) => void}
-              options={attributes}
-            />
-            <SelectFromList
-              label="Major Skills"
-              selectedOptions={majorSkills}
-              error={majorSkillsError}
-              onChangeHandler={setMajorSkills as (a: string[]) => void}
-              options={skills}
-            />
-          </Box>
+
+      <Drawer
+        onClose={() => {
+          console.log("woooo");
+          setIsCharacterCreationOpen(false);
+        }}
+        open={isCharacterCreationOpen}
+        sx={{
+          flexShrink: 0,
+          "& .MuiDrawer-paper": {
+            boxSizing: "border-box",
+          },
+        }}
+        anchor="left"
+        className="p-3"
+      >
+        <Box className="p-2">
+          <Typography className="text-3xl my-2">Character</Typography>
+          <DropDown
+            label="Race"
+            value={race}
+            options={races}
+            onChangeHandler={setRace as (a: string) => void}
+          />
+          <RadioButtons
+            name="Gender"
+            value={gender}
+            options={genders}
+            onChangeHandler={setGender as (a: string) => void}
+          />
+          <DropDown
+            label="Birthsign"
+            value={birthsign}
+            options={birthsigns}
+            onChangeHandler={setBirthsign as (a: string) => void}
+          />
         </Box>
-        <Box className="p-3 flex-grow">
-          <Typography className="text-3xl my-2">Leveling</Typography>
+        <Divider className="my-4" />
+        <Box className="p-2">
+          <Typography className="text-3xl my-2">Class</Typography>
+          <RadioButtons
+            label="Specialization"
+            name="Specialization"
+            value={specialization}
+            options={specializations}
+            onChangeHandler={setSpecialization as (a: string) => void}
+          />
+          <SelectFromList
+            label="Favored Attributes"
+            selectedOptions={favoredAttributes}
+            error={favoredAttributesError}
+            onChangeHandler={setFavoredAttributes as (a: string[]) => void}
+            options={attributes}
+          />
+          <SelectFromList
+            label="Major Skills"
+            selectedOptions={majorSkills}
+            error={majorSkillsError}
+            onChangeHandler={setMajorSkills as (a: string[]) => void}
+            options={skills}
+          />
+        </Box>
+      </Drawer>
+
+      <Box className="p-2 font-[family-name:var(--font-geist-sans)] flex flex-row  align-center content-center">
+        <Tooltip title="Character Creation">
+          <Fab
+            size="small"
+            className="m-4"
+            color="default"
+            aria-label="Character Creation"
+            onClick={() => {
+              setIsCharacterCreationOpen(true);
+            }}
+          >
+            <PersonIcon />
+          </Fab>
+        </Tooltip>
+        <Box className="mx-auto pt-5 w-350">
           {levels.length > 0 ? (
             <TableContainer>
-              <Table sx={{ maxWidth: 350 }} aria-label="simple table">
+              <Table aria-label="simple table">
                 <TableHead>
                   <TableRow>
                     <TableCell align="right" component="th">
@@ -295,7 +326,7 @@ export default function Home() {
             }}
           />
         ) : null}
-      </div>
+      </Box>
     </ThemeProvider>
   );
 }
