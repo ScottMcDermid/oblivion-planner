@@ -10,11 +10,13 @@ export type Attribute =
   | "PER"
   | "LCK";
 
-export type AttributesModifier = {
-  [key in Attribute]?: number;
+export type AttributesModifier = Partial<AttributesSet>;
+
+export type AttributesSet = {
+  [key in Attribute]: number;
 };
 
-export const baseAttributes: AttributesModifier = {
+export const baseAttributes: AttributesSet = {
   STR: 40,
   INT: 40,
   WIL: 40,
@@ -23,6 +25,17 @@ export const baseAttributes: AttributesModifier = {
   END: 40,
   PER: 40,
   LCK: 50,
+};
+
+export const attributesSetTemplate: AttributesSet = {
+  STR: 0,
+  INT: 0,
+  WIL: 0,
+  AGL: 0,
+  SPD: 0,
+  END: 0,
+  PER: 0,
+  LCK: 0,
 };
 
 export const skillsByAttribute: { [key in Attribute]: Skill[] } = {

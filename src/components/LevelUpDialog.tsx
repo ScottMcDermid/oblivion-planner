@@ -1,33 +1,32 @@
-import { useState, useEffect, ChangeEvent } from "react";
+import { useState, useEffect } from "react";
 import {
-  Badge,
   Box,
   IconButton,
   Button,
   Checkbox,
   DialogActions,
   DialogContent,
-  FormControl,
-  FormControlLabel,
-  FormGroup,
   LinearProgress,
-  TextField,
   Typography,
+  Divider,
 } from "@mui/material";
 
 import CloseIcon from "@mui/icons-material/Close";
+import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 
 import type { Level, LevelUp } from "@/types/level";
-import skills from "@/data/skills";
-import type { Skill } from "@/data/skills";
+import skills, { skillsSetTemplate } from "@/data/skills";
+import type { Skill, SkillsSet } from "@/data/skills";
 import attributes, {
   skillsByAttribute,
+  attributesSetTemplate,
   getAttributeBonusFromSkillUps,
 } from "@/data/attributes";
-import type { Attribute, AttributesModifier } from "@/data/attributes";
+import type { Attribute, AttributesSet } from "@/data/attributes";
 
 import DialogTitle from "@mui/material/DialogTitle";
 import Dialog from "@mui/material/Dialog";
+import SkillSelector from "@/components/SkillSelector";
 
 export default function LevelUpDialog({
   currentLevel,
@@ -42,25 +41,24 @@ export default function LevelUpDialog({
 }) {
   const NUM_MAJOR_SKILL_UPS_PER_LEVEL = 10;
   const NUM_RAISED_ATTRIBUTES = 3;
-  const [skillUps, setSkillUps] = useState<{ [key in Skill]?: number }>(
-    skills.reduce((skills, skill) => ({ ...skills, [skill]: 0 }), {}),
+  const [skillUps, setSkillUps] = useState<SkillsSet>(
+    skills.reduce(
+      (skills, skill) => ({ ...skills, [skill]: 0 }),
+      skillsSetTemplate,
+    ),
   );
-  const [attributeBonuses, setAttributeBonuses] = useState<{
-    [key in Attribute]?: number;
-  }>(
+  const [attributeBonuses, setAttributeBonuses] = useState<AttributesSet>(
     attributes.reduce(
       (attributes, attribute) => ({ ...attributes, [attribute]: 1 }),
-      {},
+      attributesSetTemplate,
     ),
   );
   const [raisedAttributes, setRaisedAttributes] = useState<Attribute[]>([]);
   const [numMajorSkillUps, setNumMajorSkillUps] = useState<number>(0);
   const [numRaisedAttributes, setNumRaisedAttributes] = useState<number>(0);
 
-  const handleSkillChange = (skill: Skill, value: string) => {
-    const numValue: number = parseInt(value, 10);
-    const newSkillValue: number = Number.isFinite(numValue) ? numValue : 0;
-    setSkillUps({ ...skillUps, [skill]: newSkillValue });
+  const handleSkillChange = (skill: Skill, value: number) => {
+    setSkillUps({ ...skillUps, [skill]: value });
   };
 
   const handleAttributeToggle = (value: Attribute) => {
@@ -78,39 +76,39 @@ export default function LevelUpDialog({
   };
 
   useEffect(() => {
-    const newNumSkillUps = Object.keys(skillUps).reduce((sum, skill) => {
-      if (majorSkills.includes(skill as Skill)) {
-        const newSkill = skillUps[skill as Skill] ?? 0;
+    const numMajorSkillUps = skills.reduce((sum, skill) => {
+      if (majorSkills.includes(skill)) {
+        const newSkill = skillUps[skill];
         return sum + newSkill;
       }
       return sum;
     }, 0);
-    setNumMajorSkillUps(newNumSkillUps);
+    setNumMajorSkillUps(numMajorSkillUps);
   }, [skillUps, majorSkills]);
 
   // compute attribute bonuses
   useEffect(() => {
-    const newAttributeBonuses: AttributesModifier = attributes.reduce(
-      (attributeBonuses: AttributesModifier, attribute: Attribute) => {
+    const newAttributeBonuses: AttributesSet = attributes.reduce(
+      (attributeBonuses, attribute) => {
         const attributeSkillUps: number = skillsByAttribute[attribute].reduce(
           (sum: number, skill: Skill) => {
-            return skillUps[skill] ? sum + skillUps[skill] : sum;
+            return sum + skillUps[skill];
           },
           0,
         );
         const attributeBonus = getAttributeBonusFromSkillUps(attributeSkillUps);
         return { ...attributeBonuses, [attribute]: attributeBonus };
       },
-      {},
+      attributesSetTemplate,
     );
     setAttributeBonuses(newAttributeBonuses);
   }, [skillUps]);
 
   return (
     <Dialog open={true}>
-      <DialogTitle>
-        <Typography className="text-xl">
-          Plan for Level {currentLevel.level + 1}
+      <DialogTitle className="flex flex-col text-center">
+        <Typography className="text-lg text-center">
+          Choose 10 major skill ups and 3 attributes
         </Typography>
       </DialogTitle>
       <IconButton
@@ -126,77 +124,53 @@ export default function LevelUpDialog({
         <CloseIcon />
       </IconButton>
       <DialogContent className="w-full">
-        <Typography className="text-xs pb-4 text-center">
-          Choose 10 major skill ups and 3 attributes
-        </Typography>
         {attributes.map((attribute) => (
-          <Box
-            key={attribute}
-            className="flex flex-row content-center items-center"
-          >
-            {raisedAttributes.includes(attribute) &&
-            currentLevel.attributes[attribute] &&
-            attributeBonuses[attribute] ? (
-              <Typography color="primary" className="h-full selfCenter">
-                {currentLevel.attributes[attribute] +
-                  attributeBonuses[attribute]}
-              </Typography>
-            ) : (
-              <Typography>{currentLevel.attributes[attribute]}</Typography>
-            )}
-            <FormControl
-              className="mt-4 mr-2"
-              component="fieldset"
-              variant="standard"
-            >
-              <FormGroup>
-                <Badge
-                  color="primary"
-                  badgeContent={`+${attributeBonuses[attribute]}`}
-                  invisible={!attributeBonuses[attribute]}
-                >
-                  <FormControlLabel
-                    key={attribute}
-                    label={attribute}
-                    control={
-                      <Checkbox
-                        key={attribute}
-                        checked={raisedAttributes.includes(attribute)}
-                        onChange={() => {
-                          handleAttributeToggle(attribute);
-                        }}
-                        name={`${attributeBonuses[attribute]}`}
-                      />
+          <Box key={attribute}>
+            <Box className="flex flex-row content-center items-center py-2">
+              <Box className="flex flex-row content-center items-center flex-grow">
+                {skillsByAttribute[attribute].map((skill: Skill) => (
+                  <SkillSelector
+                    key={skill}
+                    skill={skill}
+                    color={
+                      skillUps[skill] > 0
+                        ? "secondary"
+                        : skillUps[skill] < 0
+                          ? "error"
+                          : ""
+                    }
+                    value={currentLevel.skills[skill] + skillUps[skill]}
+                    major={majorSkills.includes(skill)}
+                    onChangeHandler={(newValue) =>
+                      handleSkillChange(skill, newValue)
                     }
                   />
-                </Badge>
-              </FormGroup>
-            </FormControl>
-            {skillsByAttribute[attribute].map((skill: Skill) => (
-              <Box key={skill} className="max-w-24 m-2">
-                {majorSkills.includes(skill) ? (
-                  <TextField
-                    defaultValue={skillUps[skill]}
-                    label={`${skill} (Major)`}
-                    onChange={(e: ChangeEvent<HTMLInputElement>) =>
-                      handleSkillChange(skill, e.target.value)
-                    }
-                    type="number"
-                    variant="standard"
-                  />
-                ) : (
-                  <TextField
-                    defaultValue={skillUps[skill]}
-                    label={skill}
-                    onChange={(e: ChangeEvent<HTMLInputElement>) =>
-                      handleSkillChange(skill, e.target.value)
-                    }
-                    type="number"
-                    variant="standard"
-                  />
-                )}
+                ))}
               </Box>
-            ))}
+
+              <Box className="px-4">
+                <ChevronRightIcon />
+              </Box>
+
+              <Typography
+                {...(raisedAttributes.includes(attribute)
+                  ? { color: "secondary" }
+                  : {})}
+                className="h-full selfCenter"
+              >
+                {`${currentLevel.attributes[attribute]} + ${attributeBonuses[attribute]}`}
+              </Typography>
+              <Checkbox
+                key={attribute}
+                color="default"
+                checked={raisedAttributes.includes(attribute)}
+                onChange={() => {
+                  handleAttributeToggle(attribute);
+                }}
+                name={`${attributeBonuses[attribute]}`}
+              />
+            </Box>
+            <Divider />
           </Box>
         ))}
       </DialogContent>
@@ -226,7 +200,7 @@ export default function LevelUpDialog({
                   ...attributes,
                   [attribute]: attributeBonuses[attribute],
                 }),
-                {},
+                attributesSetTemplate,
               ),
             });
             handleClose();

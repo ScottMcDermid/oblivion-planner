@@ -4,7 +4,7 @@ import FormHelperText from "@mui/material/FormHelperText";
 import FormLabel from "@mui/material/FormLabel";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import FormGroup from "@mui/material/FormGroup";
-import Box from "@mui/material/FormGroup";
+import Box from "@mui/material/Box";
 
 export default function SelectFromList({
   label,
@@ -47,6 +47,7 @@ export default function SelectFromList({
               key={option}
               control={
                 <Checkbox
+                  color="default"
                   checked={selectedOptions.includes(option)}
                   onChange={() => {
                     handleToggle(option);
