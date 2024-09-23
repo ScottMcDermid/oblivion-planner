@@ -37,7 +37,8 @@ import { Typography } from "@mui/material";
 
 export default function Home() {
   const ENCUMBRANCE_MULTIPLIER = 5;
-  const HEALTH_MULTIPLIER = 2;
+  const BASE_HEALTH_MULTIPLIER = 2;
+  const HEALTH_MULTIPLIER = 1 / 10;
   const MAGICKA_MULTIPLIER = 2;
   const NUM_FAVORED_ATTRIBUTES = 2;
   const NUM_MAJOR_SKILLS = 7;
@@ -63,7 +64,7 @@ export default function Home() {
   const [levelUps, setLevelUps] = useState<LevelUp[]>([]);
   const [currentLevel, setCurrentLevel] = useState<Level | undefined>();
 
-  const addLevelUp = function(levelUp: LevelUp): void {
+  const addLevelUp = function (levelUp: LevelUp): void {
     setLevelUps(levelUps.concat(levelUp));
   };
 
@@ -114,7 +115,7 @@ export default function Home() {
     }, {});
 
     const { AGL = 0, END = 0, INT = 0, STR = 0, WIL = 0 } = newAttributes;
-    const health = END * HEALTH_MULTIPLIER;
+    const health = END * BASE_HEALTH_MULTIPLIER;
 
     // compute magicka
     const birthsignMagickaBonus = birthsignModifiers[birthsign].magicka ?? 0;
@@ -157,6 +158,23 @@ export default function Home() {
           {},
         );
 
+        const { AGL = 0, END = 0, INT = 0, STR = 0, WIL = 0 } = newAttributes;
+        const health =
+          previousLevel.health + Math.floor(END * HEALTH_MULTIPLIER);
+
+        // compute magicka
+        const birthsignMagickaBonus =
+          birthsignModifiers[birthsign].magicka ?? 0;
+        const raceMagickaBonus = raceModifiers[race].magicka ?? 0;
+        const baseMagicka = INT * MAGICKA_MULTIPLIER;
+        const magicka = baseMagicka + birthsignMagickaBonus + raceMagickaBonus;
+
+        // compute base stamina
+        const stamina = END + STR + AGL + WIL;
+
+        // compute base encumbrance
+        const encumbrance: number = STR * ENCUMBRANCE_MULTIPLIER;
+
         const newSkills: SkillsModifier = skills.reduce((newSkills, skill) => {
           const previousSkill = previousLevel.skills[skill] ?? 0;
           const modifier = levelUp.skills[skill] ?? 0;
@@ -170,10 +188,10 @@ export default function Home() {
           level: restOfLevels.length + 2,
           attributes: newAttributes,
           skills: newSkills,
-          health: 0,
-          magicka: 0,
-          stamina: 0,
-          encumbrance: 0,
+          health,
+          magicka,
+          stamina,
+          encumbrance,
         };
 
         return [...restOfLevels, nextLevel];
@@ -277,8 +295,8 @@ export default function Home() {
                         <TableCell key={attribute} align="right">
                           <Typography
                             {...(level.attributes[attribute] &&
-                              levels[i - 1] &&
-                              level.attributes[attribute] >
+                            levels[i - 1] &&
+                            level.attributes[attribute] >
                               levels[i - 1].attributes[attribute]!
                               ? { color: "primary" }
                               : {})}
@@ -288,16 +306,48 @@ export default function Home() {
                         </TableCell>
                       ))}
                       <TableCell align="right">
-                        <Typography>{level.health}</Typography>
+                        <Typography
+                          {...(level.health &&
+                          levels[i - 1] &&
+                          level.health > levels[i - 1].health
+                            ? { color: "primary" }
+                            : {})}
+                        >
+                          {level.health}
+                        </Typography>
                       </TableCell>
                       <TableCell align="right">
-                        <Typography>{level.magicka}</Typography>
+                        <Typography
+                          {...(level.magicka &&
+                          levels[i - 1] &&
+                          level.magicka > levels[i - 1].magicka
+                            ? { color: "primary" }
+                            : {})}
+                        >
+                          {level.magicka}
+                        </Typography>
                       </TableCell>
                       <TableCell align="right">
-                        <Typography>{level.stamina}</Typography>
+                        <Typography
+                          {...(level.stamina &&
+                          levels[i - 1] &&
+                          level.stamina > levels[i - 1].stamina
+                            ? { color: "primary" }
+                            : {})}
+                        >
+                          {level.stamina}
+                        </Typography>
                       </TableCell>
                       <TableCell align="right">
-                        <Typography>{level.encumbrance}</Typography>
+                        <Typography
+                          {...(level.encumbrance &&
+                          levels[i - 1] &&
+                          level.encumbrance > levels[i - 1].encumbrance
+                            ? { color: "primary" }
+                            : {})}
+                        >
+                          {level.encumbrance}
+                        </Typography>
                       </TableCell>
                     </TableRow>
                   ))}

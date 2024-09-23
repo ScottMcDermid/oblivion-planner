@@ -135,8 +135,8 @@ export default function LevelUpDialog({
             className="flex flex-row content-center items-center"
           >
             {raisedAttributes.includes(attribute) &&
-              currentLevel.attributes[attribute] &&
-              attributeBonuses[attribute] ? (
+            currentLevel.attributes[attribute] &&
+            attributeBonuses[attribute] ? (
               <Typography color="primary" className="h-full selfCenter">
                 {currentLevel.attributes[attribute] +
                   attributeBonuses[attribute]}
@@ -214,7 +214,7 @@ export default function LevelUpDialog({
           className="w-full"
           color="primary"
           {...(numMajorSkillUps < NUM_MAJOR_SKILL_UPS_PER_LEVEL ||
-            numRaisedAttributes !== NUM_RAISED_ATTRIBUTES
+          numRaisedAttributes !== NUM_RAISED_ATTRIBUTES
             ? { disabled: true }
             : {})}
           variant="outlined"
