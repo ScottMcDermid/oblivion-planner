@@ -42,6 +42,7 @@ export default function Home() {
   const MAGICKA_MULTIPLIER = 2;
   const NUM_FAVORED_ATTRIBUTES = 2;
   const NUM_MAJOR_SKILLS = 7;
+  const FAVORED_ATTRIBUTE_BONUS = 5;
 
   const [race, setRace] = useState<Race>(races[0]);
   const [gender, setGender] = useState<Gender>(genders[0]);
@@ -96,11 +97,14 @@ export default function Home() {
       (newAttributes, attribute) => {
         const base = baseAttributes[attribute] ?? 0;
         const birthsignModifier = birthsignAttributeModifiers[attribute] ?? 0;
+        const favored = favoredAttributes.includes(attribute)
+          ? FAVORED_ATTRIBUTE_BONUS
+          : 0;
         const modifier: number =
           raceModifiers[race].attributes[gender][attribute] ?? 0;
         return {
           ...newAttributes,
-          [attribute]: base + modifier + birthsignModifier,
+          [attribute]: base + modifier + birthsignModifier + favored,
         };
       },
       {},
@@ -159,8 +163,11 @@ export default function Home() {
         );
 
         const { AGL = 0, END = 0, INT = 0, STR = 0, WIL = 0 } = newAttributes;
+        const previousEND = previousLevel.attributes.END ?? 0;
         const health =
-          previousLevel.health + Math.floor(END * HEALTH_MULTIPLIER);
+          previousLevel.health +
+          (END - previousEND) * BASE_HEALTH_MULTIPLIER +
+          Math.floor(END * HEALTH_MULTIPLIER);
 
         // compute magicka
         const birthsignMagickaBonus =
