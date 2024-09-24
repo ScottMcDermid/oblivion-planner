@@ -21,7 +21,10 @@ export default function SkillSelector({
 }) {
   return (
     <Box className="flex flex-col my-3">
-      <Typography color="grey" className="text-center text-xs">
+      <Typography
+        color="grey"
+        className="text-center text-xs whitespace-nowrap"
+      >
         {skill}
         {major ? "*" : ""}
       </Typography>

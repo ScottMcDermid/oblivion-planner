@@ -44,7 +44,6 @@ import {
 } from "@mui/material";
 import ArrowUpwardIcon from "@mui/icons-material/ArrowUpward";
 import PersonIcon from "@mui/icons-material/Person";
-import AddIcon from "@mui/icons-material/Add";
 import { applyLevelUpToLevel, getBaseLevel } from "@/services/Level";
 import races from "@/data/races";
 import birthsigns from "@/data/birthsigns";
@@ -81,7 +80,6 @@ export default function Home() {
     useState<boolean>(true);
 
   // level-up state
-  const [isLevelingUp, setIsLevelingUp] = useState<boolean>(false);
   const [nextLevel, setNextLevel] = useState<Level>(levelTemplate);
   const [skillUps, setSkillUps] = useState<SkillsSet>(skillsSetTemplate);
   const [raisedAttributes, setRaisedAttributes] = useState<Attribute[]>([]);
@@ -110,10 +108,6 @@ export default function Home() {
 
   const promptRemoveLevel = (level: number) => {
     console.log("remove level? " + level);
-  };
-
-  const toggleIsLevelingUp = () => {
-    setIsLevelingUp(!isLevelingUp);
   };
 
   const handleAttributeToggle = (value: Attribute) => {
@@ -319,20 +313,41 @@ export default function Home() {
                       Level
                     </TableCell>
                     {attributes.map((attribute) => (
-                      <TableCell component="th" align="center" key={attribute}>
+                      <TableCell
+                        component="th"
+                        className="min-w-32"
+                        align="center"
+                        key={attribute}
+                      >
                         {attribute}
                       </TableCell>
                     ))}
-                    <TableCell align="center" component="th">
+                    <TableCell
+                      className="hidden 2xl:table-cell"
+                      align="center"
+                      component="th"
+                    >
                       Health
                     </TableCell>
-                    <TableCell align="center" component="th">
+                    <TableCell
+                      className="hidden 2xl:table-cell"
+                      align="center"
+                      component="th"
+                    >
                       Magicka
                     </TableCell>
-                    <TableCell align="center" component="th">
+                    <TableCell
+                      className="hidden 2xl:table-cell"
+                      align="center"
+                      component="th"
+                    >
                       Stamina
                     </TableCell>
-                    <TableCell align="center" component="th">
+                    <TableCell
+                      className="hidden 2xl:table-cell"
+                      align="center"
+                      component="th"
+                    >
                       Encumbrance
                     </TableCell>
                     <TableCell component="th"></TableCell>
@@ -352,128 +367,104 @@ export default function Home() {
                       previousLevel={levels[i - 1]}
                     />
                   ))}
-                  {isLevelingUp ? (
-                    <>
-                      <TableRow>
-                        <TableCell></TableCell>
-                        {attributes.map((attribute) => (
-                          <TableCell key={attribute}>
-                            {skillsByAttribute[attribute].map((skill) => (
-                              <Box key={skill} className="pb-2">
-                                <SkillSelector
-                                  skill={skill}
-                                  color={
-                                    skillUps[skill] > 0
-                                      ? "secondary"
-                                      : skillUps[skill] < 0
-                                        ? "error"
-                                        : ""
-                                  }
-                                  value={
-                                    currentLevel.skills[skill] + skillUps[skill]
-                                  }
-                                  major={majorSkills.includes(skill)}
-                                  incrementHandler={() =>
-                                    setSkillUps({
-                                      ...skillUps,
-                                      [skill]: skillUps[skill] + 1,
-                                    })
-                                  }
-                                  decrementHandler={() =>
-                                    setSkillUps({
-                                      ...skillUps,
-                                      [skill]: skillUps[skill] - 1,
-                                    })
-                                  }
-                                />
-                              </Box>
-                            ))}
-                          </TableCell>
-                        ))}
-                        <TableCell colSpan={5}></TableCell>
-                      </TableRow>
-                      <TableRow>
-                        <TableCell />
-                        {attributes.map((attribute) => (
-                          <TableCell align="center" key={attribute}>
-                            <Typography
-                              {...(raisedAttributes.includes(attribute)
-                                ? { color: "secondary" }
-                                : {})}
-                              className="h-full selfCenter"
-                            >
-                              {`${currentLevel.attributes[attribute]} + ${attributeBonuses[attribute]}`}
-                            </Typography>
-                            <Checkbox
-                              key={attribute}
-                              color="default"
-                              checked={raisedAttributes.includes(attribute)}
-                              onChange={() => {
-                                handleAttributeToggle(attribute);
-                              }}
-                              name={`${attributeBonuses[attribute]}`}
+                  <TableRow>
+                    <TableCell></TableCell>
+                    {attributes.map((attribute) => (
+                      <TableCell key={attribute}>
+                        {skillsByAttribute[attribute].map((skill) => (
+                          <Box key={skill} className="pb-2">
+                            <SkillSelector
+                              skill={skill}
+                              color={
+                                skillUps[skill] > 0
+                                  ? "secondary"
+                                  : skillUps[skill] < 0
+                                    ? "error"
+                                    : ""
+                              }
+                              value={
+                                currentLevel.skills[skill] + skillUps[skill]
+                              }
+                              major={majorSkills.includes(skill)}
+                              incrementHandler={() =>
+                                setSkillUps({
+                                  ...skillUps,
+                                  [skill]: skillUps[skill] + 1,
+                                })
+                              }
+                              decrementHandler={() =>
+                                setSkillUps({
+                                  ...skillUps,
+                                  [skill]: skillUps[skill] - 1,
+                                })
+                              }
                             />
-                          </TableCell>
+                          </Box>
                         ))}
-                        <TableCell colSpan={5}></TableCell>
-                      </TableRow>
-                      <LevelRow
-                        level={nextLevel}
-                        previousLevel={currentLevel}
-                        onDeleteHandler={() => toggleIsLevelingUp()}
-                      />
-                    </>
-                  ) : null}
+                      </TableCell>
+                    ))}
+
+                    <TableCell colSpan={4} className="hidden 2xl:table-cell" />
+                    <TableCell />
+                  </TableRow>
+                  <TableRow>
+                    <TableCell />
+                    {attributes.map((attribute) => (
+                      <TableCell align="center" key={attribute}>
+                        <Typography
+                          {...(raisedAttributes.includes(attribute)
+                            ? { color: "secondary" }
+                            : {})}
+                          className="h-full selfCenter whitespace-nowrap"
+                        >
+                          {`${currentLevel.attributes[attribute]} + ${attributeBonuses[attribute]}`}
+                        </Typography>
+                        <Checkbox
+                          key={attribute}
+                          color="default"
+                          checked={raisedAttributes.includes(attribute)}
+                          onChange={() => {
+                            handleAttributeToggle(attribute);
+                          }}
+                          name={`${attributeBonuses[attribute]}`}
+                        />
+                      </TableCell>
+                    ))}
+                    <TableCell colSpan={4} className="hidden 2xl:table-cell" />
+                    <TableCell />
+                  </TableRow>
+                  <LevelRow level={nextLevel} previousLevel={currentLevel} />
                 </TableBody>
                 <TableFooter>
                   <TableRow
                     sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
                   >
                     <TableCell align="center" colSpan={attributes.length + 6}>
-                      {isLevelingUp ? (
-                        <>
-                          <LinearProgress
-                            className="w-full"
-                            variant="determinate"
-                            color="primary"
-                            value={Math.min(
-                              (numMajorSkillUps /
-                                NUM_MAJOR_SKILL_UPS_PER_LEVEL) *
-                                100,
-                              100,
-                            )}
-                          />
-                          <Button
-                            variant="outlined"
-                            size="large"
-                            onClick={() => {
-                              commitNextLevelUp();
-                              toggleIsLevelingUp();
-                            }}
-                            className="w-full"
-                            {...(numMajorSkillUps <
-                              NUM_MAJOR_SKILL_UPS_PER_LEVEL ||
-                            numRaisedAttributes !== NUM_RAISED_ATTRIBUTES
-                              ? { disabled: true }
-                              : {})}
-                          >
-                            <Typography className="pt-1">Level Up</Typography>
-                            <ArrowUpwardIcon />
-                          </Button>
-                        </>
-                      ) : (
-                        <Button
-                          variant="outlined"
-                          size="large"
-                          className="w-full"
-                          onClick={() => toggleIsLevelingUp()}
-                        >
-                          <Typography className="pt-1">
-                            Plan Next Level
-                          </Typography>
-                          <AddIcon />
-                        </Button>
-                      )}
+                      <LinearProgress
+                        className="w-full"
+                        variant="determinate"
+                        color="primary"
+                        value={Math.min(
+                          (numMajorSkillUps / NUM_MAJOR_SKILL_UPS_PER_LEVEL) *
+                            100,
+                          100,
+                        )}
+                      />
+                      <Button
+                        variant="outlined"
+                        size="large"
+                        onClick={() => {
+                          commitNextLevelUp();
+                        }}
+                        className="w-full"
+                        {...(numMajorSkillUps < NUM_MAJOR_SKILL_UPS_PER_LEVEL ||
+                        numRaisedAttributes !== NUM_RAISED_ATTRIBUTES
+                          ? { disabled: true }
+                          : {})}
+                      >
+                        <Typography className="pt-1">Level Up</Typography>
+                        <ArrowUpwardIcon />
+                      </Button>
                     </TableCell>
                   </TableRow>
                 </TableFooter>

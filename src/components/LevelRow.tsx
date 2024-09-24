@@ -34,7 +34,7 @@ export default function DropDown({
           </Typography>
         </TableCell>
       ))}
-      <TableCell align="center">
+      <TableCell className="hidden 2xl:table-cell" align="center">
         <Typography
           {...(previousLevel && level.health > previousLevel.health
             ? { color: "secondary" }
@@ -43,7 +43,7 @@ export default function DropDown({
           {level.health}
         </Typography>
       </TableCell>
-      <TableCell align="center">
+      <TableCell className="hidden 2xl:table-cell" align="center">
         <Typography
           {...(previousLevel && level.magicka > previousLevel.magicka
             ? { color: "secondary" }
@@ -52,7 +52,7 @@ export default function DropDown({
           {level.magicka}
         </Typography>
       </TableCell>
-      <TableCell align="center">
+      <TableCell className="hidden 2xl:table-cell" align="center">
         <Typography
           {...(previousLevel && level.stamina > previousLevel.stamina
             ? { color: "secondary" }
@@ -61,7 +61,7 @@ export default function DropDown({
           {level.stamina}
         </Typography>
       </TableCell>
-      <TableCell align="center">
+      <TableCell className="hidden 2xl:table-cell" align="center">
         <Typography
           {...(previousLevel && level.encumbrance > previousLevel.encumbrance
             ? { color: "secondary" }
