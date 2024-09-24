@@ -21,56 +21,56 @@ export default function DropDown({
 }) {
   return (
     <TableRow key={level.level}>
-      <TableCell align="right">{level.level}</TableCell>
+      <TableCell align="center">{level.level}</TableCell>
       {attributes.map((attribute: Attribute) => (
-        <TableCell key={attribute} align="right">
+        <TableCell key={attribute} align="center">
           <Typography
             {...(previousLevel &&
             level.attributes[attribute] > previousLevel.attributes[attribute]!
-              ? { color: "primary" }
+              ? { color: "secondary" }
               : {})}
           >
             {level.attributes[attribute]}
           </Typography>
         </TableCell>
       ))}
-      <TableCell align="right">
+      <TableCell align="center">
         <Typography
           {...(previousLevel && level.health > previousLevel.health
-            ? { color: "primary" }
+            ? { color: "secondary" }
             : {})}
         >
           {level.health}
         </Typography>
       </TableCell>
-      <TableCell align="right">
+      <TableCell align="center">
         <Typography
           {...(previousLevel && level.magicka > previousLevel.magicka
-            ? { color: "primary" }
+            ? { color: "secondary" }
             : {})}
         >
           {level.magicka}
         </Typography>
       </TableCell>
-      <TableCell align="right">
+      <TableCell align="center">
         <Typography
           {...(previousLevel && level.stamina > previousLevel.stamina
-            ? { color: "primary" }
+            ? { color: "secondary" }
             : {})}
         >
           {level.stamina}
         </Typography>
       </TableCell>
-      <TableCell align="right">
+      <TableCell align="center">
         <Typography
           {...(previousLevel && level.encumbrance > previousLevel.encumbrance
-            ? { color: "primary" }
+            ? { color: "secondary" }
             : {})}
         >
           {level.encumbrance}
         </Typography>
       </TableCell>
-      <TableCell align="right" className="min-w-16">
+      <TableCell align="center" className="min-w-16">
         {onDeleteHandler ? (
           <Tooltip title="Remove">
             <IconButton

@@ -9,44 +9,40 @@ export default function SkillSelector({
   major,
   value,
   color = "",
-  onChangeHandler,
+  incrementHandler,
+  decrementHandler,
 }: {
   skill: Skill;
   major: boolean;
   value: number;
   color?: string;
-  onChangeHandler: (value: number) => void;
+  incrementHandler: () => void;
+  decrementHandler: () => void;
 }) {
-  const handleDecrement = () => {
-    onChangeHandler(value - 1);
-  };
-  const handleIncrement = () => {
-    onChangeHandler(value + 1);
-  };
-
   return (
-    <Box className="flex flex-col min-w-32 px-2">
-      <Typography className="text-center">
-        {skill} {major ? "(*)" : ""}
+    <Box className="flex flex-col my-3">
+      <Typography color="grey" className="text-center text-xs">
+        {skill}
+        {major ? "*" : ""}
       </Typography>
       <Box className="flex flex-row">
         <IconButton
           aria-label={`decrement ${skill}`}
           size="small"
-          onClick={() => handleDecrement()}
+          onClick={() => decrementHandler()}
         >
           <RemoveIcon fontSize="small" />
         </IconButton>
         <Typography
           color={color}
-          className="text-lg flex-grow content-center text-center"
+          className="text-sm flex-grow content-center text-center"
         >
           {value}
         </Typography>
         <IconButton
           aria-label={`increment ${skill}`}
           size="small"
-          onClick={() => handleIncrement()}
+          onClick={() => incrementHandler()}
         >
           <AddIcon fontSize="small" />
         </IconButton>

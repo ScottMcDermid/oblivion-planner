@@ -15,7 +15,6 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 
 import DropDown from "@/components/DropDown";
-import LevelUpDialog from "@/components/LevelUpDialog";
 import RadioButtons from "@/components/RadioButtons";
 import SelectFromList from "@/components/SelectFromList";
 import LevelRow from "@/components/LevelRow";
@@ -23,26 +22,40 @@ import LevelRow from "@/components/LevelRow";
 import theme from "@/app/theme";
 import type { Race } from "@/data/races";
 import type { Birthsign } from "@/data/birthsigns";
-import attributes from "@/data/attributes";
-import type { Attribute } from "@/data/attributes";
-import type { Skill } from "@/data/skills";
+import attributes, {
+  attributesSetTemplate,
+  getAttributeBonusFromSkillUps,
+  skillsByAttribute,
+} from "@/data/attributes";
+import type { Attribute, AttributesSet } from "@/data/attributes";
+import type { Skill, SkillsSet } from "@/data/skills";
 import specializations from "@/data/specializations";
 import type { Specialization } from "@/data/specializations";
 import genders from "@/data/genders";
 import type { Gender } from "@/data/genders";
-import { Level, levelTemplate, LevelUp, levelUpTemplate } from "@/types/level";
-import { Drawer, Fab, Tooltip, Typography } from "@mui/material";
+import { Level, levelTemplate, LevelUp } from "@/types/level";
+import {
+  Checkbox,
+  Drawer,
+  Fab,
+  LinearProgress,
+  Tooltip,
+  Typography,
+} from "@mui/material";
 import ArrowUpwardIcon from "@mui/icons-material/ArrowUpward";
 import PersonIcon from "@mui/icons-material/Person";
 import AddIcon from "@mui/icons-material/Add";
 import { applyLevelUpToLevel, getBaseLevel } from "@/services/Level";
 import races from "@/data/races";
 import birthsigns from "@/data/birthsigns";
-import skills from "@/data/skills";
+import skills, { skillsSetTemplate } from "@/data/skills";
+import SkillSelector from "@/components/SkillSelector";
 
 export default function Home() {
   const NUM_FAVORED_ATTRIBUTES = 2;
   const NUM_MAJOR_SKILLS = 7;
+  const NUM_MAJOR_SKILL_UPS_PER_LEVEL = 10;
+  const NUM_RAISED_ATTRIBUTES = 3;
 
   const [race, setRace] = useState<Race>(races[0]);
   const [gender, setGender] = useState<Gender>(genders[0]);
@@ -60,18 +73,39 @@ export default function Home() {
     skills.slice(0, NUM_MAJOR_SKILLS),
   );
   const [majorSkillsError, setMajorSkillsError] = useState<string>("");
-  const [openLevelUpDialog, setOpenLevelUpDialog] = useState<boolean>(false);
   const [levels, setLevels] = useState<Level[]>([]);
   const [levelUps, setLevelUps] = useState<LevelUp[]>([]);
   const [currentLevel, setCurrentLevel] = useState<Level>(levelTemplate);
-  const [nextLevel, setNextLevel] = useState<Level>(levelTemplate);
-  const [nextLevelUp, setNextLevelUp] = useState<LevelUp>(levelUpTemplate);
-  const [isLevelingUp, setIsLevelingUp] = useState<boolean>(false);
+  const [numMajorSkillUps, setNumMajorSkillUps] = useState<number>(0);
   const [isCharacterCreationOpen, setIsCharacterCreationOpen] =
     useState<boolean>(true);
 
-  const addLevelUp = (levelUp: LevelUp): void => {
-    setLevelUps(levelUps.concat(levelUp));
+  // level-up state
+  const [isLevelingUp, setIsLevelingUp] = useState<boolean>(false);
+  const [nextLevel, setNextLevel] = useState<Level>(levelTemplate);
+  const [skillUps, setSkillUps] = useState<SkillsSet>(skillsSetTemplate);
+  const [raisedAttributes, setRaisedAttributes] = useState<Attribute[]>([]);
+  const [attributeBonuses, setAttributeBonuses] = useState<AttributesSet>(
+    attributesSetTemplate,
+  );
+  const [numRaisedAttributes, setNumRaisedAttributes] = useState<number>(0);
+
+  const commitNextLevelUp = (): void => {
+    setLevelUps([
+      ...levelUps,
+      {
+        skills: skillUps,
+        attributes: raisedAttributes.reduce(
+          (attributes, attribute) => ({
+            ...attributes,
+            [attribute]: attributeBonuses[attribute],
+          }),
+          attributesSetTemplate,
+        ),
+      },
+    ]);
+    setSkillUps(skillsSetTemplate);
+    setRaisedAttributes([]);
   };
 
   const promptRemoveLevel = (level: number) => {
@@ -81,6 +115,49 @@ export default function Home() {
   const toggleIsLevelingUp = () => {
     setIsLevelingUp(!isLevelingUp);
   };
+
+  const handleAttributeToggle = (value: Attribute) => {
+    const currentIndex = raisedAttributes.indexOf(value);
+    const newChecked = [...raisedAttributes];
+
+    if (currentIndex === -1) {
+      newChecked.push(value);
+    } else {
+      newChecked.splice(currentIndex, 1);
+    }
+
+    setNumRaisedAttributes(newChecked.length);
+    setRaisedAttributes(newChecked);
+  };
+
+  // compute attribute bonuses
+  useEffect(() => {
+    const newAttributeBonuses: AttributesSet = attributes.reduce(
+      (attributeBonuses, attribute) => {
+        const attributeSkillUps: number = skillsByAttribute[attribute].reduce(
+          (sum: number, skill: Skill) => {
+            return sum + skillUps[skill];
+          },
+          0,
+        );
+        const attributeBonus = getAttributeBonusFromSkillUps(attributeSkillUps);
+        return { ...attributeBonuses, [attribute]: attributeBonus };
+      },
+      attributesSetTemplate,
+    );
+    setAttributeBonuses(newAttributeBonuses);
+  }, [skillUps]);
+
+  useEffect(() => {
+    const numMajorSkillUps = skills.reduce((sum, skill) => {
+      if (majorSkills.includes(skill)) {
+        const newSkill = skillUps[skill];
+        return sum + newSkill;
+      }
+      return sum;
+    }, 0);
+    setNumMajorSkillUps(numMajorSkillUps);
+  }, [skillUps, majorSkills]);
 
   useEffect(() => {
     setLevels(
@@ -118,12 +195,19 @@ export default function Home() {
   }, [levels]);
 
   useEffect(() => {
-    setNextLevel(applyLevelUpToLevel(currentLevel, nextLevelUp));
-  }, [currentLevel, nextLevelUp]);
-
-  useEffect(() => {
-    setNextLevel(applyLevelUpToLevel(currentLevel, nextLevelUp));
-  }, [currentLevel, nextLevelUp]);
+    setNextLevel(
+      applyLevelUpToLevel(currentLevel, {
+        skills: skillUps,
+        attributes: raisedAttributes.reduce(
+          (attributes, attribute) => ({
+            ...attributes,
+            [attribute]: attributeBonuses[attribute],
+          }),
+          attributesSetTemplate,
+        ),
+      }),
+    );
+  }, [currentLevel, skillUps, raisedAttributes, attributeBonuses]);
 
   // validation
   useEffect(() => {
@@ -151,7 +235,6 @@ export default function Home() {
 
       <Drawer
         onClose={() => {
-          console.log("woooo");
           setIsCharacterCreationOpen(false);
         }}
         open={isCharacterCreationOpen}
@@ -212,11 +295,11 @@ export default function Home() {
         </Box>
       </Drawer>
 
-      <Box className="p-2 font-[family-name:var(--font-geist-sans)] flex flex-row  align-center content-center">
+      <Box className="p-2 font-[family-name:var(--font-geist-sans)] flex flex-col  align-center content-center">
         <Tooltip title="Character Creation">
           <Fab
             size="small"
-            className="m-4"
+            className="m-4 min-w-10"
             color="default"
             aria-label="Character Creation"
             onClick={() => {
@@ -226,30 +309,30 @@ export default function Home() {
             <PersonIcon />
           </Fab>
         </Tooltip>
-        <Box className="mx-auto pt-5 w-350">
+        <Box className="mx-auto pt-5">
           {levels.length > 0 ? (
             <TableContainer>
               <Table aria-label="simple table">
                 <TableHead>
                   <TableRow>
-                    <TableCell align="right" component="th">
+                    <TableCell align="center" component="th">
                       Level
                     </TableCell>
                     {attributes.map((attribute) => (
-                      <TableCell component="th" align="right" key={attribute}>
+                      <TableCell component="th" align="center" key={attribute}>
                         {attribute}
                       </TableCell>
                     ))}
-                    <TableCell align="right" component="th">
+                    <TableCell align="center" component="th">
                       Health
                     </TableCell>
-                    <TableCell align="right" component="th">
+                    <TableCell align="center" component="th">
                       Magicka
                     </TableCell>
-                    <TableCell align="right" component="th">
+                    <TableCell align="center" component="th">
                       Stamina
                     </TableCell>
-                    <TableCell align="right" component="th">
+                    <TableCell align="center" component="th">
                       Encumbrance
                     </TableCell>
                     <TableCell component="th"></TableCell>
@@ -270,11 +353,76 @@ export default function Home() {
                     />
                   ))}
                   {isLevelingUp ? (
-                    <LevelRow
-                      level={nextLevel}
-                      previousLevel={currentLevel}
-                      onDeleteHandler={() => toggleIsLevelingUp()}
-                    />
+                    <>
+                      <TableRow>
+                        <TableCell></TableCell>
+                        {attributes.map((attribute) => (
+                          <TableCell key={attribute}>
+                            {skillsByAttribute[attribute].map((skill) => (
+                              <Box key={skill} className="pb-2">
+                                <SkillSelector
+                                  skill={skill}
+                                  color={
+                                    skillUps[skill] > 0
+                                      ? "secondary"
+                                      : skillUps[skill] < 0
+                                        ? "error"
+                                        : ""
+                                  }
+                                  value={
+                                    currentLevel.skills[skill] + skillUps[skill]
+                                  }
+                                  major={majorSkills.includes(skill)}
+                                  incrementHandler={() =>
+                                    setSkillUps({
+                                      ...skillUps,
+                                      [skill]: skillUps[skill] + 1,
+                                    })
+                                  }
+                                  decrementHandler={() =>
+                                    setSkillUps({
+                                      ...skillUps,
+                                      [skill]: skillUps[skill] - 1,
+                                    })
+                                  }
+                                />
+                              </Box>
+                            ))}
+                          </TableCell>
+                        ))}
+                        <TableCell colSpan={5}></TableCell>
+                      </TableRow>
+                      <TableRow>
+                        <TableCell />
+                        {attributes.map((attribute) => (
+                          <TableCell align="center" key={attribute}>
+                            <Typography
+                              {...(raisedAttributes.includes(attribute)
+                                ? { color: "secondary" }
+                                : {})}
+                              className="h-full selfCenter"
+                            >
+                              {`${currentLevel.attributes[attribute]} + ${attributeBonuses[attribute]}`}
+                            </Typography>
+                            <Checkbox
+                              key={attribute}
+                              color="default"
+                              checked={raisedAttributes.includes(attribute)}
+                              onChange={() => {
+                                handleAttributeToggle(attribute);
+                              }}
+                              name={`${attributeBonuses[attribute]}`}
+                            />
+                          </TableCell>
+                        ))}
+                        <TableCell colSpan={5}></TableCell>
+                      </TableRow>
+                      <LevelRow
+                        level={nextLevel}
+                        previousLevel={currentLevel}
+                        onDeleteHandler={() => toggleIsLevelingUp()}
+                      />
+                    </>
                   ) : null}
                 </TableBody>
                 <TableFooter>
@@ -283,15 +431,36 @@ export default function Home() {
                   >
                     <TableCell align="center" colSpan={attributes.length + 6}>
                       {isLevelingUp ? (
-                        <Button
-                          variant="outlined"
-                          size="large"
-                          onClick={() => toggleIsLevelingUp()}
-                          className="w-full"
-                        >
-                          <Typography className="pt-1">Level Up</Typography>
-                          <ArrowUpwardIcon />
-                        </Button>
+                        <>
+                          <LinearProgress
+                            className="w-full"
+                            variant="determinate"
+                            color="primary"
+                            value={Math.min(
+                              (numMajorSkillUps /
+                                NUM_MAJOR_SKILL_UPS_PER_LEVEL) *
+                                100,
+                              100,
+                            )}
+                          />
+                          <Button
+                            variant="outlined"
+                            size="large"
+                            onClick={() => {
+                              commitNextLevelUp();
+                              toggleIsLevelingUp();
+                            }}
+                            className="w-full"
+                            {...(numMajorSkillUps <
+                              NUM_MAJOR_SKILL_UPS_PER_LEVEL ||
+                            numRaisedAttributes !== NUM_RAISED_ATTRIBUTES
+                              ? { disabled: true }
+                              : {})}
+                          >
+                            <Typography className="pt-1">Level Up</Typography>
+                            <ArrowUpwardIcon />
+                          </Button>
+                        </>
                       ) : (
                         <Button
                           variant="outlined"
@@ -316,16 +485,6 @@ export default function Home() {
             </div>
           )}
         </Box>
-        {openLevelUpDialog ? (
-          <LevelUpDialog
-            currentLevel={currentLevel}
-            majorSkills={majorSkills}
-            handleLevelUp={addLevelUp}
-            handleClose={() => {
-              setOpenLevelUpDialog(false);
-            }}
-          />
-        ) : null}
       </Box>
     </ThemeProvider>
   );
