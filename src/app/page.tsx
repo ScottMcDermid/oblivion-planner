@@ -9,7 +9,6 @@ import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
 import TableContainer from "@mui/material/TableContainer";
-import TableFooter from "@mui/material/TableBody";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 
@@ -275,7 +274,7 @@ export default function Home() {
                 <TableBody>
                   {levels.map((level, i) =>
                     modifyingLevel !== null &&
-                    modifyingLevel === level.level ? (
+                      modifyingLevel === level.level ? (
                       <ModifyLevelRow
                         key={level.level}
                         level={levels[i - 1]}
@@ -291,11 +290,11 @@ export default function Home() {
                         level={level}
                         {...(level.level > 1
                           ? {
-                              onRemoveHandler: () =>
-                                promptConfirmRemoveLevel(level.level),
-                              onModifyHandler: () =>
-                                setModifyingLevel(level.level),
-                            }
+                            onRemoveHandler: () =>
+                              promptConfirmRemoveLevel(level.level),
+                            onModifyHandler: () =>
+                              setModifyingLevel(level.level),
+                          }
                           : {})}
                         previousLevel={levels[i - 1]}
                       />
