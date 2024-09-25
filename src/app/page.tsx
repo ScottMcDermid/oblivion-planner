@@ -2,7 +2,6 @@
 import { useState, useEffect } from "react";
 import { ThemeProvider } from "@mui/material/styles";
 import Box from "@mui/material/Box";
-import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
 import Divider from "@mui/material/Divider";
 import Skeleton from "@mui/material/Skeleton";
@@ -22,39 +21,26 @@ import LevelRow from "@/components/LevelRow";
 import theme from "@/app/theme";
 import type { Race } from "@/data/races";
 import type { Birthsign } from "@/data/birthsigns";
-import attributes, {
-  attributesSetTemplate,
-  getAttributeBonusFromSkillUps,
-  skillsByAttribute,
-} from "@/data/attributes";
-import type { Attribute, AttributesSet } from "@/data/attributes";
-import type { Skill, SkillsSet } from "@/data/skills";
+import attributes from "@/data/attributes";
+import type { Attribute } from "@/data/attributes";
+import type { Skill } from "@/data/skills";
 import specializations from "@/data/specializations";
 import type { Specialization } from "@/data/specializations";
 import genders from "@/data/genders";
 import type { Gender } from "@/data/genders";
 import { Level, levelTemplate, LevelUp } from "@/types/level";
-import {
-  Checkbox,
-  Drawer,
-  Fab,
-  LinearProgress,
-  Tooltip,
-  Typography,
-} from "@mui/material";
-import ArrowUpwardIcon from "@mui/icons-material/ArrowUpward";
+import { Drawer, Fab, Tooltip, Typography } from "@mui/material";
 import PersonIcon from "@mui/icons-material/Person";
 import { applyLevelUpToLevel, getBaseLevel } from "@/services/Level";
 import races from "@/data/races";
 import birthsigns from "@/data/birthsigns";
-import skills, { skillsSetTemplate } from "@/data/skills";
-import SkillSelector from "@/components/SkillSelector";
+import skills from "@/data/skills";
+import ModifyLevelRow from "@/components/ModifyLevelRow";
+import ConfirmDialog from "@/components/ConfirmDialog";
 
 export default function Home() {
   const NUM_FAVORED_ATTRIBUTES = 2;
   const NUM_MAJOR_SKILLS = 7;
-  const NUM_MAJOR_SKILL_UPS_PER_LEVEL = 10;
-  const NUM_RAISED_ATTRIBUTES = 3;
 
   const [race, setRace] = useState<Race>(races[0]);
   const [gender, setGender] = useState<Gender>(genders[0]);
@@ -72,86 +58,34 @@ export default function Home() {
     skills.slice(0, NUM_MAJOR_SKILLS),
   );
   const [majorSkillsError, setMajorSkillsError] = useState<string>("");
+
+  const [currentLevel, setCurrentLevel] = useState<Level>(levelTemplate);
   const [levels, setLevels] = useState<Level[]>([]);
   const [levelUps, setLevelUps] = useState<LevelUp[]>([]);
-  const [currentLevel, setCurrentLevel] = useState<Level>(levelTemplate);
-  const [numMajorSkillUps, setNumMajorSkillUps] = useState<number>(0);
   const [isCharacterCreationOpen, setIsCharacterCreationOpen] =
     useState<boolean>(true);
+  const [modifyingLevel, setModifyingLevel] = useState<number | null>(null);
+  const [removingLevel, setRemovingLevel] = useState<number | null>(null);
 
-  // level-up state
-  const [nextLevel, setNextLevel] = useState<Level>(levelTemplate);
-  const [skillUps, setSkillUps] = useState<SkillsSet>(skillsSetTemplate);
-  const [raisedAttributes, setRaisedAttributes] = useState<Attribute[]>([]);
-  const [attributeBonuses, setAttributeBonuses] = useState<AttributesSet>(
-    attributesSetTemplate,
-  );
-  const [numRaisedAttributes, setNumRaisedAttributes] = useState<number>(0);
-
-  const commitNextLevelUp = (): void => {
-    setLevelUps([
-      ...levelUps,
-      {
-        skills: skillUps,
-        attributes: raisedAttributes.reduce(
-          (attributes, attribute) => ({
-            ...attributes,
-            [attribute]: attributeBonuses[attribute],
-          }),
-          attributesSetTemplate,
-        ),
-      },
-    ]);
-    setSkillUps(skillsSetTemplate);
-    setRaisedAttributes([]);
+  const commitLevelUp = (levelUp: LevelUp, level?: number): void => {
+    const levelIndex = level === undefined ? levelUps.length : level - 2;
+    const newLevelUps = levelUps.slice(0);
+    newLevelUps[levelIndex] = levelUp;
+    setLevelUps(newLevelUps);
+    setModifyingLevel(null);
   };
 
-  const promptRemoveLevel = (level: number) => {
-    console.log("remove level? " + level);
+  const promptConfirmRemoveLevel = (level: number) => {
+    setRemovingLevel(level);
   };
 
-  const handleAttributeToggle = (value: Attribute) => {
-    const currentIndex = raisedAttributes.indexOf(value);
-    const newChecked = [...raisedAttributes];
-
-    if (currentIndex === -1) {
-      newChecked.push(value);
-    } else {
-      newChecked.splice(currentIndex, 1);
-    }
-
-    setNumRaisedAttributes(newChecked.length);
-    setRaisedAttributes(newChecked);
+  const handleRemoveLevel = (confirm: boolean) => {
+    if (!confirm || !removingLevel) return;
+    const newLevelUps = levelUps.slice(0);
+    newLevelUps.splice(removingLevel - 2, 1);
+    setLevelUps(newLevelUps);
+    setRemovingLevel(null);
   };
-
-  // compute attribute bonuses
-  useEffect(() => {
-    const newAttributeBonuses: AttributesSet = attributes.reduce(
-      (attributeBonuses, attribute) => {
-        const attributeSkillUps: number = skillsByAttribute[attribute].reduce(
-          (sum: number, skill: Skill) => {
-            return sum + skillUps[skill];
-          },
-          0,
-        );
-        const attributeBonus = getAttributeBonusFromSkillUps(attributeSkillUps);
-        return { ...attributeBonuses, [attribute]: attributeBonus };
-      },
-      attributesSetTemplate,
-    );
-    setAttributeBonuses(newAttributeBonuses);
-  }, [skillUps]);
-
-  useEffect(() => {
-    const numMajorSkillUps = skills.reduce((sum, skill) => {
-      if (majorSkills.includes(skill)) {
-        const newSkill = skillUps[skill];
-        return sum + newSkill;
-      }
-      return sum;
-    }, 0);
-    setNumMajorSkillUps(numMajorSkillUps);
-  }, [skillUps, majorSkills]);
 
   useEffect(() => {
     setLevels(
@@ -187,21 +121,6 @@ export default function Home() {
       setCurrentLevel(levels[levels.length - 1]);
     }
   }, [levels]);
-
-  useEffect(() => {
-    setNextLevel(
-      applyLevelUpToLevel(currentLevel, {
-        skills: skillUps,
-        attributes: raisedAttributes.reduce(
-          (attributes, attribute) => ({
-            ...attributes,
-            [attribute]: attributeBonuses[attribute],
-          }),
-          attributesSetTemplate,
-        ),
-      }),
-    );
-  }, [currentLevel, skillUps, raisedAttributes, attributeBonuses]);
 
   // validation
   useEffect(() => {
@@ -354,120 +273,42 @@ export default function Home() {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {levels.map((level, i) => (
-                    <LevelRow
-                      key={level.level}
-                      level={level}
-                      {...(level.level > 1
-                        ? {
-                            onDeleteHandler: () =>
-                              promptRemoveLevel(level.level),
-                          }
-                        : {})}
-                      previousLevel={levels[i - 1]}
-                    />
-                  ))}
-                  <TableRow>
-                    <TableCell></TableCell>
-                    {attributes.map((attribute) => (
-                      <TableCell key={attribute}>
-                        {skillsByAttribute[attribute].map((skill) => (
-                          <Box key={skill} className="pb-2">
-                            <SkillSelector
-                              skill={skill}
-                              color={
-                                skillUps[skill] > 0
-                                  ? "secondary"
-                                  : skillUps[skill] < 0
-                                    ? "error"
-                                    : ""
-                              }
-                              value={
-                                currentLevel.skills[skill] + skillUps[skill]
-                              }
-                              major={majorSkills.includes(skill)}
-                              incrementHandler={() =>
-                                setSkillUps({
-                                  ...skillUps,
-                                  [skill]: skillUps[skill] + 1,
-                                })
-                              }
-                              decrementHandler={() =>
-                                setSkillUps({
-                                  ...skillUps,
-                                  [skill]: skillUps[skill] - 1,
-                                })
-                              }
-                            />
-                          </Box>
-                        ))}
-                      </TableCell>
-                    ))}
-
-                    <TableCell colSpan={4} className="hidden 2xl:table-cell" />
-                    <TableCell />
-                  </TableRow>
-                  <TableRow>
-                    <TableCell />
-                    {attributes.map((attribute) => (
-                      <TableCell align="center" key={attribute}>
-                        <Typography
-                          {...(raisedAttributes.includes(attribute)
-                            ? { color: "secondary" }
-                            : {})}
-                          className="h-full selfCenter whitespace-nowrap"
-                        >
-                          {`${currentLevel.attributes[attribute]} + ${attributeBonuses[attribute]}`}
-                        </Typography>
-                        <Checkbox
-                          key={attribute}
-                          color="default"
-                          checked={raisedAttributes.includes(attribute)}
-                          onChange={() => {
-                            handleAttributeToggle(attribute);
-                          }}
-                          name={`${attributeBonuses[attribute]}`}
-                        />
-                      </TableCell>
-                    ))}
-                    <TableCell colSpan={4} className="hidden 2xl:table-cell" />
-                    <TableCell />
-                  </TableRow>
-                  <LevelRow level={nextLevel} previousLevel={currentLevel} />
-                </TableBody>
-                <TableFooter>
-                  <TableRow
-                    sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-                  >
-                    <TableCell align="center" colSpan={attributes.length + 6}>
-                      <LinearProgress
-                        className="w-full"
-                        variant="determinate"
-                        color="primary"
-                        value={Math.min(
-                          (numMajorSkillUps / NUM_MAJOR_SKILL_UPS_PER_LEVEL) *
-                            100,
-                          100,
-                        )}
+                  {levels.map((level, i) =>
+                    modifyingLevel !== null &&
+                    modifyingLevel === level.level ? (
+                      <ModifyLevelRow
+                        key={level.level}
+                        level={levels[i - 1]}
+                        levelUp={levelUps[level.level - 2]}
+                        majorSkills={majorSkills}
+                        commitLevelUpHandler={(levelUp) =>
+                          commitLevelUp(levelUp, level.level)
+                        }
                       />
-                      <Button
-                        variant="outlined"
-                        size="large"
-                        onClick={() => {
-                          commitNextLevelUp();
-                        }}
-                        className="w-full"
-                        {...(numMajorSkillUps < NUM_MAJOR_SKILL_UPS_PER_LEVEL ||
-                        numRaisedAttributes !== NUM_RAISED_ATTRIBUTES
-                          ? { disabled: true }
+                    ) : (
+                      <LevelRow
+                        key={level.level}
+                        level={level}
+                        {...(level.level > 1
+                          ? {
+                              onRemoveHandler: () =>
+                                promptConfirmRemoveLevel(level.level),
+                              onModifyHandler: () =>
+                                setModifyingLevel(level.level),
+                            }
                           : {})}
-                      >
-                        <Typography className="pt-1">Level Up</Typography>
-                        <ArrowUpwardIcon />
-                      </Button>
-                    </TableCell>
-                  </TableRow>
-                </TableFooter>
+                        previousLevel={levels[i - 1]}
+                      />
+                    ),
+                  )}
+                  {modifyingLevel ? null : (
+                    <ModifyLevelRow
+                      level={currentLevel}
+                      majorSkills={majorSkills}
+                      commitLevelUpHandler={(levelUp) => commitLevelUp(levelUp)}
+                    />
+                  )}
+                </TableBody>
               </Table>
             </TableContainer>
           ) : (
@@ -477,6 +318,10 @@ export default function Home() {
           )}
         </Box>
       </Box>
+      <ConfirmDialog
+        open={removingLevel !== null}
+        handleClose={handleRemoveLevel}
+      />
     </ThemeProvider>
   );
 }

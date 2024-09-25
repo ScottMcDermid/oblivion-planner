@@ -9,15 +9,18 @@ import {
   Typography,
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
+import EditIcon from "@mui/icons-material/Edit";
 
 export default function DropDown({
   level,
   previousLevel,
-  onDeleteHandler,
+  onRemoveHandler,
+  onModifyHandler,
 }: {
   level: Level;
   previousLevel: Level | undefined;
-  onDeleteHandler?: () => void;
+  onRemoveHandler?: () => void;
+  onModifyHandler?: () => void;
 }) {
   return (
     <TableRow key={level.level}>
@@ -70,13 +73,27 @@ export default function DropDown({
           {level.encumbrance}
         </Typography>
       </TableCell>
-      <TableCell align="center" className="min-w-16">
-        {onDeleteHandler ? (
+      <TableCell align="center" className="min-w-20">
+        {onModifyHandler ? (
+          <Tooltip title="Modify">
+            <IconButton
+              className="p-0 px-1"
+              aria-label="Modify"
+              onClick={() => onModifyHandler()}
+              sx={(theme) => ({
+                color: theme.palette.grey[500],
+              })}
+            >
+              <EditIcon />
+            </IconButton>
+          </Tooltip>
+        ) : null}
+        {onRemoveHandler ? (
           <Tooltip title="Remove">
             <IconButton
-              className="p-0"
-              aria-label="close"
-              onClick={() => onDeleteHandler()}
+              className="p-0 px-1"
+              aria-label="Delete"
+              onClick={() => onRemoveHandler()}
               sx={(theme) => ({
                 color: theme.palette.grey[500],
               })}

@@ -26,10 +26,6 @@ export const MAJOR_SKILL_BONUS = 20;
 
 export const applyLevelUpToLevel = (level: Level, levelUp: LevelUp): Level => {
   const { AGL = 0, END = 0, INT = 0, STR = 0, WIL = 0 } = levelUp.attributes;
-  const health =
-    level.health +
-    END * BASE_HEALTH_MULTIPLIER +
-    Math.floor(END * HEALTH_MULTIPLIER);
 
   const magicka: number = level.magicka + INT * MAGICKA_MULTIPLIER;
   const stamina: number = level.stamina + END + STR + AGL + WIL;
@@ -42,6 +38,11 @@ export const applyLevelUpToLevel = (level: Level, levelUp: LevelUp): Level => {
     }),
     attributesSetTemplate,
   );
+
+  const health =
+    level.health +
+    END * BASE_HEALTH_MULTIPLIER +
+    Math.floor(newAttributes.END * HEALTH_MULTIPLIER);
 
   const newSkills: SkillsSet = skills.reduce((newSkills, skill) => {
     return {

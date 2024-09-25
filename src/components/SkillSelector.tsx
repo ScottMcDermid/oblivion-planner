@@ -22,7 +22,7 @@ export default function SkillSelector({
   return (
     <Box className="flex flex-col my-3">
       <Typography
-        color="grey"
+        {...(major ? { color: "default" } : { color: "grey" })}
         className="text-center text-xs whitespace-nowrap"
       >
         {skill}
