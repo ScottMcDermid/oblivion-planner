@@ -35,16 +35,6 @@ export default function ModifyLevelRow({
   const NUM_MAJOR_SKILL_UPS_PER_LEVEL = 10;
   const NUM_RAISED_ATTRIBUTES = 3;
 
-  const getNumMajorSkillUps = () => {
-    return skills.reduce((sum, skill) => {
-      if (majorSkills.includes(skill)) {
-        const newSkill = skillUps[skill];
-        return sum + newSkill;
-      }
-      return sum;
-    }, 0);
-  };
-
   const [nextLevel, setNextLevel] = useState<Level>(levelTemplate);
   const [attributeBonuses, setAttributeBonuses] = useState<AttributesSet>(
     attributesSetTemplate,
@@ -58,7 +48,13 @@ export default function ModifyLevelRow({
       : [],
   );
   const [numMajorSkillUps, setNumMajorSkillUps] = useState<number>(
-    getNumMajorSkillUps(),
+    skills.reduce((sum, skill) => {
+      if (majorSkills.includes(skill)) {
+        const newSkill = skillUps[skill];
+        return sum + newSkill;
+      }
+      return sum;
+    }, 0),
   );
 
   const handleAttributeToggle = (value: Attribute) => {
@@ -93,7 +89,15 @@ export default function ModifyLevelRow({
   }, [skillUps]);
 
   useEffect(() => {
-    setNumMajorSkillUps(getNumMajorSkillUps());
+    setNumMajorSkillUps(
+      skills.reduce((sum, skill) => {
+        if (majorSkills.includes(skill)) {
+          const newSkill = skillUps[skill];
+          return sum + newSkill;
+        }
+        return sum;
+      }, 0),
+    );
   }, [skillUps, majorSkills]);
 
   useEffect(() => {
