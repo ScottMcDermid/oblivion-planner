@@ -1,61 +1,57 @@
 import Box from "@mui/material/Box";
-import AddIcon from "@mui/icons-material/Add";
-import RemoveIcon from "@mui/icons-material/Remove";
-import { shorthandBySkill, Skill } from "@/data/skills";
-import { IconButton, Typography } from "@mui/material";
+import { MAX_SKILL_LEVEL, shorthandBySkill, Skill } from "@/data/skills";
+import { ToggleButton, Typography } from "@mui/material";
+import { useEffect, useState } from "react";
 
 export default function SkillSelector({
   skill,
   major,
   value,
   color = "",
-  incrementHandler,
-  decrementHandler,
+  selectHandler,
+  unselectHandler,
 }: {
   skill: Skill;
   major: boolean;
   value: number;
   color?: string;
-  incrementHandler: () => void;
-  decrementHandler: () => void;
+  selectHandler: () => void;
+  unselectHandler: () => void;
 }) {
+  const [selected, setSelected] = useState<boolean>(false);
+
+  useEffect(() => {
+    if (selected) selectHandler();
+    else unselectHandler();
+  }, [selected]);
+
   return (
-    <Box className="flex flex-col my-3 max-w-6">
+    <Box className="flex flex-col m-1">
       <Typography
         {...(major ? { color: "default" } : { color: "grey" })}
         className="text-center text-xs whitespace-nowrap"
       >
-        <Typography className="hidden lg:show">
+        <Typography className="hidden lg:block">
           {skill}
           {major ? "*" : ""}
         </Typography>
-        <Typography className="show lg:hidden">
+        <Typography className="block lg:hidden">
           {shorthandBySkill[skill]}
           {major ? "*" : ""}
         </Typography>
       </Typography>
-      <Box className="flex lg:flex-row flex-col flex-col-reverse">
-        <IconButton
-          aria-label={`decrement ${skill}`}
-          size="small"
-          onClick={() => decrementHandler()}
-        >
-          <RemoveIcon fontSize="small" />
-        </IconButton>
-        <Typography
-          color={color}
-          className="text-sm lg:flex-grow content-center text-center"
-        >
-          {value}
-        </Typography>
-        <IconButton
-          aria-label={`increment ${skill}`}
-          size="small"
-          onClick={() => incrementHandler()}
-        >
-          <AddIcon fontSize="small" />
-        </IconButton>
-      </Box>
+      <ToggleButton
+        className="p-1"
+        disabled={value >= MAX_SKILL_LEVEL}
+        value={selected}
+        selected={selected}
+        onClick={() => {
+          setSelected(!selected);
+        }}
+        aria-label={`select ${skill}`}
+      >
+        <Typography color={color}>{value}</Typography>
+      </ToggleButton>
     </Box>
   );
 }

@@ -1,4 +1,7 @@
-import attributes from "@/data/attributes";
+import attributes, {
+  skillsByAttribute,
+  getRemainingSkillUpsForMaxAttribute,
+} from "@/data/attributes";
 import type { Attribute } from "@/data/attributes";
 import { Level } from "@/types/level";
 import {
@@ -10,6 +13,7 @@ import {
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
+import { MAX_SKILL_LEVEL, Skill, SkillsSet } from "@/data/skills";
 
 export default function DropDown({
   level,
@@ -22,6 +26,18 @@ export default function DropDown({
   onRemoveHandler?: () => void;
   onModifyHandler?: () => void;
 }) {
+  const getExtraSkillUpsForAttribute = (
+    attribute: Attribute,
+    skills: SkillsSet,
+  ): number => {
+    return (
+      skillsByAttribute[attribute].reduce((sum, skill: Skill) => {
+        const remaining = MAX_SKILL_LEVEL - skills[skill];
+        return sum + remaining;
+      }, 0) - getRemainingSkillUpsForMaxAttribute(level.attributes[attribute])
+    );
+  };
+
   return (
     <TableRow key={level.level}>
       <TableCell align="center" className="px-0">
@@ -29,14 +45,22 @@ export default function DropDown({
       </TableCell>
       {attributes.map((attribute: Attribute) => (
         <TableCell key={attribute} align="center" className="px-0">
-          <Typography
-            {...(previousLevel &&
-            level.attributes[attribute] > previousLevel.attributes[attribute]!
-              ? { color: "secondary" }
-              : {})}
+          <Tooltip
+            {...(attribute !== "LCK"
+              ? {
+                  title: `${getRemainingSkillUpsForMaxAttribute(level.attributes[attribute])} skill ups to go (${getExtraSkillUpsForAttribute(attribute, level.skills)} extra)`,
+                }
+              : { title: "" })}
           >
-            {level.attributes[attribute]}
-          </Typography>
+            <Typography
+              {...(previousLevel &&
+              level.attributes[attribute] > previousLevel.attributes[attribute]!
+                ? { color: "secondary" }
+                : {})}
+            >
+              {level.attributes[attribute]}
+            </Typography>
+          </Tooltip>
         </TableCell>
       ))}
       <TableCell className="hidden 2xl:table-cell px-0" align="center">

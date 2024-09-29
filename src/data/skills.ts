@@ -45,6 +45,7 @@ export type SkillShorthand =
   | "SPE";
 
 export type SkillsModifier = Partial<SkillsSet>;
+export const MAX_SKILL_LEVEL = 100;
 
 export type SkillsSet = {
   [key in Skill]: number;

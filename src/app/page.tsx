@@ -237,10 +237,10 @@ export default function Home() {
                   <TableHead className="sticky">
                     <TableRow>
                       <TableCell align="center" component="th" className="px-0">
-                        <Typography className="hidden lg:show">
+                        <Typography className="hidden lg:block">
                           Level
                         </Typography>
-                        <Typography className="show lg:hidden">LVL</Typography>
+                        <Typography className="block lg:hidden">LVL</Typography>
                       </TableCell>
                       {attributes.map((attribute) => (
                         <TableCell

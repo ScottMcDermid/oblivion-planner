@@ -16,6 +16,10 @@ export type AttributesSet = {
   [key in Attribute]: number;
 };
 
+export const MAX_ATTRIBUTE_LEVEL = 100;
+export const MAX_ATTRIBUTE_BONUS = 5;
+export const SKILL_UPS_FOR_MAX_ATTRIBUTE_BONUS = 10;
+
 export const baseAttributes: AttributesSet = {
   STR: 40,
   INT: 40,
@@ -49,12 +53,28 @@ export const skillsByAttribute: { [key in Attribute]: Skill[] } = {
   LCK: [],
 };
 
-export function getAttributeBonusFromSkillUps(numSkillUps: number): number {
+export const getAttributeFromSkill = (skill: Skill): Attribute => {
+  const attribute = attributes.filter((attribute) =>
+    skillsByAttribute[attribute].includes(skill),
+  )[0];
+  return attribute;
+};
+
+export const getRemainingSkillUpsForMaxAttribute = (level: number): number => {
+  const remaining = MAX_ATTRIBUTE_LEVEL - level;
+  return (remaining / MAX_ATTRIBUTE_BONUS) * SKILL_UPS_FOR_MAX_ATTRIBUTE_BONUS;
+};
+
+export function getAttributeBonusFromSkillUps(
+  attributeLevel: number,
+  numSkillUps: number,
+): number {
+  const remainingLevels = MAX_ATTRIBUTE_LEVEL - attributeLevel;
   if (numSkillUps <= 0) return 1;
   if (numSkillUps <= 4) return 2;
   if (numSkillUps <= 7) return 3;
   if (numSkillUps <= 9) return 4;
-  return 5;
+  return Math.min(remainingLevels, 5);
 }
 
 const attributes: Attribute[] = [
