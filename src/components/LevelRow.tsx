@@ -48,13 +48,13 @@ export default function DropDown({
           <Tooltip
             {...(attribute !== "LCK"
               ? {
-                  title: `${getRemainingSkillUpsForMaxAttribute(level.attributes[attribute])} skill ups to go (${getExtraSkillUpsForAttribute(attribute, level.skills)} extra)`,
-                }
+                title: `${getRemainingSkillUpsForMaxAttribute(level.attributes[attribute])} skill ups to go (${getExtraSkillUpsForAttribute(attribute, level.skills)} extra)`,
+              }
               : { title: "" })}
           >
             <Typography
               {...(previousLevel &&
-              level.attributes[attribute] > previousLevel.attributes[attribute]!
+                level.attributes[attribute] > previousLevel.attributes[attribute]!
                 ? { color: "secondary" }
                 : {})}
             >

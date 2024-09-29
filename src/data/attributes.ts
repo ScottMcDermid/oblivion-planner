@@ -31,7 +31,7 @@ export const baseAttributes: AttributesSet = {
   LCK: 50,
 };
 
-export const attributesSetTemplate: AttributesSet = {
+export const getAttributesSetTemplate: () => AttributesSet = () => ({
   STR: 0,
   INT: 0,
   WIL: 0,
@@ -40,7 +40,7 @@ export const attributesSetTemplate: AttributesSet = {
   END: 0,
   PER: 0,
   LCK: 0,
-};
+});
 
 export const skillsByAttribute: { [key in Attribute]: Skill[] } = {
   STR: ["Blade", "Blunt", "Hand-to-Hand"],

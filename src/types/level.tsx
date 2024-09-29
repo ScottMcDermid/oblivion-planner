@@ -1,5 +1,5 @@
-import { AttributesSet, attributesSetTemplate } from "@/data/attributes";
-import { SkillsSet, skillsSetTemplate } from "@/data/skills";
+import { AttributesSet, getAttributesSetTemplate } from "@/data/attributes";
+import { SkillsSet, getSkillsSetTemplate } from "@/data/skills";
 
 export type Level = {
   attributes: AttributesSet;
@@ -18,16 +18,16 @@ export type LevelUp = {
 };
 
 export const levelTemplate: Level = {
-  attributes: attributesSetTemplate,
+  attributes: getAttributesSetTemplate(),
   encumbrance: 0,
   health: 0,
   level: 0,
   magicka: 0,
-  skills: skillsSetTemplate,
+  skills: getSkillsSetTemplate(),
   stamina: 0,
 };
 
 export const levelUpTemplate: LevelUp = {
-  attributes: attributesSetTemplate,
-  skills: skillsSetTemplate,
+  attributes: getAttributesSetTemplate(),
+  skills: getSkillsSetTemplate(),
 };

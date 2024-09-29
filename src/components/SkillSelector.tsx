@@ -23,7 +23,7 @@ export default function SkillSelector({
   useEffect(() => {
     if (selected) selectHandler();
     else unselectHandler();
-  }, [selected]);
+  }, [selected, selectHandler, unselectHandler]);
 
   return (
     <Box className="flex flex-col m-1">
@@ -31,11 +31,11 @@ export default function SkillSelector({
         {...(major ? { color: "default" } : { color: "grey" })}
         className="text-center text-xs whitespace-nowrap"
       >
-        <Typography className="hidden lg:block">
+        <Typography className="hidden lg:block" component={"span"}>
           {skill}
           {major ? "*" : ""}
         </Typography>
-        <Typography className="block lg:hidden">
+        <Typography className="block lg:hidden" component={"span"}>
           {shorthandBySkill[skill]}
           {major ? "*" : ""}
         </Typography>

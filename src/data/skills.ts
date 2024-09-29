@@ -75,7 +75,7 @@ export const baseSkills: SkillsSet = {
   Speechcraft: 5,
 };
 
-export const skillsSetTemplate: SkillsSet = {
+export const getSkillsSetTemplate: () => SkillsSet = () => ({
   Acrobatics: 0,
   Alchemy: 0,
   Alteration: 0,
@@ -97,7 +97,7 @@ export const skillsSetTemplate: SkillsSet = {
   Security: 0,
   Sneak: 0,
   Speechcraft: 0,
-};
+});
 
 const skills: Skill[] = [
   "Acrobatics",

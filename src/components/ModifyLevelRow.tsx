@@ -1,5 +1,5 @@
 import attributes, {
-  attributesSetTemplate,
+  getAttributesSetTemplate,
   getAttributeBonusFromSkillUps,
   getAttributeFromSkill,
   MAX_ATTRIBUTE_LEVEL,
@@ -22,7 +22,7 @@ import skills, {
   MAX_SKILL_LEVEL,
   Skill,
   SkillsSet,
-  skillsSetTemplate,
+  getSkillsSetTemplate,
 } from "@/data/skills";
 import { useEffect, useState } from "react";
 import LevelRow from "./LevelRow";
@@ -45,16 +45,17 @@ export default function ModifyLevelRow({
 
   const [nextLevel, setNextLevel] = useState<Level>(levelTemplate);
   const [attributeBonuses, setAttributeBonuses] = useState<AttributesSet>(
-    attributesSetTemplate,
+    getAttributesSetTemplate(),
   );
   const [skillUps, setSkillUps] = useState<SkillsSet>(
-    levelUp ? levelUp.skills : skillsSetTemplate,
+    levelUp ? levelUp.skills : getSkillsSetTemplate(),
   );
   const [raisedAttributes, setRaisedAttributes] = useState<Attribute[]>(
     levelUp
       ? attributes.filter((attribute) => levelUp.attributes[attribute] > 0)
       : [],
   );
+  const [raisedSkills, setRaisedSkills] = useState<Skill[]>([]);
   const [numMajorSkillUps, setNumMajorSkillUps] = useState<number>(
     skills.reduce((sum, skill) => {
       if (majorSkills.includes(skill)) {
@@ -66,33 +67,58 @@ export default function ModifyLevelRow({
   );
 
   const handleSkillSelected = (skill: Skill) => {
-    const attribute = getAttributeFromSkill(skill);
-    const selectedSkills = [
-      skill,
-      ...skillsByAttribute[attribute].filter(
-        (attributeSkill) =>
-          skillUps[attributeSkill] > 0 && attributeSkill !== skill,
-      ),
-    ];
-
-    const remainingSkillUps = MAX_SKILL_LEVEL - level.skills[skill];
-    const skillUpIncrement =
-      selectedSkills.length === 1
-        ? Math.min(DEFAULT_SKILL_INCREMENT, remainingSkillUps)
-        : Math.floor(DEFAULT_SKILL_INCREMENT / selectedSkills.length);
-
-    setSkillUps({
-      ...skillUps,
-      ...selectedSkills.reduce(
-        (skills, skill) => ({ ...skills, [skill]: skillUpIncrement }),
-        {},
-      ),
-    });
+    const index = raisedSkills.indexOf(skill);
+    if (index === -1) {
+      setRaisedSkills((newRaisedSkills) => [...newRaisedSkills, skill]);
+    }
 
     // check attribute associated with skill
+    const attribute = getAttributeFromSkill(skill);
     if (!raisedAttributes.includes(attribute))
       setRaisedAttributes([...raisedAttributes, attribute]);
   };
+
+  const handleSkillUnselected = (skill: Skill) => {
+    const index = raisedSkills.indexOf(skill);
+    if (index !== -1) {
+      setRaisedSkills((raisedSkills) => {
+        raisedSkills.splice(index, 1);
+        return [...raisedSkills];
+      });
+    }
+  };
+
+  useEffect(() => {
+    const raisedSkillsByAttribute: { [key in Attribute]?: Skill[] } =
+      raisedSkills.reduce(
+        (skills: { [key in Attribute]?: Skill[] }, skill: Skill) => {
+          const attribute = getAttributeFromSkill(skill);
+          skills[attribute] = skills[attribute]
+            ? [...skills[attribute], skill]
+            : [skill];
+          return skills;
+        },
+        {},
+      );
+
+    const newSkillUps: SkillsSet = getSkillsSetTemplate();
+    Object.keys(raisedSkillsByAttribute).map((attribute) => {
+      const skills: Skill[] =
+        raisedSkillsByAttribute[attribute as Attribute] ?? [];
+
+      let remainingSkillUps = DEFAULT_SKILL_INCREMENT;
+      skills.map((skill, i) => {
+        const pointsLeftForMaxSkill = MAX_SKILL_LEVEL - level.skills[skill];
+        const increment =
+          i === skills.length - 1
+            ? remainingSkillUps
+            : Math.floor(DEFAULT_SKILL_INCREMENT / skills.length);
+        newSkillUps[skill] = Math.min(increment, pointsLeftForMaxSkill);
+        remainingSkillUps -= newSkillUps[skill];
+      });
+    });
+    setSkillUps(newSkillUps);
+  }, [raisedSkills, level.skills]);
 
   const handleAttributeToggle = (value: Attribute) => {
     const currentIndex = raisedAttributes.indexOf(value);
@@ -123,7 +149,7 @@ export default function ModifyLevelRow({
         );
         return { ...attributeBonuses, [attribute]: attributeBonus };
       },
-      attributesSetTemplate,
+      getAttributesSetTemplate(),
     );
     setAttributeBonuses(newAttributeBonuses);
   }, [skillUps, level.attributes]);
@@ -138,7 +164,7 @@ export default function ModifyLevelRow({
         return sum;
       }, 0),
     );
-  }, [skillUps, majorSkills]);
+  }, [skillUps, raisedSkills, majorSkills]);
 
   useEffect(() => {
     setNextLevel(
@@ -149,7 +175,7 @@ export default function ModifyLevelRow({
             ...attributes,
             [attribute]: attributeBonuses[attribute],
           }),
-          attributesSetTemplate,
+          getAttributesSetTemplate(),
         ),
       }),
     );
@@ -172,15 +198,10 @@ export default function ModifyLevelRow({
                         ? "error"
                         : ""
                   }
-                  value={level.skills[skill] + skillUps[skill]}
+                  value={nextLevel.skills[skill]}
                   major={majorSkills.includes(skill)}
                   selectHandler={() => handleSkillSelected(skill)}
-                  unselectHandler={() =>
-                    setSkillUps({
-                      ...skillUps,
-                      [skill]: 0,
-                    })
-                  }
+                  unselectHandler={() => handleSkillUnselected(skill)}
                 />
               </Box>
             ))}
@@ -248,19 +269,18 @@ export default function ModifyLevelRow({
                     ...attributes,
                     [attribute]: attributeBonuses[attribute],
                   }),
-                  attributesSetTemplate,
+                  getAttributesSetTemplate(),
                 ),
               });
-              setSkillUps(skillsSetTemplate);
+              setSkillUps(getSkillsSetTemplate());
               setRaisedAttributes([]);
             }}
             className="w-full"
             {...(numMajorSkillUps < NUM_MAJOR_SKILL_UPS_PER_LEVEL ||
-            raisedAttributes.length !== NUM_RAISED_ATTRIBUTES
+              raisedAttributes.length !== NUM_RAISED_ATTRIBUTES
               ? { disabled: true }
               : {})}
           >
-            <Typography className="pt-1">Level Up</Typography>
             <ArrowUpwardIcon />
           </Button>
         </TableCell>

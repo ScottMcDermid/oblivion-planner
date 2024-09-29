@@ -1,7 +1,7 @@
 import attributes, {
   Attribute,
   AttributesSet,
-  attributesSetTemplate,
+  getAttributesSetTemplate,
   baseAttributes,
 } from "@/data/attributes";
 import { Birthsign, birthsignModifiers } from "@/data/birthsigns";
@@ -9,7 +9,7 @@ import { Gender } from "@/data/genders";
 import { Race, raceModifiers } from "@/data/races";
 import skills, {
   baseSkills,
-  skillsSetTemplate,
+  getSkillsSetTemplate,
   Skill,
   SkillsSet,
 } from "@/data/skills";
@@ -36,7 +36,7 @@ export const applyLevelUpToLevel = (level: Level, levelUp: LevelUp): Level => {
       ...newAttributes,
       [attribute]: level.attributes[attribute] + levelUp.attributes[attribute],
     }),
-    attributesSetTemplate,
+    getAttributesSetTemplate(),
   );
 
   const health =
@@ -49,7 +49,7 @@ export const applyLevelUpToLevel = (level: Level, levelUp: LevelUp): Level => {
       ...newSkills,
       [skill]: level.skills[skill] + levelUp.skills[skill],
     };
-  }, skillsSetTemplate);
+  }, getSkillsSetTemplate());
 
   return {
     level: level.level + 1,
@@ -86,7 +86,7 @@ export const getBaseLevel = (
         [attribute]: base + modifier + birthsignModifier + favored,
       };
     },
-    attributesSetTemplate,
+    getAttributesSetTemplate(),
   );
   const newSkills: SkillsSet = skills.reduce((newSkills, skill) => {
     const base = baseSkills[skill];
@@ -101,7 +101,7 @@ export const getBaseLevel = (
       ...newSkills,
       [skill]: base + modifier + specializationBonus + majorSkillBonus,
     };
-  }, skillsSetTemplate);
+  }, getSkillsSetTemplate());
 
   const { AGL = 0, END = 0, INT = 0, STR = 0, WIL = 0 } = newAttributes;
   const health = END * BASE_HEALTH_MULTIPLIER;
