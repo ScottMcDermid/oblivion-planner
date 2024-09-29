@@ -118,9 +118,9 @@ export default function ModifyLevelRow({
   return (
     <>
       <TableRow>
-        <TableCell></TableCell>
+        <TableCell className="px-0" />
         {attributes.map((attribute) => (
-          <TableCell key={attribute}>
+          <TableCell key={attribute} className="px-0">
             {skillsByAttribute[attribute].map((skill) => (
               <Box key={skill} className="pb-2">
                 <SkillSelector
@@ -152,20 +152,28 @@ export default function ModifyLevelRow({
           </TableCell>
         ))}
 
-        <TableCell colSpan={4} className="hidden 2xl:table-cell" />
+        <TableCell colSpan={4} className="hidden 2xl:table-cell px-0" />
         <TableCell />
       </TableRow>
       <TableRow>
-        <TableCell />
+        <TableCell className="px-0" />
         {attributes.map((attribute) => (
-          <TableCell align="center" key={attribute}>
+          <TableCell align="center" key={attribute} className="px-0">
             <Typography
               {...(raisedAttributes.includes(attribute)
                 ? { color: "secondary" }
                 : {})}
-              className="h-full selfCenter whitespace-nowrap"
+              className="h-full selfCenter hidden lg:show"
             >
               {`${level.attributes[attribute]} + ${attributeBonuses[attribute]}`}
+            </Typography>
+            <Typography
+              {...(raisedAttributes.includes(attribute)
+                ? { color: "secondary" }
+                : {})}
+              className="h-full selfCenter show lg:hidden"
+            >
+              {`+${attributeBonuses[attribute]}`}
             </Typography>
             <Checkbox
               key={attribute}

@@ -24,9 +24,11 @@ export default function DropDown({
 }) {
   return (
     <TableRow key={level.level}>
-      <TableCell align="center">{level.level}</TableCell>
+      <TableCell align="center" className="px-0">
+        {level.level}
+      </TableCell>
       {attributes.map((attribute: Attribute) => (
-        <TableCell key={attribute} align="center">
+        <TableCell key={attribute} align="center" className="px-0">
           <Typography
             {...(previousLevel &&
             level.attributes[attribute] > previousLevel.attributes[attribute]!
@@ -37,7 +39,7 @@ export default function DropDown({
           </Typography>
         </TableCell>
       ))}
-      <TableCell className="hidden 2xl:table-cell" align="center">
+      <TableCell className="hidden 2xl:table-cell px-0" align="center">
         <Typography
           {...(previousLevel && level.health > previousLevel.health
             ? { color: "secondary" }
@@ -46,7 +48,7 @@ export default function DropDown({
           {level.health}
         </Typography>
       </TableCell>
-      <TableCell className="hidden 2xl:table-cell" align="center">
+      <TableCell className="hidden 2xl:table-cell px-0" align="center">
         <Typography
           {...(previousLevel && level.magicka > previousLevel.magicka
             ? { color: "secondary" }
@@ -55,7 +57,7 @@ export default function DropDown({
           {level.magicka}
         </Typography>
       </TableCell>
-      <TableCell className="hidden 2xl:table-cell" align="center">
+      <TableCell className="hidden 2xl:table-cell px-0" align="center">
         <Typography
           {...(previousLevel && level.stamina > previousLevel.stamina
             ? { color: "secondary" }
@@ -64,7 +66,7 @@ export default function DropDown({
           {level.stamina}
         </Typography>
       </TableCell>
-      <TableCell className="hidden 2xl:table-cell" align="center">
+      <TableCell className="hidden 2xl:table-cell px-0" align="center">
         <Typography
           {...(previousLevel && level.encumbrance > previousLevel.encumbrance
             ? { color: "secondary" }
@@ -73,7 +75,7 @@ export default function DropDown({
           {level.encumbrance}
         </Typography>
       </TableCell>
-      <TableCell align="center" className="min-w-20">
+      <TableCell align="center">
         {onModifyHandler ? (
           <Tooltip title="Modify">
             <IconButton

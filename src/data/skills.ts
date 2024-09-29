@@ -21,6 +21,29 @@ export type Skill =
   | "Sneak"
   | "Speechcraft";
 
+export type SkillShorthand =
+  | "ACR"
+  | "ALC"
+  | "ALT"
+  | "ARM"
+  | "ATH"
+  | "BLD"
+  | "BLK"
+  | "BLT"
+  | "CON"
+  | "DES"
+  | "H2H"
+  | "HAR"
+  | "ILL"
+  | "LAR"
+  | "MRK"
+  | "MRC"
+  | "MYS"
+  | "RST"
+  | "SEC"
+  | "SNK"
+  | "SPE";
+
 export type SkillsModifier = Partial<SkillsSet>;
 
 export type SkillsSet = {
@@ -98,5 +121,29 @@ const skills: Skill[] = [
   "Sneak",
   "Speechcraft",
 ];
+
+export const shorthandBySkill: { [key in Skill]: SkillShorthand } = {
+  Acrobatics: "ACR",
+  Alchemy: "ALC",
+  Alteration: "ALT",
+  Armorer: "ARM",
+  Athletics: "ATH",
+  Blade: "BLD",
+  Block: "BLK",
+  Blunt: "BLT",
+  Conjuration: "CON",
+  Destruction: "DES",
+  "Hand-to-Hand": "H2H",
+  "Heavy Armor": "HAR",
+  Illusion: "ILL",
+  "Light Armor": "LAR",
+  Marksmanship: "MRK",
+  Mercantile: "MRC",
+  Mysticism: "MYS",
+  Restoration: "RST",
+  Security: "SEC",
+  Sneak: "SNK",
+  Speechcraft: "SPE",
+};
 
 export default skills;

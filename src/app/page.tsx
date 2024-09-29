@@ -68,7 +68,7 @@ export default function Home() {
   const [levels, setLevels] = useState<Level[]>([]);
   const [levelUps, setLevelUps] = useState<LevelUp[]>([]);
   const [isCharacterCreationOpen, setIsCharacterCreationOpen] =
-    useState<boolean>(true);
+    useState<boolean>(false);
   const [modifyingLevel, setModifyingLevel] = useState<number | null>(null);
   const [removingLevel, setRemovingLevel] = useState<number | null>(null);
 
@@ -214,33 +214,38 @@ export default function Home() {
           </Box>
         </Drawer>
 
-        <Box className="p-2 font-[family-name:var(--font-geist-sans)] flex flex-col  align-center content-center">
-          <Tooltip title="Character Creation">
-            <Fab
-              size="small"
-              className="m-4 min-w-10"
-              color="default"
-              aria-label="Character Creation"
-              onClick={() => {
-                setIsCharacterCreationOpen(true);
-              }}
-            >
-              <PersonIcon />
-            </Fab>
-          </Tooltip>
-          <Box className="mx-auto pt-5">
+        <Box className="font-[family-name:var(--font-geist-sans)] flex flex-col align-center content-center">
+          <Box className="hidden lg:block">
+            <Tooltip title="Character Creation">
+              <Fab
+                size="small"
+                className="m-4 min-w-10"
+                color="default"
+                aria-label="Character Creation"
+                onClick={() => {
+                  setIsCharacterCreationOpen(true);
+                }}
+              >
+                <PersonIcon />
+              </Fab>
+            </Tooltip>
+          </Box>
+          <Box className="mx-auto overflow-hidden max-h-screen">
             {levels.length > 0 ? (
-              <TableContainer>
-                <Table aria-label="simple table">
-                  <TableHead>
+              <TableContainer className="max-h-screen">
+                <Table stickyHeader size="small" aria-label="Levels">
+                  <TableHead className="sticky">
                     <TableRow>
-                      <TableCell align="center" component="th">
-                        Level
+                      <TableCell align="center" component="th" className="px-0">
+                        <Typography className="hidden lg:show">
+                          Level
+                        </Typography>
+                        <Typography className="show lg:hidden">LVL</Typography>
                       </TableCell>
                       {attributes.map((attribute) => (
                         <TableCell
                           component="th"
-                          className="min-w-32"
+                          className="px-0 w-3/12"
                           align="center"
                           key={attribute}
                         >
@@ -248,34 +253,34 @@ export default function Home() {
                         </TableCell>
                       ))}
                       <TableCell
-                        className="hidden 2xl:table-cell"
+                        className="hidden 2xl:table-cell px0"
                         align="center"
                         component="th"
                       >
                         Health
                       </TableCell>
                       <TableCell
-                        className="hidden 2xl:table-cell"
+                        className="hidden 2xl:table-cell px0"
                         align="center"
                         component="th"
                       >
                         Magicka
                       </TableCell>
                       <TableCell
-                        className="hidden 2xl:table-cell"
+                        className="hidden 2xl:table-cell px0"
                         align="center"
                         component="th"
                       >
                         Stamina
                       </TableCell>
                       <TableCell
-                        className="hidden 2xl:table-cell"
+                        className="hidden 2xl:table-cell px0"
                         align="center"
                         component="th"
                       >
                         Encumbrance
                       </TableCell>
-                      <TableCell component="th"></TableCell>
+                      <TableCell component="th" className="px0" />
                     </TableRow>
                   </TableHead>
                   <TableBody>

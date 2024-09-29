@@ -1,7 +1,7 @@
 import Box from "@mui/material/Box";
 import AddIcon from "@mui/icons-material/Add";
 import RemoveIcon from "@mui/icons-material/Remove";
-import { Skill } from "@/data/skills";
+import { shorthandBySkill, Skill } from "@/data/skills";
 import { IconButton, Typography } from "@mui/material";
 
 export default function SkillSelector({
@@ -20,15 +20,21 @@ export default function SkillSelector({
   decrementHandler: () => void;
 }) {
   return (
-    <Box className="flex flex-col my-3">
+    <Box className="flex flex-col my-3 max-w-6">
       <Typography
         {...(major ? { color: "default" } : { color: "grey" })}
         className="text-center text-xs whitespace-nowrap"
       >
-        {skill}
-        {major ? "*" : ""}
+        <Typography className="hidden lg:show">
+          {skill}
+          {major ? "*" : ""}
+        </Typography>
+        <Typography className="show lg:hidden">
+          {shorthandBySkill[skill]}
+          {major ? "*" : ""}
+        </Typography>
       </Typography>
-      <Box className="flex flex-row">
+      <Box className="flex lg:flex-row flex-col flex-col-reverse">
         <IconButton
           aria-label={`decrement ${skill}`}
           size="small"
@@ -38,7 +44,7 @@ export default function SkillSelector({
         </IconButton>
         <Typography
           color={color}
-          className="text-sm flex-grow content-center text-center"
+          className="text-sm lg:flex-grow content-center text-center"
         >
           {value}
         </Typography>
