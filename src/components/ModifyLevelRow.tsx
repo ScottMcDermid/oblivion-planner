@@ -79,11 +79,24 @@ export default function ModifyLevelRow({
   };
 
   const handleSkillUnselected = (skill: Skill) => {
-    const index = raisedSkills.indexOf(skill);
-    if (index !== -1) {
+    const skillIndex = raisedSkills.indexOf(skill);
+    if (skillIndex !== -1) {
       setRaisedSkills((raisedSkills) => {
-        raisedSkills.splice(index, 1);
+        raisedSkills.splice(skillIndex, 1);
         return [...raisedSkills];
+      });
+    }
+
+    // uncheck attribute if no skills selected
+    const attribute = getAttributeFromSkill(skill);
+    const skillsInAttribute = raisedSkills.filter(
+      (raisedSkill) => getAttributeFromSkill(raisedSkill) === attribute,
+    ).length;
+    const attributeIndex = raisedAttributes.indexOf(attribute);
+    if (attributeIndex !== -1 && skillsInAttribute === 0) {
+      setRaisedAttributes((raisedAttributes) => {
+        raisedAttributes.splice(attributeIndex, 1);
+        return [...raisedAttributes];
       });
     }
   };
@@ -277,7 +290,7 @@ export default function ModifyLevelRow({
             }}
             className="w-full"
             {...(numMajorSkillUps < NUM_MAJOR_SKILL_UPS_PER_LEVEL ||
-              raisedAttributes.length !== NUM_RAISED_ATTRIBUTES
+            raisedAttributes.length !== NUM_RAISED_ATTRIBUTES
               ? { disabled: true }
               : {})}
           >

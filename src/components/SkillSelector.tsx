@@ -23,7 +23,7 @@ export default function SkillSelector({
   useEffect(() => {
     if (selected) selectHandler();
     else unselectHandler();
-  }, [selected, selectHandler, unselectHandler]);
+  }, [selected]);
 
   return (
     <Box className="flex flex-col m-1">
