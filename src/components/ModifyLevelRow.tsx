@@ -1,13 +1,4 @@
 import { useEffect, useMemo, useState } from "react";
-import attributes, {
-  getAttributesSetTemplate,
-  getAttributeBonusFromSkillUps,
-  getAttributeFromSkill,
-  MAX_ATTRIBUTE_LEVEL,
-  skillsByAttribute,
-} from "@/utils/attributeUtils";
-import type { Attribute, AttributesSet } from "@/utils/attributeUtils";
-import { Level, levelTemplate, LevelUp } from "@/types/level";
 import ArrowUpwardIcon from "@mui/icons-material/ArrowUpward";
 import {
   Box,
@@ -18,7 +9,19 @@ import {
   TableRow,
   Typography,
 } from "@mui/material";
-import SkillSelector from "./SkillSelector";
+
+import type { Level, LevelUp } from "@/utils/levelUtils";
+import { levelTemplate } from "@/utils/levelUtils";
+
+import SkillSelector from "@/components/SkillSelector";
+
+import attributes, {
+  getAttributesSetTemplate,
+  getAttributeBonusFromSkillUps,
+  getAttributeFromSkill,
+  MAX_ATTRIBUTE_LEVEL,
+  skillsByAttribute,
+} from "@/utils/attributeUtils";
 import skills, {
   MAX_SKILL_LEVEL,
   Skill,
@@ -26,7 +29,9 @@ import skills, {
   getSkillsSetTemplate,
 } from "@/utils/skillUtils";
 import LevelRow from "./LevelRow";
-import { applyLevelUpToLevel } from "@/services/Level";
+import { applyLevelUpToLevel } from "@/utils/levelUtils";
+import type { Attribute, AttributesSet } from "@/utils/attributeUtils";
+
 import { useCharacterStore } from "@/data/characterStore";
 
 export default function ModifyLevelRow({
@@ -231,7 +236,7 @@ export default function ModifyLevelRow({
               {...(raisedAttributes.includes(attribute)
                 ? { color: "secondary" }
                 : {})}
-              className="h-full selfCenter block lg:hidden"
+              className="h-full selfCenter block"
             >
               {`+${attributeBonuses[attribute]}`}
             </Typography>

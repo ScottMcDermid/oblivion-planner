@@ -4,6 +4,7 @@ import { ThemeProvider } from "@mui/material/styles";
 import Box from "@mui/material/Box";
 import CssBaseline from "@mui/material/CssBaseline";
 import Divider from "@mui/material/Divider";
+import PersonIcon from "@mui/icons-material/Person";
 import Skeleton from "@mui/material/Skeleton";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
@@ -11,19 +12,6 @@ import TableCell from "@mui/material/TableCell";
 import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
-
-import DropDown from "@/components/DropDown";
-import RadioButtons from "@/components/RadioButtons";
-import SelectFromList from "@/components/SelectFromList";
-import LevelRow from "@/components/LevelRow";
-
-import theme from "@/app/theme";
-import attributes, {
-  Attribute,
-  NUM_FAVORED_ATTRIBUTES,
-} from "@/utils/attributeUtils";
-import specializations from "@/utils/specializationUtils";
-import { Level, LevelUp } from "@/types/level";
 import {
   Drawer,
   Fab,
@@ -31,23 +19,35 @@ import {
   Tooltip,
   Typography,
 } from "@mui/material";
-import PersonIcon from "@mui/icons-material/Person";
+
+import theme from "@/app/theme";
+
+import type { Level, LevelUp } from "@/utils/levelUtils";
+import type { Race } from "@/utils/raceUtils";
+import type { Gender } from "@/utils/genderUtils";
+import type { Birthsign } from "@/utils/birthsignUtils";
+import type { Specialization } from "@/utils/specializationUtils";
+
+import DropDown from "@/components/DropDown";
+import RadioButtons from "@/components/RadioButtons";
+import SelectFromList from "@/components/SelectFromList";
+import LevelRow from "@/components/LevelRow";
 import ModifyLevelRow from "@/components/ModifyLevelRow";
 import ConfirmDialog from "@/components/ConfirmDialog";
 
 import { useCharacterStore } from "@/data/characterStore";
 
-import type { Race } from "@/utils/raceUtils";
-import type { Gender } from "@/utils/genderUtils";
-import type { Birthsign } from "@/utils/birthsignUtils";
-import type { Specialization } from "@/utils/specializationUtils";
+import attributes, {
+  Attribute,
+  NUM_FAVORED_ATTRIBUTES,
+} from "@/utils/attributeUtils";
+import specializations from "@/utils/specializationUtils";
 import races from "@/utils/raceUtils";
 import genders from "@/utils/genderUtils";
 import birthsigns from "@/utils/birthsignUtils";
 import skills, { NUM_MAJOR_SKILLS } from "@/utils/skillUtils";
 import { Skill } from "@/utils/skillUtils";
-
-import { applyLevelUpToLevel, getBaseLevel } from "@/services/Level";
+import { applyLevelUpToLevel, getBaseLevel } from "@/utils/levelUtils";
 
 export default function Home() {
   const {

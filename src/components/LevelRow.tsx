@@ -1,9 +1,3 @@
-import attributes, {
-  skillsByAttribute,
-  getRemainingSkillUpsForMaxAttribute,
-} from "@/utils/attributeUtils";
-import type { Attribute } from "@/utils/attributeUtils";
-import { Level } from "@/types/level";
 import {
   IconButton,
   TableCell,
@@ -13,6 +7,14 @@ import {
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
+
+import type { Level } from "@/utils/levelUtils";
+
+import attributes, {
+  skillsByAttribute,
+  getRemainingSkillUpsForMaxAttribute,
+} from "@/utils/attributeUtils";
+import type { Attribute } from "@/utils/attributeUtils";
 import { MAX_SKILL_LEVEL, Skill, SkillsSet } from "@/utils/skillUtils";
 
 export default function DropDown({

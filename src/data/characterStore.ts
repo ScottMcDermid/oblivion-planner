@@ -6,7 +6,7 @@ import type { Birthsign } from "@/utils/birthsignUtils";
 import type { Specialization } from "@/utils/specializationUtils";
 import type { Attribute } from "@/utils/attributeUtils";
 import type { Skill } from "@/utils/skillUtils";
-import { levelTemplate, type Level, type LevelUp } from "@/types/level";
+import { levelTemplate, type Level, type LevelUp } from "@/utils/levelUtils";
 
 import races from "@/utils/raceUtils";
 import genders from "@/utils/genderUtils";
