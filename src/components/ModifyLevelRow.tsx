@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import attributes, {
   getAttributesSetTemplate,
   getAttributeBonusFromSkillUps,
@@ -56,14 +56,17 @@ export default function ModifyLevelRow({
       : [],
   );
   const [raisedSkills, setRaisedSkills] = useState<Skill[]>([]);
-  const [numMajorSkillUps, setNumMajorSkillUps] = useState<number>(
-    skills.reduce((sum, skill) => {
-      if (majorSkills.includes(skill)) {
-        const newSkill = skillUps[skill];
-        return sum + newSkill;
-      }
-      return sum;
-    }, 0),
+
+  const numMajorSkillUps = useMemo(
+    () =>
+      skills.reduce((sum, skill) => {
+        if (majorSkills.includes(skill)) {
+          const newSkill = skillUps[skill];
+          return sum + newSkill;
+        }
+        return sum;
+      }, 0),
+    [skillUps, raisedSkills, majorSkills],
   );
 
   const handleSkillSelected = (skill: Skill) => {
@@ -166,18 +169,6 @@ export default function ModifyLevelRow({
     );
     setAttributeBonuses(newAttributeBonuses);
   }, [skillUps, level.attributes]);
-
-  useEffect(() => {
-    setNumMajorSkillUps(
-      skills.reduce((sum, skill) => {
-        if (majorSkills.includes(skill)) {
-          const newSkill = skillUps[skill];
-          return sum + newSkill;
-        }
-        return sum;
-      }, 0),
-    );
-  }, [skillUps, raisedSkills, majorSkills]);
 
   useEffect(() => {
     setNextLevel(

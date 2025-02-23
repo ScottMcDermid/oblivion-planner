@@ -23,7 +23,7 @@ import attributes, {
   NUM_FAVORED_ATTRIBUTES,
 } from "@/utils/attributeUtils";
 import specializations from "@/utils/specializationUtils";
-import { Level, levelTemplate, LevelUp } from "@/types/level";
+import { Level, LevelUp } from "@/types/level";
 import {
   Drawer,
   Fab,
@@ -57,34 +57,27 @@ export default function Home() {
     specialization,
     favoredAttributes,
     majorSkills,
-    actions: { setCharacterData },
+    currentLevel,
+    levels,
+    levelUps,
+    actions: { setCharacterData, setLevelUp, removeLevel, setLevels },
   } = useCharacterStore();
 
-  const [currentLevel, setCurrentLevel] = useState<Level>(levelTemplate);
-  const [levels, setLevels] = useState<Level[]>([]);
-  const [levelUps, setLevelUps] = useState<LevelUp[]>([]);
   const [isCharacterCreationOpen, setIsCharacterCreationOpen] =
     useState<boolean>(false);
   const [modifyingLevel, setModifyingLevel] = useState<number | null>(null);
   const [removingLevel, setRemovingLevel] = useState<number | null>(null);
 
   const commitLevelUp = (levelUp: LevelUp, level?: number): void => {
-    const levelIndex = level === undefined ? levelUps.length : level - 2;
-    const newLevelUps = levelUps.slice(0);
-    newLevelUps[levelIndex] = levelUp;
-    setLevelUps(newLevelUps);
+    setLevelUp(levelUp, level);
     setModifyingLevel(null);
   };
-
   const promptConfirmRemoveLevel = (level: number) => {
     setRemovingLevel(level);
   };
-
   const handleRemoveLevel = (confirm: boolean) => {
     if (!confirm || !removingLevel) return;
-    const newLevelUps = levelUps.slice(0);
-    newLevelUps.splice(removingLevel - 2, 1);
-    setLevelUps(newLevelUps);
+    removeLevel(removingLevel);
     setRemovingLevel(null);
   };
 
@@ -119,12 +112,6 @@ export default function Home() {
     levelUps,
     majorSkills,
   ]);
-
-  useEffect(() => {
-    if (levels.length > 0) {
-      setCurrentLevel(levels[levels.length - 1]);
-    }
-  }, [levels]);
 
   // validation
   useEffect(() => {
@@ -260,7 +247,7 @@ export default function Home() {
                       {attributes.map((attribute) => (
                         <TableCell
                           component="th"
-                          className="px-0 w-3/12"
+                          className="px-0 w-28"
                           align="center"
                           key={attribute}
                         >

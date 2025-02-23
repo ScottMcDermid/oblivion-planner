@@ -6,6 +6,7 @@ import type { Birthsign } from "@/utils/birthsignUtils";
 import type { Specialization } from "@/utils/specializationUtils";
 import type { Attribute } from "@/utils/attributeUtils";
 import type { Skill } from "@/utils/skillUtils";
+import { levelTemplate, type Level, type LevelUp } from "@/types/level";
 
 import races from "@/utils/raceUtils";
 import genders from "@/utils/genderUtils";
@@ -21,9 +22,17 @@ type State = {
   specialization: Specialization;
   favoredAttributes: Attribute[];
   majorSkills: Skill[];
+  currentLevel: Level;
+  levels: Level[];
+  levelUps: LevelUp[];
 };
 
-type Action = { setCharacterData: (state: Partial<State>) => void };
+type Action = {
+  setCharacterData: (state: Partial<State>) => void;
+  setLevels: (levels: Level[]) => void;
+  setLevelUp: (levelUp: LevelUp, level?: number) => void;
+  removeLevel: (level: number) => void;
+};
 
 type CharacterStore = State & { actions: Action };
 
@@ -35,8 +44,32 @@ const useCharacterStore = create<CharacterStore>((set) => {
     specialization: specializations[0],
     favoredAttributes: attributes.slice(0, NUM_FAVORED_ATTRIBUTES),
     majorSkills: skills.slice(0, NUM_MAJOR_SKILLS),
+    currentLevel: levelTemplate,
+    levels: [],
+    levelUps: [],
     actions: {
       setCharacterData: (state: Partial<State>) => set(() => ({ ...state })),
+      setLevels: (levels) =>
+        set(() => ({
+          currentLevel:
+            levels.length > 0 ? levels[levels.length - 1] : levelTemplate,
+          levels,
+        })),
+      setLevelUp: (levelUp, level) => {
+        set((state) => {
+          const levelIndex =
+            level === undefined ? state.levelUps.length : level - 2;
+          const newLevelUps = state.levelUps.slice(0);
+          newLevelUps[levelIndex] = levelUp;
+          return { levelUps: newLevelUps };
+        });
+      },
+      removeLevel: (level) =>
+        set((state) => {
+          const newLevelUps = state.levelUps.slice(0);
+          newLevelUps.splice(level - 2, 1);
+          return { levelUps: newLevelUps };
+        }),
     },
   };
 });
