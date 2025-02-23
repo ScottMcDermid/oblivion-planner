@@ -1,6 +1,6 @@
-import type { AttributesModifier } from "@/utils/attributeUtils";
-import type { Gender } from "@/utils/genderUtils";
-import { SkillsModifier } from "@/utils/skillUtils";
+import type { AttributesModifier } from '@/utils/attributeUtils';
+import type { Gender } from '@/utils/genderUtils';
+import { SkillsModifier } from '@/utils/skillUtils';
 
 export type RaceModifier = {
   magicka?: number;
@@ -53,7 +53,7 @@ export const raceModifiers: {
       Alchemy: 5,
       Athletics: 10,
       Blade: 5,
-      "Hand-to-Hand": 5,
+      'Hand-to-Hand': 5,
       Illusion: 5,
       Mysticism: 5,
       Security: 10,
@@ -80,7 +80,7 @@ export const raceModifiers: {
       Acrobatics: 5,
       Alchemy: 10,
       Alteration: 5,
-      "Light Armor": 5,
+      'Light Armor': 5,
       Marksmanship: 10,
       Sneak: 10,
     },
@@ -130,7 +130,7 @@ export const raceModifiers: {
       Blade: 10,
       Blunt: 5,
       Destruction: 10,
-      "Light Armor": 5,
+      'Light Armor': 5,
       Marksmanship: 5,
       Mysticism: 5,
     },
@@ -151,8 +151,8 @@ export const raceModifiers: {
     skills: {
       Blade: 5,
       Blunt: 5,
-      "Hand-to-Hand": 5,
-      "Heavy Armor": 10,
+      'Hand-to-Hand': 5,
+      'Heavy Armor': 10,
       Mercantile: 10,
       Speechcraft: 10,
     },
@@ -174,8 +174,8 @@ export const raceModifiers: {
       Acrobatics: 10,
       Athletics: 5,
       Blade: 5,
-      "Hand-to-Hand": 10,
-      "Light Armor": 5,
+      'Hand-to-Hand': 10,
+      'Light Armor': 5,
       Security: 5,
       Sneak: 5,
     },
@@ -200,7 +200,7 @@ export const raceModifiers: {
       Blade: 10,
       Block: 5,
       Blunt: 10,
-      "Heavy Armor": 10,
+      'Heavy Armor': 10,
       Restoration: 5,
     },
   },
@@ -228,8 +228,8 @@ export const raceModifiers: {
       Armorer: 10,
       Block: 10,
       Blunt: 10,
-      "Hand-to-Hand": 5,
-      "Heavy Armor": 10,
+      'Hand-to-Hand': 5,
+      'Heavy Armor': 10,
     },
   },
   Redguard: {
@@ -251,35 +251,35 @@ export const raceModifiers: {
       Athletics: 10,
       Blade: 10,
       Blunt: 10,
-      "Heavy Armor": 5,
-      "Light Armor": 5,
+      'Heavy Armor': 5,
+      'Light Armor': 5,
       Mercantile: 5,
     },
   },
 };
 
 export type Race =
-  | "Altmer"
-  | "Argonian"
-  | "Bosmer"
-  | "Breton"
-  | "Dunmer"
-  | "Imperial"
-  | "Khajiit"
-  | "Nord"
-  | "Orc"
-  | "Redguard";
+  | 'Altmer'
+  | 'Argonian'
+  | 'Bosmer'
+  | 'Breton'
+  | 'Dunmer'
+  | 'Imperial'
+  | 'Khajiit'
+  | 'Nord'
+  | 'Orc'
+  | 'Redguard';
 
 const races: Race[] = [
-  "Altmer",
-  "Argonian",
-  "Bosmer",
-  "Breton",
-  "Dunmer",
-  "Imperial",
-  "Khajiit",
-  "Nord",
-  "Orc",
-  "Redguard",
+  'Altmer',
+  'Argonian',
+  'Bosmer',
+  'Breton',
+  'Dunmer',
+  'Imperial',
+  'Khajiit',
+  'Nord',
+  'Orc',
+  'Redguard',
 ];
 export default races;

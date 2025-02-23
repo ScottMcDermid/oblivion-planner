@@ -1,14 +1,6 @@
-import type { Skill } from "@/utils/skillUtils";
+import type { Skill } from '@/utils/skillUtils';
 
-export type Attribute =
-  | "STR"
-  | "INT"
-  | "WIL"
-  | "AGL"
-  | "SPD"
-  | "END"
-  | "PER"
-  | "LCK";
+export type Attribute = 'STR' | 'INT' | 'WIL' | 'AGL' | 'SPD' | 'END' | 'PER' | 'LCK';
 
 export type AttributesModifier = Partial<AttributesSet>;
 
@@ -43,13 +35,13 @@ export const getAttributesSetTemplate: () => AttributesSet = () => ({
 });
 
 export const skillsByAttribute: { [key in Attribute]: Skill[] } = {
-  STR: ["Blade", "Blunt", "Hand-to-Hand"],
-  INT: ["Alchemy", "Conjuration", "Mysticism"],
-  WIL: ["Alteration", "Destruction", "Restoration"],
-  AGL: ["Security", "Sneak", "Marksmanship"],
-  SPD: ["Athletics", "Acrobatics", "Light Armor"],
-  END: ["Armorer", "Block", "Heavy Armor"],
-  PER: ["Mercantile", "Speechcraft", "Illusion"],
+  STR: ['Blade', 'Blunt', 'Hand-to-Hand'],
+  INT: ['Alchemy', 'Conjuration', 'Mysticism'],
+  WIL: ['Alteration', 'Destruction', 'Restoration'],
+  AGL: ['Security', 'Sneak', 'Marksmanship'],
+  SPD: ['Athletics', 'Acrobatics', 'Light Armor'],
+  END: ['Armorer', 'Block', 'Heavy Armor'],
+  PER: ['Mercantile', 'Speechcraft', 'Illusion'],
   LCK: [],
 };
 
@@ -65,10 +57,7 @@ export const getRemainingSkillUpsForMaxAttribute = (level: number): number => {
   return (remaining / MAX_ATTRIBUTE_BONUS) * SKILL_UPS_FOR_MAX_ATTRIBUTE_BONUS;
 };
 
-export function getAttributeBonusFromSkillUps(
-  attributeLevel: number,
-  numSkillUps: number,
-): number {
+export function getAttributeBonusFromSkillUps(attributeLevel: number, numSkillUps: number): number {
   const remainingLevels = MAX_ATTRIBUTE_LEVEL - attributeLevel;
   if (numSkillUps <= 0) return 1;
   if (numSkillUps <= 4) return 2;
@@ -77,16 +66,7 @@ export function getAttributeBonusFromSkillUps(
   return Math.min(remainingLevels, 5);
 }
 
-const attributes: Attribute[] = [
-  "STR",
-  "INT",
-  "WIL",
-  "AGL",
-  "SPD",
-  "END",
-  "PER",
-  "LCK",
-];
+const attributes: Attribute[] = ['STR', 'INT', 'WIL', 'AGL', 'SPD', 'END', 'PER', 'LCK'];
 
 export const NUM_FAVORED_ATTRIBUTES = 2;
 

@@ -1,48 +1,48 @@
 export type Skill =
-  | "Acrobatics"
-  | "Alchemy"
-  | "Alteration"
-  | "Armorer"
-  | "Athletics"
-  | "Blade"
-  | "Block"
-  | "Blunt"
-  | "Conjuration"
-  | "Destruction"
-  | "Hand-to-Hand"
-  | "Heavy Armor"
-  | "Illusion"
-  | "Light Armor"
-  | "Marksmanship"
-  | "Mercantile"
-  | "Mysticism"
-  | "Restoration"
-  | "Security"
-  | "Sneak"
-  | "Speechcraft";
+  | 'Acrobatics'
+  | 'Alchemy'
+  | 'Alteration'
+  | 'Armorer'
+  | 'Athletics'
+  | 'Blade'
+  | 'Block'
+  | 'Blunt'
+  | 'Conjuration'
+  | 'Destruction'
+  | 'Hand-to-Hand'
+  | 'Heavy Armor'
+  | 'Illusion'
+  | 'Light Armor'
+  | 'Marksmanship'
+  | 'Mercantile'
+  | 'Mysticism'
+  | 'Restoration'
+  | 'Security'
+  | 'Sneak'
+  | 'Speechcraft';
 
 export type SkillShorthand =
-  | "ACR"
-  | "ALC"
-  | "ALT"
-  | "ARM"
-  | "ATH"
-  | "BLD"
-  | "BLK"
-  | "BLT"
-  | "CON"
-  | "DES"
-  | "H2H"
-  | "HAR"
-  | "ILL"
-  | "LAR"
-  | "MRK"
-  | "MRC"
-  | "MYS"
-  | "RST"
-  | "SEC"
-  | "SNK"
-  | "SPE";
+  | 'ACR'
+  | 'ALC'
+  | 'ALT'
+  | 'ARM'
+  | 'ATH'
+  | 'BLD'
+  | 'BLK'
+  | 'BLT'
+  | 'CON'
+  | 'DES'
+  | 'H2H'
+  | 'HAR'
+  | 'ILL'
+  | 'LAR'
+  | 'MRK'
+  | 'MRC'
+  | 'MYS'
+  | 'RST'
+  | 'SEC'
+  | 'SNK'
+  | 'SPE';
 
 export type SkillsModifier = Partial<SkillsSet>;
 export const MAX_SKILL_LEVEL = 100;
@@ -62,10 +62,10 @@ export const baseSkills: SkillsSet = {
   Blunt: 5,
   Conjuration: 5,
   Destruction: 5,
-  "Hand-to-Hand": 5,
-  "Heavy Armor": 5,
+  'Hand-to-Hand': 5,
+  'Heavy Armor': 5,
   Illusion: 5,
-  "Light Armor": 5,
+  'Light Armor': 5,
   Marksmanship: 5,
   Mercantile: 5,
   Mysticism: 5,
@@ -86,10 +86,10 @@ export const getSkillsSetTemplate: () => SkillsSet = () => ({
   Blunt: 0,
   Conjuration: 0,
   Destruction: 0,
-  "Hand-to-Hand": 0,
-  "Heavy Armor": 0,
+  'Hand-to-Hand': 0,
+  'Heavy Armor': 0,
   Illusion: 0,
-  "Light Armor": 0,
+  'Light Armor': 0,
   Marksmanship: 0,
   Mercantile: 0,
   Mysticism: 0,
@@ -100,51 +100,51 @@ export const getSkillsSetTemplate: () => SkillsSet = () => ({
 });
 
 const skills: Skill[] = [
-  "Acrobatics",
-  "Alchemy",
-  "Alteration",
-  "Armorer",
-  "Athletics",
-  "Blade",
-  "Block",
-  "Blunt",
-  "Conjuration",
-  "Destruction",
-  "Hand-to-Hand",
-  "Heavy Armor",
-  "Illusion",
-  "Light Armor",
-  "Marksmanship",
-  "Mercantile",
-  "Mysticism",
-  "Restoration",
-  "Security",
-  "Sneak",
-  "Speechcraft",
+  'Acrobatics',
+  'Alchemy',
+  'Alteration',
+  'Armorer',
+  'Athletics',
+  'Blade',
+  'Block',
+  'Blunt',
+  'Conjuration',
+  'Destruction',
+  'Hand-to-Hand',
+  'Heavy Armor',
+  'Illusion',
+  'Light Armor',
+  'Marksmanship',
+  'Mercantile',
+  'Mysticism',
+  'Restoration',
+  'Security',
+  'Sneak',
+  'Speechcraft',
 ];
 
 export const shorthandBySkill: { [key in Skill]: SkillShorthand } = {
-  Acrobatics: "ACR",
-  Alchemy: "ALC",
-  Alteration: "ALT",
-  Armorer: "ARM",
-  Athletics: "ATH",
-  Blade: "BLD",
-  Block: "BLK",
-  Blunt: "BLT",
-  Conjuration: "CON",
-  Destruction: "DES",
-  "Hand-to-Hand": "H2H",
-  "Heavy Armor": "HAR",
-  Illusion: "ILL",
-  "Light Armor": "LAR",
-  Marksmanship: "MRK",
-  Mercantile: "MRC",
-  Mysticism: "MYS",
-  Restoration: "RST",
-  Security: "SEC",
-  Sneak: "SNK",
-  Speechcraft: "SPE",
+  Acrobatics: 'ACR',
+  Alchemy: 'ALC',
+  Alteration: 'ALT',
+  Armorer: 'ARM',
+  Athletics: 'ATH',
+  Blade: 'BLD',
+  Block: 'BLK',
+  Blunt: 'BLT',
+  Conjuration: 'CON',
+  Destruction: 'DES',
+  'Hand-to-Hand': 'H2H',
+  'Heavy Armor': 'HAR',
+  Illusion: 'ILL',
+  'Light Armor': 'LAR',
+  Marksmanship: 'MRK',
+  Mercantile: 'MRC',
+  Mysticism: 'MYS',
+  Restoration: 'RST',
+  Security: 'SEC',
+  Sneak: 'SNK',
+  Speechcraft: 'SPE',
 };
 
 export const NUM_MAJOR_SKILLS = 7;

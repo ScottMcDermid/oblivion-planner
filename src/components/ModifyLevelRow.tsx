@@ -1,5 +1,5 @@
-import { useEffect, useMemo, useState } from "react";
-import ArrowUpwardIcon from "@mui/icons-material/ArrowUpward";
+import { useEffect, useMemo, useState } from 'react';
+import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
 import {
   Box,
   Button,
@@ -8,12 +8,13 @@ import {
   TableCell,
   TableRow,
   Typography,
-} from "@mui/material";
+} from '@mui/material';
 
-import type { Level, LevelUp } from "@/utils/levelUtils";
-import { levelTemplate } from "@/utils/levelUtils";
+import SkillSelector from '@/components/SkillSelector';
+import LevelRow from '@/components/LevelRow';
 
-import SkillSelector from "@/components/SkillSelector";
+import type { Attribute, AttributesSet } from '@/utils/attributeUtils';
+import type { Level, LevelUp } from '@/utils/levelUtils';
 
 import attributes, {
   getAttributesSetTemplate,
@@ -21,18 +22,17 @@ import attributes, {
   getAttributeFromSkill,
   MAX_ATTRIBUTE_LEVEL,
   skillsByAttribute,
-} from "@/utils/attributeUtils";
+} from '@/utils/attributeUtils';
 import skills, {
   MAX_SKILL_LEVEL,
   Skill,
   SkillsSet,
   getSkillsSetTemplate,
-} from "@/utils/skillUtils";
-import LevelRow from "./LevelRow";
-import { applyLevelUpToLevel } from "@/utils/levelUtils";
-import type { Attribute, AttributesSet } from "@/utils/attributeUtils";
+} from '@/utils/skillUtils';
+import { applyLevelUpToLevel } from '@/utils/levelUtils';
+import { levelTemplate } from '@/utils/levelUtils';
 
-import { useCharacterStore } from "@/data/characterStore";
+import { useCharacterStore } from '@/data/characterStore';
 
 export default function ModifyLevelRow({
   level,
@@ -56,9 +56,7 @@ export default function ModifyLevelRow({
     levelUp ? levelUp.skills : getSkillsSetTemplate(),
   );
   const [raisedAttributes, setRaisedAttributes] = useState<Attribute[]>(
-    levelUp
-      ? attributes.filter((attribute) => levelUp.attributes[attribute] > 0)
-      : [],
+    levelUp ? attributes.filter((attribute) => levelUp.attributes[attribute] > 0) : [],
   );
   const [raisedSkills, setRaisedSkills] = useState<Skill[]>([]);
 
@@ -110,22 +108,18 @@ export default function ModifyLevelRow({
   };
 
   useEffect(() => {
-    const raisedSkillsByAttribute: { [key in Attribute]?: Skill[] } =
-      raisedSkills.reduce(
-        (skills: { [key in Attribute]?: Skill[] }, skill: Skill) => {
-          const attribute = getAttributeFromSkill(skill);
-          skills[attribute] = skills[attribute]
-            ? [...skills[attribute], skill]
-            : [skill];
-          return skills;
-        },
-        {},
-      );
+    const raisedSkillsByAttribute: { [key in Attribute]?: Skill[] } = raisedSkills.reduce(
+      (skills: { [key in Attribute]?: Skill[] }, skill: Skill) => {
+        const attribute = getAttributeFromSkill(skill);
+        skills[attribute] = skills[attribute] ? [...skills[attribute], skill] : [skill];
+        return skills;
+      },
+      {},
+    );
 
     const newSkillUps: SkillsSet = getSkillsSetTemplate();
     Object.keys(raisedSkillsByAttribute).map((attribute) => {
-      const skills: Skill[] =
-        raisedSkillsByAttribute[attribute as Attribute] ?? [];
+      const skills: Skill[] = raisedSkillsByAttribute[attribute as Attribute] ?? [];
 
       let remainingSkillUps = DEFAULT_SKILL_INCREMENT;
       skills.map((skill, i) => {
@@ -156,22 +150,19 @@ export default function ModifyLevelRow({
 
   // compute attribute bonuses
   useEffect(() => {
-    const newAttributeBonuses: AttributesSet = attributes.reduce(
-      (attributeBonuses, attribute) => {
-        const attributeSkillUps: number = skillsByAttribute[attribute].reduce(
-          (sum: number, skill: Skill) => {
-            return sum + skillUps[skill];
-          },
-          0,
-        );
-        const attributeBonus = getAttributeBonusFromSkillUps(
-          level.attributes[attribute],
-          attributeSkillUps,
-        );
-        return { ...attributeBonuses, [attribute]: attributeBonus };
-      },
-      getAttributesSetTemplate(),
-    );
+    const newAttributeBonuses: AttributesSet = attributes.reduce((attributeBonuses, attribute) => {
+      const attributeSkillUps: number = skillsByAttribute[attribute].reduce(
+        (sum: number, skill: Skill) => {
+          return sum + skillUps[skill];
+        },
+        0,
+      );
+      const attributeBonus = getAttributeBonusFromSkillUps(
+        level.attributes[attribute],
+        attributeSkillUps,
+      );
+      return { ...attributeBonuses, [attribute]: attributeBonus };
+    }, getAttributesSetTemplate());
     setAttributeBonuses(newAttributeBonuses);
   }, [skillUps, level.attributes]);
 
@@ -200,13 +191,7 @@ export default function ModifyLevelRow({
               <Box key={`${level.level}-${skill}`} className="pb-2">
                 <SkillSelector
                   skill={skill}
-                  color={
-                    skillUps[skill] > 0
-                      ? "secondary"
-                      : skillUps[skill] < 0
-                        ? "error"
-                        : ""
-                  }
+                  color={skillUps[skill] > 0 ? 'secondary' : skillUps[skill] < 0 ? 'error' : ''}
                   value={nextLevel.skills[skill]}
                   major={majorSkills.includes(skill)}
                   selectHandler={() => handleSkillSelected(skill)}
@@ -217,7 +202,7 @@ export default function ModifyLevelRow({
           </TableCell>
         ))}
 
-        <TableCell colSpan={4} className="hidden 2xl:table-cell px-0" />
+        <TableCell colSpan={4} className="hidden px-0 2xl:table-cell" />
         <TableCell />
       </TableRow>
       <TableRow>
@@ -225,18 +210,14 @@ export default function ModifyLevelRow({
         {attributes.map((attribute) => (
           <TableCell align="center" key={attribute} className="px-0">
             <Typography
-              {...(raisedAttributes.includes(attribute)
-                ? { color: "secondary" }
-                : {})}
-              className="h-full selfCenter hidden lg:show"
+              {...(raisedAttributes.includes(attribute) ? { color: 'secondary' } : {})}
+              className="selfCenter lg:show hidden h-full"
             >
               {`${level.attributes[attribute]} + ${attributeBonuses[attribute]}`}
             </Typography>
             <Typography
-              {...(raisedAttributes.includes(attribute)
-                ? { color: "secondary" }
-                : {})}
-              className="h-full selfCenter block"
+              {...(raisedAttributes.includes(attribute) ? { color: 'secondary' } : {})}
+              className="selfCenter block h-full"
             >
               {`+${attributeBonuses[attribute]}`}
             </Typography>
@@ -256,16 +237,13 @@ export default function ModifyLevelRow({
         <TableCell />
       </TableRow>
       <LevelRow level={nextLevel} previousLevel={level} />
-      <TableRow sx={{ "&:last-child td, &:last-child th": { border: 0 } }}>
+      <TableRow sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
         <TableCell align="center" colSpan={attributes.length + 6}>
           <LinearProgress
             className="w-full"
             variant="determinate"
             color="primary"
-            value={Math.min(
-              (numMajorSkillUps / NUM_MAJOR_SKILL_UPS_PER_LEVEL) * 100,
-              100,
-            )}
+            value={Math.min((numMajorSkillUps / NUM_MAJOR_SKILL_UPS_PER_LEVEL) * 100, 100)}
           />
           <Button
             variant="outlined"

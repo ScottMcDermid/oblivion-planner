@@ -1,53 +1,44 @@
-"use client";
-import { useState, useEffect } from "react";
-import { ThemeProvider } from "@mui/material/styles";
-import Box from "@mui/material/Box";
-import CssBaseline from "@mui/material/CssBaseline";
-import Divider from "@mui/material/Divider";
-import PersonIcon from "@mui/icons-material/Person";
-import Skeleton from "@mui/material/Skeleton";
-import Table from "@mui/material/Table";
-import TableBody from "@mui/material/TableBody";
-import TableCell from "@mui/material/TableCell";
-import TableContainer from "@mui/material/TableContainer";
-import TableHead from "@mui/material/TableHead";
-import TableRow from "@mui/material/TableRow";
-import {
-  Drawer,
-  Fab,
-  StyledEngineProvider,
-  Tooltip,
-  Typography,
-} from "@mui/material";
+'use client';
+import { useState, useEffect } from 'react';
+import { ThemeProvider } from '@mui/material/styles';
+import Box from '@mui/material/Box';
+import CssBaseline from '@mui/material/CssBaseline';
+import Divider from '@mui/material/Divider';
+import PersonIcon from '@mui/icons-material/Person';
+import Skeleton from '@mui/material/Skeleton';
+import Table from '@mui/material/Table';
+import TableBody from '@mui/material/TableBody';
+import TableCell from '@mui/material/TableCell';
+import TableContainer from '@mui/material/TableContainer';
+import TableHead from '@mui/material/TableHead';
+import TableRow from '@mui/material/TableRow';
+import { Drawer, Fab, StyledEngineProvider, Tooltip, Typography } from '@mui/material';
 
-import theme from "@/app/theme";
+import theme from '@/app/theme';
 
-import type { Level, LevelUp } from "@/utils/levelUtils";
-import type { Race } from "@/utils/raceUtils";
-import type { Gender } from "@/utils/genderUtils";
-import type { Birthsign } from "@/utils/birthsignUtils";
-import type { Specialization } from "@/utils/specializationUtils";
+import type { Level, LevelUp } from '@/utils/levelUtils';
+import type { Race } from '@/utils/raceUtils';
+import type { Gender } from '@/utils/genderUtils';
+import type { Birthsign } from '@/utils/birthsignUtils';
+import type { Specialization } from '@/utils/specializationUtils';
 
-import DropDown from "@/components/DropDown";
-import RadioButtons from "@/components/RadioButtons";
-import SelectFromList from "@/components/SelectFromList";
-import LevelRow from "@/components/LevelRow";
-import ModifyLevelRow from "@/components/ModifyLevelRow";
-import ConfirmDialog from "@/components/ConfirmDialog";
+import DropDown from '@/components/DropDown';
+import RadioButtons from '@/components/RadioButtons';
+import SelectFromList from '@/components/SelectFromList';
+import LevelRow from '@/components/LevelRow';
+import ModifyLevelRow from '@/components/ModifyLevelRow';
+import ConfirmDialog from '@/components/ConfirmDialog';
 
-import { useCharacterStore } from "@/data/characterStore";
+import { useCharacterStore } from '@/data/characterStore';
 
-import attributes, {
-  Attribute,
-  NUM_FAVORED_ATTRIBUTES,
-} from "@/utils/attributeUtils";
-import specializations from "@/utils/specializationUtils";
-import races from "@/utils/raceUtils";
-import genders from "@/utils/genderUtils";
-import birthsigns from "@/utils/birthsignUtils";
-import skills, { NUM_MAJOR_SKILLS } from "@/utils/skillUtils";
-import { Skill } from "@/utils/skillUtils";
-import { applyLevelUpToLevel, getBaseLevel } from "@/utils/levelUtils";
+import attributes, { Attribute, NUM_FAVORED_ATTRIBUTES } from '@/utils/attributeUtils';
+import specializations from '@/utils/specializationUtils';
+import races from '@/utils/raceUtils';
+import genders from '@/utils/genderUtils';
+import birthsigns from '@/utils/birthsignUtils';
+import skills, { NUM_MAJOR_SKILLS } from '@/utils/skillUtils';
+import { Skill } from '@/utils/skillUtils';
+import { applyLevelUpToLevel, getBaseLevel } from '@/utils/levelUtils';
 
 export default function Home() {
   const {
@@ -63,8 +54,7 @@ export default function Home() {
     actions: { setCharacterData, setLevelUp, removeLevel, setLevels },
   } = useCharacterStore();
 
-  const [isCharacterCreationOpen, setIsCharacterCreationOpen] =
-    useState<boolean>(false);
+  const [isCharacterCreationOpen, setIsCharacterCreationOpen] = useState<boolean>(false);
   const [modifyingLevel, setModifyingLevel] = useState<number | null>(null);
   const [removingLevel, setRemovingLevel] = useState<number | null>(null);
 
@@ -81,37 +71,17 @@ export default function Home() {
     setRemovingLevel(null);
   };
 
-  const [favoredAttributesError, setFavoredAttributesError] = useState("");
-  const [majorSkillsError, setMajorSkillsError] = useState("");
+  const [favoredAttributesError, setFavoredAttributesError] = useState('');
+  const [majorSkillsError, setMajorSkillsError] = useState('');
 
   useEffect(() => {
     setLevels(
       levelUps.reduce(
-        (levels: Level[], levelUp, i) => [
-          ...levels,
-          applyLevelUpToLevel(levels[i], levelUp),
-        ],
-        [
-          getBaseLevel(
-            race,
-            gender,
-            birthsign,
-            specialization,
-            favoredAttributes,
-            majorSkills,
-          ),
-        ],
+        (levels: Level[], levelUp, i) => [...levels, applyLevelUpToLevel(levels[i], levelUp)],
+        [getBaseLevel(race, gender, birthsign, specialization, favoredAttributes, majorSkills)],
       ),
     );
-  }, [
-    race,
-    gender,
-    birthsign,
-    specialization,
-    favoredAttributes,
-    levelUps,
-    majorSkills,
-  ]);
+  }, [race, gender, birthsign, specialization, favoredAttributes, levelUps, majorSkills]);
 
   // validation
   useEffect(() => {
@@ -120,16 +90,14 @@ export default function Home() {
         `you must choose exactly ${NUM_FAVORED_ATTRIBUTES} favored attributes`,
       );
     } else {
-      setFavoredAttributesError("");
+      setFavoredAttributesError('');
     }
   }, [favoredAttributes]);
   useEffect(() => {
     if (majorSkills.length !== NUM_MAJOR_SKILLS) {
-      setMajorSkillsError(
-        `you must choose exactly ${NUM_MAJOR_SKILLS} major skills`,
-      );
+      setMajorSkillsError(`you must choose exactly ${NUM_MAJOR_SKILLS} major skills`);
     } else {
-      setMajorSkillsError("");
+      setMajorSkillsError('');
     }
   }, [majorSkills]);
 
@@ -145,30 +113,26 @@ export default function Home() {
           open={isCharacterCreationOpen}
           sx={{
             flexShrink: 0,
-            "& .MuiDrawer-paper": {
-              boxSizing: "border-box",
+            '& .MuiDrawer-paper': {
+              boxSizing: 'border-box',
             },
           }}
           anchor="left"
           className="p-3"
         >
           <Box className="p-2">
-            <Typography className="text-3xl my-2">Character</Typography>
+            <Typography className="my-2 text-3xl">Character</Typography>
             <DropDown
               label="Race"
               value={race}
               options={races}
-              onChangeHandler={(race) =>
-                setCharacterData({ race: race as Race })
-              }
+              onChangeHandler={(race) => setCharacterData({ race: race as Race })}
             />
             <RadioButtons
               name="Gender"
               value={gender}
               options={genders}
-              onChangeHandler={(gender) =>
-                setCharacterData({ gender: gender as Gender })
-              }
+              onChangeHandler={(gender) => setCharacterData({ gender: gender as Gender })}
             />
             <DropDown
               label="Birthsign"
@@ -181,7 +145,7 @@ export default function Home() {
           </Box>
           <Divider className="my-4" />
           <Box className="p-2">
-            <Typography className="text-3xl my-2">Class</Typography>
+            <Typography className="my-2 text-3xl">Class</Typography>
             <RadioButtons
               label="Specialization"
               name="Specialization"
@@ -216,7 +180,7 @@ export default function Home() {
           </Box>
         </Drawer>
 
-        <Box className="font-[family-name:var(--font-geist-sans)] flex flex-col align-center content-center">
+        <Box className="align-center flex flex-col content-center font-[family-name:var(--font-geist-sans)]">
           <Box className="hidden lg:block">
             <Tooltip title="Character Creation">
               <Fab
@@ -232,22 +196,19 @@ export default function Home() {
               </Fab>
             </Tooltip>
           </Box>
-          <Box className="mx-auto overflow-hidden max-h-screen">
+          <Box className="mx-auto max-h-screen overflow-hidden">
             {levels.length > 0 ? (
               <TableContainer className="max-h-screen">
                 <Table stickyHeader size="small" aria-label="Levels">
                   <TableHead className="sticky">
                     <TableRow>
-                      <TableCell align="center" component="th" className="px-0">
-                        <Typography className="hidden lg:block">
-                          Level
-                        </Typography>
-                        <Typography className="block lg:hidden">LVL</Typography>
+                      <TableCell align="center" component="th" className="min-w-6">
+                        <Typography className="block sm:text-lg">LVL</Typography>
                       </TableCell>
                       {attributes.map((attribute) => (
                         <TableCell
                           component="th"
-                          className="px-0 w-28"
+                          className="w-28 px-0 text-lg"
                           align="center"
                           key={attribute}
                         >
@@ -255,28 +216,28 @@ export default function Home() {
                         </TableCell>
                       ))}
                       <TableCell
-                        className="hidden 2xl:table-cell px0"
+                        className="px0 hidden 2xl:table-cell"
                         align="center"
                         component="th"
                       >
                         Health
                       </TableCell>
                       <TableCell
-                        className="hidden 2xl:table-cell px0"
+                        className="px0 hidden 2xl:table-cell"
                         align="center"
                         component="th"
                       >
                         Magicka
                       </TableCell>
                       <TableCell
-                        className="hidden 2xl:table-cell px0"
+                        className="px0 hidden 2xl:table-cell"
                         align="center"
                         component="th"
                       >
                         Stamina
                       </TableCell>
                       <TableCell
-                        className="hidden 2xl:table-cell px0"
+                        className="px0 hidden 2xl:table-cell"
                         align="center"
                         component="th"
                       >
@@ -287,15 +248,12 @@ export default function Home() {
                   </TableHead>
                   <TableBody>
                     {levels.map((level, i) =>
-                      modifyingLevel !== null &&
-                      modifyingLevel === level.level ? (
+                      modifyingLevel !== null && modifyingLevel === level.level ? (
                         <ModifyLevelRow
                           key={level.level}
                           level={levels[i - 1]}
                           levelUp={levelUps[level.level - 2]}
-                          commitLevelUpHandler={(levelUp) =>
-                            commitLevelUp(levelUp, level.level)
-                          }
+                          commitLevelUpHandler={(levelUp) => commitLevelUp(levelUp, level.level)}
                         />
                       ) : (
                         <LevelRow
@@ -303,10 +261,8 @@ export default function Home() {
                           level={level}
                           {...(level.level > 1
                             ? {
-                                onRemoveHandler: () =>
-                                  promptConfirmRemoveLevel(level.level),
-                                onModifyHandler: () =>
-                                  setModifyingLevel(level.level),
+                                onRemoveHandler: () => promptConfirmRemoveLevel(level.level),
+                                onModifyHandler: () => setModifyingLevel(level.level),
                               }
                             : {})}
                           previousLevel={levels[i - 1]}
@@ -316,9 +272,7 @@ export default function Home() {
                     {modifyingLevel ? null : (
                       <ModifyLevelRow
                         level={currentLevel}
-                        commitLevelUpHandler={(levelUp) =>
-                          commitLevelUp(levelUp)
-                        }
+                        commitLevelUpHandler={(levelUp) => commitLevelUp(levelUp)}
                       />
                     )}
                   </TableBody>
@@ -331,10 +285,7 @@ export default function Home() {
             )}
           </Box>
         </Box>
-        <ConfirmDialog
-          open={removingLevel !== null}
-          handleClose={handleRemoveLevel}
-        />
+        <ConfirmDialog open={removingLevel !== null} handleClose={handleRemoveLevel} />
       </ThemeProvider>
     </StyledEngineProvider>
   );

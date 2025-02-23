@@ -1,19 +1,19 @@
-import { create } from "zustand";
+import { create } from 'zustand';
 
-import type { Race } from "@/utils/raceUtils";
-import type { Gender } from "@/utils/genderUtils";
-import type { Birthsign } from "@/utils/birthsignUtils";
-import type { Specialization } from "@/utils/specializationUtils";
-import type { Attribute } from "@/utils/attributeUtils";
-import type { Skill } from "@/utils/skillUtils";
-import { levelTemplate, type Level, type LevelUp } from "@/utils/levelUtils";
+import type { Race } from '@/utils/raceUtils';
+import type { Gender } from '@/utils/genderUtils';
+import type { Birthsign } from '@/utils/birthsignUtils';
+import type { Specialization } from '@/utils/specializationUtils';
+import type { Attribute } from '@/utils/attributeUtils';
+import type { Skill } from '@/utils/skillUtils';
+import { levelTemplate, type Level, type LevelUp } from '@/utils/levelUtils';
 
-import races from "@/utils/raceUtils";
-import genders from "@/utils/genderUtils";
-import birthsigns from "@/utils/birthsignUtils";
-import specializations from "@/utils/specializationUtils";
-import attributes, { NUM_FAVORED_ATTRIBUTES } from "@/utils/attributeUtils";
-import skills, { NUM_MAJOR_SKILLS } from "@/utils/skillUtils";
+import races from '@/utils/raceUtils';
+import genders from '@/utils/genderUtils';
+import birthsigns from '@/utils/birthsignUtils';
+import specializations from '@/utils/specializationUtils';
+import attributes, { NUM_FAVORED_ATTRIBUTES } from '@/utils/attributeUtils';
+import skills, { NUM_MAJOR_SKILLS } from '@/utils/skillUtils';
 
 type State = {
   race: Race;
@@ -51,14 +51,12 @@ const useCharacterStore = create<CharacterStore>((set) => {
       setCharacterData: (state: Partial<State>) => set(() => ({ ...state })),
       setLevels: (levels) =>
         set(() => ({
-          currentLevel:
-            levels.length > 0 ? levels[levels.length - 1] : levelTemplate,
+          currentLevel: levels.length > 0 ? levels[levels.length - 1] : levelTemplate,
           levels,
         })),
       setLevelUp: (levelUp, level) => {
         set((state) => {
-          const levelIndex =
-            level === undefined ? state.levelUps.length : level - 2;
+          const levelIndex = level === undefined ? state.levelUps.length : level - 2;
           const newLevelUps = state.levelUps.slice(0);
           newLevelUps[levelIndex] = levelUp;
           return { levelUps: newLevelUps };

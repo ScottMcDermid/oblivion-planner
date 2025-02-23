@@ -1,7 +1,7 @@
-import FormControl from "@mui/material/FormControl";
-import FormLabel from "@mui/material/FormLabel";
-import MenuItem from "@mui/material/MenuItem";
-import Select, { SelectChangeEvent } from "@mui/material/Select";
+import FormControl from '@mui/material/FormControl';
+import FormLabel from '@mui/material/FormLabel';
+import MenuItem from '@mui/material/MenuItem';
+import Select, { SelectChangeEvent } from '@mui/material/Select';
 
 export default function DropDown({
   label,
@@ -19,9 +19,7 @@ export default function DropDown({
       {!!label ? <FormLabel className="text-lg">{label}</FormLabel> : null}
       <Select
         value={value}
-        onChange={(e: SelectChangeEvent) =>
-          onChangeHandler(e.target.value as string)
-        }
+        onChange={(e: SelectChangeEvent) => onChangeHandler(e.target.value as string)}
       >
         {options.map((option) => (
           <MenuItem key={option} value={option}>

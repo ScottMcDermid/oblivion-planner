@@ -1,21 +1,15 @@
-import {
-  IconButton,
-  TableCell,
-  TableRow,
-  Tooltip,
-  Typography,
-} from "@mui/material";
-import DeleteIcon from "@mui/icons-material/Delete";
-import EditIcon from "@mui/icons-material/Edit";
+import { IconButton, TableCell, TableRow, Tooltip, Typography } from '@mui/material';
+import DeleteIcon from '@mui/icons-material/Delete';
+import EditIcon from '@mui/icons-material/Edit';
 
-import type { Level } from "@/utils/levelUtils";
+import type { Level } from '@/utils/levelUtils';
 
 import attributes, {
   skillsByAttribute,
   getRemainingSkillUpsForMaxAttribute,
-} from "@/utils/attributeUtils";
-import type { Attribute } from "@/utils/attributeUtils";
-import { MAX_SKILL_LEVEL, Skill, SkillsSet } from "@/utils/skillUtils";
+} from '@/utils/attributeUtils';
+import type { Attribute } from '@/utils/attributeUtils';
+import { MAX_SKILL_LEVEL, Skill, SkillsSet } from '@/utils/skillUtils';
 
 export default function DropDown({
   level,
@@ -28,10 +22,7 @@ export default function DropDown({
   onRemoveHandler?: () => void;
   onModifyHandler?: () => void;
 }) {
-  const getExtraSkillUpsForAttribute = (
-    attribute: Attribute,
-    skills: SkillsSet,
-  ): number => {
+  const getExtraSkillUpsForAttribute = (attribute: Attribute, skills: SkillsSet): number => {
     return (
       skillsByAttribute[attribute].reduce((sum, skill: Skill) => {
         const remaining = MAX_SKILL_LEVEL - skills[skill];
@@ -42,22 +33,22 @@ export default function DropDown({
 
   return (
     <TableRow key={level.level}>
-      <TableCell align="center" className="px-0">
+      <TableCell align="center" className="px-0 text-lg">
         {level.level}
       </TableCell>
       {attributes.map((attribute: Attribute) => (
         <TableCell key={attribute} align="center" className="px-0">
           <Tooltip
-            {...(attribute !== "LCK"
+            {...(attribute !== 'LCK'
               ? {
                   title: `${getRemainingSkillUpsForMaxAttribute(level.attributes[attribute])} skill ups to go (${getExtraSkillUpsForAttribute(attribute, level.skills)} extra)`,
                 }
-              : { title: "" })}
+              : { title: '' })}
           >
             <Typography
               {...(previousLevel &&
               level.attributes[attribute] > previousLevel.attributes[attribute]!
-                ? { color: "secondary" }
+                ? { color: 'secondary' }
                 : {})}
             >
               {level.attributes[attribute]}
@@ -65,37 +56,35 @@ export default function DropDown({
           </Tooltip>
         </TableCell>
       ))}
-      <TableCell className="hidden 2xl:table-cell px-0" align="center">
+      <TableCell className="hidden px-0 2xl:table-cell" align="center">
         <Typography
-          {...(previousLevel && level.health > previousLevel.health
-            ? { color: "secondary" }
-            : {})}
+          {...(previousLevel && level.health > previousLevel.health ? { color: 'secondary' } : {})}
         >
           {level.health}
         </Typography>
       </TableCell>
-      <TableCell className="hidden 2xl:table-cell px-0" align="center">
+      <TableCell className="hidden px-0 2xl:table-cell" align="center">
         <Typography
           {...(previousLevel && level.magicka > previousLevel.magicka
-            ? { color: "secondary" }
+            ? { color: 'secondary' }
             : {})}
         >
           {level.magicka}
         </Typography>
       </TableCell>
-      <TableCell className="hidden 2xl:table-cell px-0" align="center">
+      <TableCell className="hidden px-0 2xl:table-cell" align="center">
         <Typography
           {...(previousLevel && level.stamina > previousLevel.stamina
-            ? { color: "secondary" }
+            ? { color: 'secondary' }
             : {})}
         >
           {level.stamina}
         </Typography>
       </TableCell>
-      <TableCell className="hidden 2xl:table-cell px-0" align="center">
+      <TableCell className="hidden px-0 2xl:table-cell" align="center">
         <Typography
           {...(previousLevel && level.encumbrance > previousLevel.encumbrance
-            ? { color: "secondary" }
+            ? { color: 'secondary' }
             : {})}
         >
           {level.encumbrance}

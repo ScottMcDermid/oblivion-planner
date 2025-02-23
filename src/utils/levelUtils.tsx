@@ -3,20 +3,12 @@ import attributes, {
   AttributesSet,
   getAttributesSetTemplate,
   baseAttributes,
-} from "@/utils/attributeUtils";
-import { Birthsign, birthsignModifiers } from "@/utils/birthsignUtils";
-import { Gender } from "@/utils/genderUtils";
-import { Race, raceModifiers } from "@/utils/raceUtils";
-import skills, {
-  baseSkills,
-  getSkillsSetTemplate,
-  Skill,
-  SkillsSet,
-} from "@/utils/skillUtils";
-import {
-  skillsBySpecialization,
-  Specialization,
-} from "@/utils/specializationUtils";
+} from '@/utils/attributeUtils';
+import { Birthsign, birthsignModifiers } from '@/utils/birthsignUtils';
+import { Gender } from '@/utils/genderUtils';
+import { Race, raceModifiers } from '@/utils/raceUtils';
+import skills, { baseSkills, getSkillsSetTemplate, Skill, SkillsSet } from '@/utils/skillUtils';
+import { skillsBySpecialization, Specialization } from '@/utils/specializationUtils';
 
 export type Level = {
   attributes: AttributesSet;
@@ -73,9 +65,7 @@ export const applyLevelUpToLevel = (level: Level, levelUp: LevelUp): Level => {
   );
 
   const health =
-    level.health +
-    END * BASE_HEALTH_MULTIPLIER +
-    Math.floor(newAttributes.END * HEALTH_MULTIPLIER);
+    level.health + END * BASE_HEALTH_MULTIPLIER + Math.floor(newAttributes.END * HEALTH_MULTIPLIER);
 
   const newSkills: SkillsSet = skills.reduce((newSkills, skill) => {
     return {
@@ -103,30 +93,21 @@ export const getBaseLevel = (
   favoredAttributes: Attribute[],
   majorSkills: Skill[],
 ): Level => {
-  const birthsignAttributeModifiers =
-    birthsignModifiers[birthsign].attributes ?? {};
-  const newAttributes: AttributesSet = attributes.reduce(
-    (newAttributes, attribute) => {
-      const base = baseAttributes[attribute] ?? 0;
-      const birthsignModifier = birthsignAttributeModifiers[attribute] ?? 0;
-      const favored = favoredAttributes.includes(attribute)
-        ? FAVORED_ATTRIBUTE_BONUS
-        : 0;
-      const modifier: number =
-        raceModifiers[race].attributes[gender][attribute] ?? 0;
-      return {
-        ...newAttributes,
-        [attribute]: base + modifier + birthsignModifier + favored,
-      };
-    },
-    getAttributesSetTemplate(),
-  );
+  const birthsignAttributeModifiers = birthsignModifiers[birthsign].attributes ?? {};
+  const newAttributes: AttributesSet = attributes.reduce((newAttributes, attribute) => {
+    const base = baseAttributes[attribute] ?? 0;
+    const birthsignModifier = birthsignAttributeModifiers[attribute] ?? 0;
+    const favored = favoredAttributes.includes(attribute) ? FAVORED_ATTRIBUTE_BONUS : 0;
+    const modifier: number = raceModifiers[race].attributes[gender][attribute] ?? 0;
+    return {
+      ...newAttributes,
+      [attribute]: base + modifier + birthsignModifier + favored,
+    };
+  }, getAttributesSetTemplate());
   const newSkills: SkillsSet = skills.reduce((newSkills, skill) => {
     const base = baseSkills[skill];
     const modifier: number = raceModifiers[race].skills[skill] ?? 0;
-    const specializationBonus = skillsBySpecialization[specialization].includes(
-      skill,
-    )
+    const specializationBonus = skillsBySpecialization[specialization].includes(skill)
       ? SPECIALIZATION_BONUS
       : 0;
     const majorSkillBonus = majorSkills.includes(skill) ? MAJOR_SKILL_BONUS : 0;

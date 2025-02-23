@@ -1,8 +1,8 @@
-import Radio from "@mui/material/Radio";
-import RadioGroup from "@mui/material/RadioGroup";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import FormControl from "@mui/material/FormControl";
-import FormLabel from "@mui/material/FormLabel";
+import Radio from '@mui/material/Radio';
+import RadioGroup from '@mui/material/RadioGroup';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import FormControl from '@mui/material/FormControl';
+import FormLabel from '@mui/material/FormLabel';
 
 export default function DropDown({
   name,
@@ -18,7 +18,7 @@ export default function DropDown({
   onChangeHandler: (a: string) => void;
 }) {
   return (
-    <FormControl id={name} className="flex flex-col mx-1">
+    <FormControl id={name} className="mx-1 flex flex-col">
       {!!label ? <FormLabel className="text-lg">{label}</FormLabel> : null}
       <RadioGroup
         row

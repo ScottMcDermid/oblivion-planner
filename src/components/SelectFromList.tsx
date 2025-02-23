@@ -1,10 +1,10 @@
-import Checkbox from "@mui/material/Checkbox";
-import FormControl from "@mui/material/FormControl";
-import FormHelperText from "@mui/material/FormHelperText";
-import FormLabel from "@mui/material/FormLabel";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import FormGroup from "@mui/material/FormGroup";
-import Box from "@mui/material/Box";
+import Checkbox from '@mui/material/Checkbox';
+import FormControl from '@mui/material/FormControl';
+import FormHelperText from '@mui/material/FormHelperText';
+import FormLabel from '@mui/material/FormLabel';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import FormGroup from '@mui/material/FormGroup';
+import Box from '@mui/material/Box';
 
 export default function SelectFromList({
   label,
@@ -34,12 +34,7 @@ export default function SelectFromList({
 
   return (
     <Box>
-      <FormControl
-        className="my-4"
-        error={!!error}
-        component="fieldset"
-        variant="standard"
-      >
+      <FormControl className="my-4" error={!!error} component="fieldset" variant="standard">
         <FormLabel component="legend">{label}</FormLabel>
         <FormGroup className="m-2">
           {options.map((option) => (

@@ -1,13 +1,13 @@
-import Box from "@mui/material/Box";
-import { MAX_SKILL_LEVEL, shorthandBySkill, Skill } from "@/utils/skillUtils";
-import { ToggleButton, Typography } from "@mui/material";
-import { useEffect, useState } from "react";
+import Box from '@mui/material/Box';
+import { MAX_SKILL_LEVEL, shorthandBySkill, Skill } from '@/utils/skillUtils';
+import { ToggleButton, Typography } from '@mui/material';
+import { useEffect, useState } from 'react';
 
 export default function SkillSelector({
   skill,
   major,
   value,
-  color = "",
+  color = '',
   selectHandler,
   unselectHandler,
 }: {
@@ -26,18 +26,18 @@ export default function SkillSelector({
   }, [selected]);
 
   return (
-    <Box className="flex flex-col m-1">
+    <Box className="m-1 flex flex-col">
       <Typography
-        {...(major ? { color: "default" } : { color: "grey" })}
-        className="text-center text-xs whitespace-nowrap"
+        {...(major ? { color: 'default' } : { color: 'grey' })}
+        className="whitespace-nowrap text-center text-xs"
       >
-        <Typography className="hidden lg:block" component={"span"}>
+        <Typography className="hidden lg:block" component={'span'}>
           {skill}
-          {major ? "*" : ""}
+          {major ? '*' : ''}
         </Typography>
-        <Typography className="block lg:hidden" component={"span"}>
+        <Typography className="block lg:hidden" component={'span'}>
           {shorthandBySkill[skill]}
-          {major ? "*" : ""}
+          {major ? '*' : ''}
         </Typography>
       </Typography>
       <ToggleButton
