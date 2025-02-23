@@ -1,6 +1,6 @@
-import type { AttributesModifier } from "@/data/attributes";
-import type { Gender } from "@/data/genders";
-import { SkillsModifier } from "@/data/skills";
+import type { AttributesModifier } from "@/utils/attributeUtils";
+import type { Gender } from "@/utils/genderUtils";
+import { SkillsModifier } from "@/utils/skillUtils";
 
 export type RaceModifier = {
   magicka?: number;

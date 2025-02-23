@@ -1,11 +1,12 @@
+import { useEffect, useState } from "react";
 import attributes, {
   getAttributesSetTemplate,
   getAttributeBonusFromSkillUps,
   getAttributeFromSkill,
   MAX_ATTRIBUTE_LEVEL,
   skillsByAttribute,
-} from "@/data/attributes";
-import type { Attribute, AttributesSet } from "@/data/attributes";
+} from "@/utils/attributeUtils";
+import type { Attribute, AttributesSet } from "@/utils/attributeUtils";
 import { Level, levelTemplate, LevelUp } from "@/types/level";
 import ArrowUpwardIcon from "@mui/icons-material/ArrowUpward";
 import {
@@ -23,22 +24,21 @@ import skills, {
   Skill,
   SkillsSet,
   getSkillsSetTemplate,
-} from "@/data/skills";
-import { useEffect, useState } from "react";
+} from "@/utils/skillUtils";
 import LevelRow from "./LevelRow";
 import { applyLevelUpToLevel } from "@/services/Level";
+import { useCharacterStore } from "@/data/characterStore";
 
 export default function ModifyLevelRow({
   level,
-  majorSkills,
   levelUp,
   commitLevelUpHandler,
 }: {
   level: Level;
-  majorSkills: Skill[];
   levelUp?: LevelUp;
   commitLevelUpHandler: (levelUp: LevelUp) => void;
 }) {
+  const { majorSkills } = useCharacterStore();
   const NUM_MAJOR_SKILL_UPS_PER_LEVEL = 10;
   const NUM_RAISED_ATTRIBUTES = 3;
   const DEFAULT_SKILL_INCREMENT = 10;

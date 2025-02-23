@@ -1,4 +1,4 @@
-import { Skill } from "@/data/skills";
+import { Skill } from "@/utils/skillUtils";
 
 export type Specialization = "Combat" | "Magic" | "Stealth";
 

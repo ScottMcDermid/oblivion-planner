@@ -1,4 +1,4 @@
-import type { AttributesModifier } from "@/data/attributes";
+import type { AttributesModifier } from "@/utils/attributeUtils";
 export const birthsignModifiers: {
   [key in Birthsign]: { attributes?: AttributesModifier; magicka?: number };
 } = {

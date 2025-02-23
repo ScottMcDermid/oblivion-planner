@@ -1,8 +1,8 @@
 import attributes, {
   skillsByAttribute,
   getRemainingSkillUpsForMaxAttribute,
-} from "@/data/attributes";
-import type { Attribute } from "@/data/attributes";
+} from "@/utils/attributeUtils";
+import type { Attribute } from "@/utils/attributeUtils";
 import { Level } from "@/types/level";
 import {
   IconButton,
@@ -13,7 +13,7 @@ import {
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
-import { MAX_SKILL_LEVEL, Skill, SkillsSet } from "@/data/skills";
+import { MAX_SKILL_LEVEL, Skill, SkillsSet } from "@/utils/skillUtils";
 
 export default function DropDown({
   level,
@@ -48,13 +48,13 @@ export default function DropDown({
           <Tooltip
             {...(attribute !== "LCK"
               ? {
-                title: `${getRemainingSkillUpsForMaxAttribute(level.attributes[attribute])} skill ups to go (${getExtraSkillUpsForAttribute(attribute, level.skills)} extra)`,
-              }
+                  title: `${getRemainingSkillUpsForMaxAttribute(level.attributes[attribute])} skill ups to go (${getExtraSkillUpsForAttribute(attribute, level.skills)} extra)`,
+                }
               : { title: "" })}
           >
             <Typography
               {...(previousLevel &&
-                level.attributes[attribute] > previousLevel.attributes[attribute]!
+              level.attributes[attribute] > previousLevel.attributes[attribute]!
                 ? { color: "secondary" }
                 : {})}
             >

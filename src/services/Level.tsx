@@ -3,17 +3,20 @@ import attributes, {
   AttributesSet,
   getAttributesSetTemplate,
   baseAttributes,
-} from "@/data/attributes";
-import { Birthsign, birthsignModifiers } from "@/data/birthsigns";
-import { Gender } from "@/data/genders";
-import { Race, raceModifiers } from "@/data/races";
+} from "@/utils/attributeUtils";
+import { Birthsign, birthsignModifiers } from "@/utils/birthsignUtils";
+import { Gender } from "@/utils/genderUtils";
+import { Race, raceModifiers } from "@/utils/raceUtils";
 import skills, {
   baseSkills,
   getSkillsSetTemplate,
   Skill,
   SkillsSet,
-} from "@/data/skills";
-import { skillsBySpecialization, Specialization } from "@/data/specializations";
+} from "@/utils/skillUtils";
+import {
+  skillsBySpecialization,
+  Specialization,
+} from "@/utils/specializationUtils";
 import { Level, LevelUp } from "@/types/level";
 
 export const ENCUMBRANCE_MULTIPLIER = 5;

@@ -18,15 +18,11 @@ import SelectFromList from "@/components/SelectFromList";
 import LevelRow from "@/components/LevelRow";
 
 import theme from "@/app/theme";
-import type { Race } from "@/data/races";
-import type { Birthsign } from "@/data/birthsigns";
-import attributes from "@/data/attributes";
-import type { Attribute } from "@/data/attributes";
-import type { Skill } from "@/data/skills";
-import specializations from "@/data/specializations";
-import type { Specialization } from "@/data/specializations";
-import genders from "@/data/genders";
-import type { Gender } from "@/data/genders";
+import attributes, {
+  Attribute,
+  NUM_FAVORED_ATTRIBUTES,
+} from "@/utils/attributeUtils";
+import specializations from "@/utils/specializationUtils";
 import { Level, levelTemplate, LevelUp } from "@/types/level";
 import {
   Drawer,
@@ -36,33 +32,33 @@ import {
   Typography,
 } from "@mui/material";
 import PersonIcon from "@mui/icons-material/Person";
-import { applyLevelUpToLevel, getBaseLevel } from "@/services/Level";
-import races from "@/data/races";
-import birthsigns from "@/data/birthsigns";
-import skills from "@/data/skills";
 import ModifyLevelRow from "@/components/ModifyLevelRow";
 import ConfirmDialog from "@/components/ConfirmDialog";
 
-export default function Home() {
-  const NUM_FAVORED_ATTRIBUTES = 2;
-  const NUM_MAJOR_SKILLS = 7;
+import { useCharacterStore } from "@/data/characterStore";
 
-  const [race, setRace] = useState<Race>(races[0]);
-  const [gender, setGender] = useState<Gender>(genders[0]);
-  const [birthsign, setBirthsign] = useState<Birthsign>(birthsigns[0]);
-  const [specialization, setSpecialization] = useState<Specialization>(
-    specializations[0],
-  );
-  const [favoredAttributes, setFavoredAttributes] = useState<Attribute[]>(
-    attributes.slice(0, NUM_FAVORED_ATTRIBUTES),
-  );
-  const [favoredAttributesError, setFavoredAttributesError] = useState<
-    string | null
-  >(null);
-  const [majorSkills, setMajorSkills] = useState<Skill[]>(
-    skills.slice(0, NUM_MAJOR_SKILLS),
-  );
-  const [majorSkillsError, setMajorSkillsError] = useState<string>("");
+import type { Race } from "@/utils/raceUtils";
+import type { Gender } from "@/utils/genderUtils";
+import type { Birthsign } from "@/utils/birthsignUtils";
+import type { Specialization } from "@/utils/specializationUtils";
+import races from "@/utils/raceUtils";
+import genders from "@/utils/genderUtils";
+import birthsigns from "@/utils/birthsignUtils";
+import skills, { NUM_MAJOR_SKILLS } from "@/utils/skillUtils";
+import { Skill } from "@/utils/skillUtils";
+
+import { applyLevelUpToLevel, getBaseLevel } from "@/services/Level";
+
+export default function Home() {
+  const {
+    race,
+    gender,
+    birthsign,
+    specialization,
+    favoredAttributes,
+    majorSkills,
+    actions: { setCharacterData },
+  } = useCharacterStore();
 
   const [currentLevel, setCurrentLevel] = useState<Level>(levelTemplate);
   const [levels, setLevels] = useState<Level[]>([]);
@@ -91,6 +87,9 @@ export default function Home() {
     setLevelUps(newLevelUps);
     setRemovingLevel(null);
   };
+
+  const [favoredAttributesError, setFavoredAttributesError] = useState("");
+  const [majorSkillsError, setMajorSkillsError] = useState("");
 
   useEffect(() => {
     setLevels(
@@ -172,19 +171,25 @@ export default function Home() {
               label="Race"
               value={race}
               options={races}
-              onChangeHandler={setRace as (a: string) => void}
+              onChangeHandler={(race) =>
+                setCharacterData({ race: race as Race })
+              }
             />
             <RadioButtons
               name="Gender"
               value={gender}
               options={genders}
-              onChangeHandler={setGender as (a: string) => void}
+              onChangeHandler={(gender) =>
+                setCharacterData({ gender: gender as Gender })
+              }
             />
             <DropDown
               label="Birthsign"
               value={birthsign}
               options={birthsigns}
-              onChangeHandler={setBirthsign as (a: string) => void}
+              onChangeHandler={(birthsign) =>
+                setCharacterData({ birthsign: birthsign as Birthsign })
+              }
             />
           </Box>
           <Divider className="my-4" />
@@ -195,20 +200,30 @@ export default function Home() {
               name="Specialization"
               value={specialization}
               options={specializations}
-              onChangeHandler={setSpecialization as (a: string) => void}
+              onChangeHandler={(specialization) =>
+                setCharacterData({
+                  specialization: specialization as Specialization,
+                })
+              }
             />
             <SelectFromList
               label="Favored Attributes"
               selectedOptions={favoredAttributes}
               error={favoredAttributesError}
-              onChangeHandler={setFavoredAttributes as (a: string[]) => void}
+              onChangeHandler={(favoredAttributes) =>
+                setCharacterData({
+                  favoredAttributes: favoredAttributes as Attribute[],
+                })
+              }
               options={attributes}
             />
             <SelectFromList
               label="Major Skills"
               selectedOptions={majorSkills}
               error={majorSkillsError}
-              onChangeHandler={setMajorSkills as (a: string[]) => void}
+              onChangeHandler={(majorSkills) =>
+                setCharacterData({ majorSkills: majorSkills as Skill[] })
+              }
               options={skills}
             />
           </Box>
@@ -291,7 +306,6 @@ export default function Home() {
                           key={level.level}
                           level={levels[i - 1]}
                           levelUp={levelUps[level.level - 2]}
-                          majorSkills={majorSkills}
                           commitLevelUpHandler={(levelUp) =>
                             commitLevelUp(levelUp, level.level)
                           }
@@ -315,7 +329,6 @@ export default function Home() {
                     {modifyingLevel ? null : (
                       <ModifyLevelRow
                         level={currentLevel}
-                        majorSkills={majorSkills}
                         commitLevelUpHandler={(levelUp) =>
                           commitLevelUp(levelUp)
                         }

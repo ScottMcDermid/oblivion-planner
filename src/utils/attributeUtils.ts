@@ -1,4 +1,4 @@
-import type { Skill } from "@/data/skills";
+import type { Skill } from "@/utils/skillUtils";
 
 export type Attribute =
   | "STR"
@@ -87,5 +87,7 @@ const attributes: Attribute[] = [
   "PER",
   "LCK",
 ];
+
+export const NUM_FAVORED_ATTRIBUTES = 2;
 
 export default attributes;

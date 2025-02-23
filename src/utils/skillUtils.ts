@@ -147,4 +147,6 @@ export const shorthandBySkill: { [key in Skill]: SkillShorthand } = {
   Speechcraft: "SPE",
 };
 
+export const NUM_MAJOR_SKILLS = 7;
+
 export default skills;

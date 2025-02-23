@@ -1,5 +1,8 @@
-import { AttributesSet, getAttributesSetTemplate } from "@/data/attributes";
-import { SkillsSet, getSkillsSetTemplate } from "@/data/skills";
+import {
+  AttributesSet,
+  getAttributesSetTemplate,
+} from "@/utils/attributeUtils";
+import { SkillsSet, getSkillsSetTemplate } from "@/utils/skillUtils";
 
 export type Level = {
   attributes: AttributesSet;
