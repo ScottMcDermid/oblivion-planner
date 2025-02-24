@@ -196,7 +196,7 @@ export default function Home() {
               {/* Table Header */}
               <Box
                 className="xl:cols-14 grid grid-cols-10 place-items-center"
-                sx={{ 'grid-auto-rows': 'minmax(3rem, auto)' }}
+                sx={{ gridAutoRows: 'minmax(3rem, auto)' }}
               >
                 <Typography className="sm:text-lg">LVL</Typography>
                 {attributes.map((attribute) => (
@@ -216,7 +216,7 @@ export default function Home() {
               {/* Table Body */}
               <Box
                 className="grid grid-cols-10 place-items-center"
-                sx={{ 'grid-auto-rows': 'minmax(3rem, auto)' }}
+                sx={{ gridAutoRows: 'minmax(3rem, auto)' }}
               >
                 {levels.map((level, i) =>
                   modifyingLevel !== null && modifyingLevel === level.level ? (
@@ -245,7 +245,7 @@ export default function Home() {
               {/* Table Footer */}
               <Box
                 className="grid grid-cols-10 place-items-center"
-                sx={{ 'grid-auto-rows': 'minmax(3rem, auto)' }}
+                sx={{ gridAutoRows: 'minmax(3rem, auto)' }}
               >
                 {modifyingLevel ? null : (
                   <ModifyLevelRow
