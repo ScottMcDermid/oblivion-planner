@@ -28,7 +28,7 @@ export default function SkillFineTuner({
           <IconButton onClick={onDecrement}>
             <RemoveIcon />
           </IconButton>
-          <Typography>{value}</Typography>
+          <Typography className="min-w-4">{value}</Typography>
           <IconButton onClick={onIncrement}>
             <AddIcon />
           </IconButton>

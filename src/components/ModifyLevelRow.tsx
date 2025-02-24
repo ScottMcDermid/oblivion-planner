@@ -10,10 +10,11 @@ import type { Attribute, AttributesSet } from '@/utils/attributeUtils';
 import type { Level, LevelUp } from '@/utils/levelUtils';
 
 import attributes, {
-  getAttributesSetTemplate,
+  MAX_ATTRIBUTE_LEVEL,
+  SKILL_UPS_FOR_MAX_ATTRIBUTE_BONUS,
   getAttributeBonusFromSkillUps,
   getAttributeFromSkill,
-  MAX_ATTRIBUTE_LEVEL,
+  getAttributesSetTemplate,
   skillsByAttribute,
 } from '@/utils/attributeUtils';
 import skills, {
@@ -51,9 +52,7 @@ export default function ModifyLevelRow({
   const [raisedAttributes, setRaisedAttributes] = useState<Attribute[]>(
     levelUp ? attributes.filter((attribute) => levelUp.attributes[attribute] > 0) : [],
   );
-  const [raisedSkills, setRaisedSkills] = useState<Skill[]>([]);
-  const [selectedSkill, setSelectedSkill] = useState(skills[0]);
-  const [showSkillFineTuner, setShowSkillFineTuner] = useState(false);
+  const [selectedSkill, setSelectedSkill] = useState<Skill | null>(null);
 
   const numMajorSkillUps = useMemo(
     () =>
@@ -64,75 +63,36 @@ export default function ModifyLevelRow({
         }
         return sum;
       }, 0),
-    [skillUps, raisedSkills, majorSkills],
+    [skillUps, majorSkills],
   );
 
   const handleSkillSelected = (skill: Skill) => {
-    const index = raisedSkills.indexOf(skill);
-    if (index === -1) {
-      setRaisedSkills((newRaisedSkills) => [...newRaisedSkills, skill]);
-    }
-
-    // check attribute associated with skill
+    setSkillUps({
+      ...skillUps,
+      [skill]: Math.min(MAX_SKILL_LEVEL - level.skills[skill], SKILL_UPS_FOR_MAX_ATTRIBUTE_BONUS),
+    });
     const attribute = getAttributeFromSkill(skill);
     if (!raisedAttributes.includes(attribute))
       setRaisedAttributes([...raisedAttributes, attribute]);
-
     setSelectedSkill(skill);
-    setShowSkillFineTuner(true);
   };
 
   const handleSkillUnselected = (skill: Skill) => {
-    const skillIndex = raisedSkills.indexOf(skill);
-    if (skillIndex !== -1) {
-      setRaisedSkills((raisedSkills) => {
-        raisedSkills.splice(skillIndex, 1);
-        return [...raisedSkills];
-      });
-      setShowSkillFineTuner(false);
-    }
-
-    // uncheck attribute if no skills selected
-    const attribute = getAttributeFromSkill(skill);
-    const skillsInAttribute = raisedSkills.filter(
-      (raisedSkill) => getAttributeFromSkill(raisedSkill) === attribute,
-    ).length;
-    const attributeIndex = raisedAttributes.indexOf(attribute);
-    if (attributeIndex !== -1 && skillsInAttribute === 0) {
-      setRaisedAttributes((raisedAttributes) => {
-        raisedAttributes.splice(attributeIndex, 1);
-        return [...raisedAttributes];
-      });
-    }
-  };
-
-  useEffect(() => {
-    const raisedSkillsByAttribute: { [key in Attribute]?: Skill[] } = raisedSkills.reduce(
-      (skills: { [key in Attribute]?: Skill[] }, skill: Skill) => {
-        const attribute = getAttributeFromSkill(skill);
-        skills[attribute] = skills[attribute] ? [...skills[attribute], skill] : [skill];
-        return skills;
-      },
-      {},
-    );
-
-    const newSkillUps: SkillsSet = getSkillsSetTemplate();
-    Object.keys(raisedSkillsByAttribute).map((attribute) => {
-      const skills: Skill[] = raisedSkillsByAttribute[attribute as Attribute] ?? [];
-
-      let remainingSkillUps = DEFAULT_SKILL_INCREMENT;
-      skills.map((skill, i) => {
-        const pointsLeftForMaxSkill = MAX_SKILL_LEVEL - level.skills[skill];
-        const increment =
-          i === skills.length - 1
-            ? remainingSkillUps
-            : Math.floor(DEFAULT_SKILL_INCREMENT / skills.length);
-        newSkillUps[skill] = Math.min(increment, pointsLeftForMaxSkill);
-        remainingSkillUps -= newSkillUps[skill];
-      });
+    setSkillUps({
+      ...skillUps,
+      [skill]: 0,
     });
-    setSkillUps(newSkillUps);
-  }, [raisedSkills, level.skills]);
+
+    // uncheck attribute if last skill is unchecked
+    const attribute = getAttributeFromSkill(skill);
+    const attributeSkills = Object.entries(skillUps).find(
+      ([s, level]) => skill !== s && level > 0 && getAttributeFromSkill(s as Skill) === attribute,
+    );
+    if (!attributeSkills) {
+      setRaisedAttributes(raisedAttributes.slice(0).filter((a) => a !== attribute));
+    }
+    setSelectedSkill(null);
+  };
 
   const handleAttributeToggle = (value: Attribute) => {
     const currentIndex = raisedAttributes.indexOf(value);
@@ -193,6 +153,7 @@ export default function ModifyLevelRow({
                   <SkillSelector
                     skill={skill}
                     color={skillUps[skill] > 0 ? 'secondary' : skillUps[skill] < 0 ? 'error' : ''}
+                    base={level.skills[skill]}
                     value={nextLevel.skills[skill]}
                     major={majorSkills.includes(skill)}
                     selectHandler={() => handleSkillSelected(skill)}
@@ -205,7 +166,7 @@ export default function ModifyLevelRow({
       )}
 
       <div className="col-span-2">
-        {showSkillFineTuner && (
+        {selectedSkill && (
           <SkillFineTuner
             skill={selectedSkill}
             value={skillUps[selectedSkill]}

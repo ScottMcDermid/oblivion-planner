@@ -6,6 +6,7 @@ import { useEffect, useState } from 'react';
 export default function SkillSelector({
   skill,
   major,
+  base,
   value,
   color = '',
   selectHandler,
@@ -13,18 +14,12 @@ export default function SkillSelector({
 }: {
   skill: Skill;
   major: boolean;
+  base: number;
   value: number;
   color?: string;
   selectHandler: () => void;
   unselectHandler: () => void;
 }) {
-  const [selected, setSelected] = useState<boolean>(false);
-
-  useEffect(() => {
-    if (selected) selectHandler();
-    else unselectHandler();
-  }, [selected]);
-
   return (
     <Box className="m-1 flex flex-col">
       <Typography
@@ -43,10 +38,11 @@ export default function SkillSelector({
       <ToggleButton
         className="p-1"
         disabled={value >= MAX_SKILL_LEVEL}
-        value={selected}
-        selected={selected}
+        value={value}
+        selected={value !== base}
         onClick={() => {
-          setSelected(!selected);
+          if (value === base) selectHandler();
+          else unselectHandler();
         }}
         aria-label={`select ${skill}`}
       >
