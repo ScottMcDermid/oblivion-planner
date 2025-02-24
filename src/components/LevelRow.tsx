@@ -1,4 +1,4 @@
-import { IconButton, TableCell, TableRow, Tooltip, Typography } from '@mui/material';
+import { IconButton, Tooltip, Typography } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 
@@ -11,7 +11,7 @@ import attributes, {
 import type { Attribute } from '@/utils/attributeUtils';
 import { MAX_SKILL_LEVEL, Skill, SkillsSet } from '@/utils/skillUtils';
 
-export default function DropDown({
+export default function LevelRow({
   level,
   previousLevel,
   onRemoveHandler,
@@ -32,12 +32,10 @@ export default function DropDown({
   };
 
   return (
-    <TableRow key={level.level}>
-      <TableCell align="center" className="px-0 text-lg">
-        {level.level}
-      </TableCell>
+    <>
+      <div className="px-0 text-lg">{level.level}</div>
       {attributes.map((attribute: Attribute) => (
-        <TableCell key={attribute} align="center" className="px-0">
+        <div key={attribute} className="px-0">
           <Tooltip
             {...(attribute !== 'LCK'
               ? {
@@ -54,16 +52,16 @@ export default function DropDown({
               {level.attributes[attribute]}
             </Typography>
           </Tooltip>
-        </TableCell>
+        </div>
       ))}
-      <TableCell className="hidden px-0 2xl:table-cell" align="center">
+      <div className="hidden 2xl:block">
         <Typography
           {...(previousLevel && level.health > previousLevel.health ? { color: 'secondary' } : {})}
         >
           {level.health}
         </Typography>
-      </TableCell>
-      <TableCell className="hidden px-0 2xl:table-cell" align="center">
+      </div>
+      <div className="hidden 2xl:block">
         <Typography
           {...(previousLevel && level.magicka > previousLevel.magicka
             ? { color: 'secondary' }
@@ -71,8 +69,8 @@ export default function DropDown({
         >
           {level.magicka}
         </Typography>
-      </TableCell>
-      <TableCell className="hidden px-0 2xl:table-cell" align="center">
+      </div>
+      <div className="hidden 2xl:block">
         <Typography
           {...(previousLevel && level.stamina > previousLevel.stamina
             ? { color: 'secondary' }
@@ -80,8 +78,8 @@ export default function DropDown({
         >
           {level.stamina}
         </Typography>
-      </TableCell>
-      <TableCell className="hidden px-0 2xl:table-cell" align="center">
+      </div>
+      <div className="hidden 2xl:block">
         <Typography
           {...(previousLevel && level.encumbrance > previousLevel.encumbrance
             ? { color: 'secondary' }
@@ -89,8 +87,8 @@ export default function DropDown({
         >
           {level.encumbrance}
         </Typography>
-      </TableCell>
-      <TableCell align="center">
+      </div>
+      <div>
         {onModifyHandler ? (
           <Tooltip title="Modify">
             <IconButton
@@ -118,8 +116,10 @@ export default function DropDown({
               <DeleteIcon />
             </IconButton>
           </Tooltip>
-        ) : null}
-      </TableCell>
-    </TableRow>
+        ) : (
+          <div></div>
+        )}
+      </div>
+    </>
   );
 }

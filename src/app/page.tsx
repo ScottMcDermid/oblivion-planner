@@ -6,12 +6,6 @@ import CssBaseline from '@mui/material/CssBaseline';
 import Divider from '@mui/material/Divider';
 import PersonIcon from '@mui/icons-material/Person';
 import Skeleton from '@mui/material/Skeleton';
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-import TableCell from '@mui/material/TableCell';
-import TableContainer from '@mui/material/TableContainer';
-import TableHead from '@mui/material/TableHead';
-import TableRow from '@mui/material/TableRow';
 import { Drawer, Fab, StyledEngineProvider, Tooltip, Typography } from '@mui/material';
 
 import theme from '@/app/theme';
@@ -196,94 +190,79 @@ export default function Home() {
               </Fab>
             </Tooltip>
           </Box>
-          <Box className="mx-auto max-h-screen overflow-hidden">
-            {levels.length > 0 ? (
-              <TableContainer className="max-h-screen">
-                <Table stickyHeader size="small" aria-label="Levels">
-                  <TableHead className="sticky">
-                    <TableRow>
-                      <TableCell align="center" component="th" className="min-w-6">
-                        <Typography className="block sm:text-lg">LVL</Typography>
-                      </TableCell>
-                      {attributes.map((attribute) => (
-                        <TableCell
-                          component="th"
-                          className="w-28 px-0 text-lg"
-                          align="center"
-                          key={attribute}
-                        >
-                          {attribute}
-                        </TableCell>
-                      ))}
-                      <TableCell
-                        className="px0 hidden 2xl:table-cell"
-                        align="center"
-                        component="th"
-                      >
-                        Health
-                      </TableCell>
-                      <TableCell
-                        className="px0 hidden 2xl:table-cell"
-                        align="center"
-                        component="th"
-                      >
-                        Magicka
-                      </TableCell>
-                      <TableCell
-                        className="px0 hidden 2xl:table-cell"
-                        align="center"
-                        component="th"
-                      >
-                        Stamina
-                      </TableCell>
-                      <TableCell
-                        className="px0 hidden 2xl:table-cell"
-                        align="center"
-                        component="th"
-                      >
-                        Encumbrance
-                      </TableCell>
-                      <TableCell component="th" className="px0" />
-                    </TableRow>
-                  </TableHead>
-                  <TableBody>
-                    {levels.map((level, i) =>
-                      modifyingLevel !== null && modifyingLevel === level.level ? (
-                        <ModifyLevelRow
-                          key={level.level}
-                          level={levels[i - 1]}
-                          levelUp={levelUps[level.level - 2]}
-                          commitLevelUpHandler={(levelUp) => commitLevelUp(levelUp, level.level)}
-                        />
-                      ) : (
-                        <LevelRow
-                          key={level.level}
-                          level={level}
-                          {...(level.level > 1
-                            ? {
-                                onRemoveHandler: () => promptConfirmRemoveLevel(level.level),
-                                onModifyHandler: () => setModifyingLevel(level.level),
-                              }
-                            : {})}
-                          previousLevel={levels[i - 1]}
-                        />
-                      ),
-                    )}
-                    {modifyingLevel ? null : (
-                      <ModifyLevelRow
-                        level={currentLevel}
-                        commitLevelUpHandler={(levelUp) => commitLevelUp(levelUp)}
-                      />
-                    )}
-                  </TableBody>
-                </Table>
-              </TableContainer>
-            ) : (
-              <div>
-                <Skeleton height={100} />
-              </div>
-            )}
-          </Box>
+
+          {levels.length > 0 ? (
+            <Box className="mx-auto max-h-screen place-items-center divide-y divide-gray-300 overflow-hidden">
+              {/* Table Header */}
+              <Box
+                className="xl:cols-14 grid grid-cols-10 place-items-center"
+                sx={{ 'grid-auto-rows': 'minmax(3rem, auto)' }}
+              >
+                <Typography className="sm:text-lg">LVL</Typography>
+                {attributes.map((attribute) => (
+                  <Typography className="sm:text-lg" key={attribute}>
+                    {attribute}
+                  </Typography>
+                ))}
+                <div className="px0 hidden 2xl:block">Health</div>
+                <div className="px0 hidden 2xl:block">Magicka</div>
+                <div className="px0 hidden 2xl:block">Stamina</div>
+                <div className="px0 hidden 2xl:block">Encumbrance</div>
+
+                {/* Padding for modify level row */}
+                <div></div>
+              </Box>
+
+              {/* Table Body */}
+              <Box
+                className="grid grid-cols-10 place-items-center"
+                sx={{ 'grid-auto-rows': 'minmax(3rem, auto)' }}
+              >
+                {levels.map((level, i) =>
+                  modifyingLevel !== null && modifyingLevel === level.level ? (
+                    <ModifyLevelRow
+                      key={level.level}
+                      level={levels[i - 1]}
+                      levelUp={levelUps[level.level - 2]}
+                      commitLevelUpHandler={(levelUp) => commitLevelUp(levelUp, level.level)}
+                    />
+                  ) : (
+                    <LevelRow
+                      key={level.level}
+                      level={level}
+                      {...(level.level > 1
+                        ? {
+                            onRemoveHandler: () => promptConfirmRemoveLevel(level.level),
+                            onModifyHandler: () => setModifyingLevel(level.level),
+                          }
+                        : {})}
+                      previousLevel={levels[i - 1]}
+                    />
+                  ),
+                )}
+              </Box>
+
+              {/* Table Footer */}
+              <Box
+                className="grid grid-cols-10 place-items-center"
+                sx={{ 'grid-auto-rows': 'minmax(3rem, auto)' }}
+              >
+                {modifyingLevel ? null : (
+                  <ModifyLevelRow
+                    level={currentLevel}
+                    commitLevelUpHandler={(levelUp) => commitLevelUp(levelUp)}
+                  />
+                )}
+              </Box>
+            </Box>
+          ) : (
+            <div className="p-5">
+              <Skeleton height={100} />
+              <Skeleton height={100} />
+              <Skeleton height={100} />
+              <Skeleton height={100} />
+            </div>
+          )}
         </Box>
         <ConfirmDialog open={removingLevel !== null} handleClose={handleRemoveLevel} />
       </ThemeProvider>

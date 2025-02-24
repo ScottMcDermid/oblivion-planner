@@ -1,16 +1,9 @@
 import { useEffect, useMemo, useState } from 'react';
 import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
-import {
-  Box,
-  Button,
-  Checkbox,
-  LinearProgress,
-  TableCell,
-  TableRow,
-  Typography,
-} from '@mui/material';
+import { Box, Button, Checkbox, LinearProgress, Typography } from '@mui/material';
 
 import SkillSelector from '@/components/SkillSelector';
+import SkillFineTuner from '@/components/SkillFineTuner';
 import LevelRow from '@/components/LevelRow';
 
 import type { Attribute, AttributesSet } from '@/utils/attributeUtils';
@@ -59,6 +52,8 @@ export default function ModifyLevelRow({
     levelUp ? attributes.filter((attribute) => levelUp.attributes[attribute] > 0) : [],
   );
   const [raisedSkills, setRaisedSkills] = useState<Skill[]>([]);
+  const [selectedSkill, setSelectedSkill] = useState(skills[0]);
+  const [showSkillFineTuner, setShowSkillFineTuner] = useState(false);
 
   const numMajorSkillUps = useMemo(
     () =>
@@ -82,6 +77,9 @@ export default function ModifyLevelRow({
     const attribute = getAttributeFromSkill(skill);
     if (!raisedAttributes.includes(attribute))
       setRaisedAttributes([...raisedAttributes, attribute]);
+
+    setSelectedSkill(skill);
+    setShowSkillFineTuner(true);
   };
 
   const handleSkillUnselected = (skill: Skill) => {
@@ -91,6 +89,7 @@ export default function ModifyLevelRow({
         raisedSkills.splice(skillIndex, 1);
         return [...raisedSkills];
       });
+      setShowSkillFineTuner(false);
     }
 
     // uncheck attribute if no skills selected
@@ -183,95 +182,110 @@ export default function ModifyLevelRow({
 
   return (
     <>
-      <TableRow>
-        <TableCell className="px-0" />
-        {attributes.map((attribute) => (
-          <TableCell key={attribute} className="px-0">
-            {skillsByAttribute[attribute].map((skill) => (
-              <Box key={`${level.level}-${skill}`} className="pb-2">
-                <SkillSelector
-                  skill={skill}
-                  color={skillUps[skill] > 0 ? 'secondary' : skillUps[skill] < 0 ? 'error' : ''}
-                  value={nextLevel.skills[skill]}
-                  major={majorSkills.includes(skill)}
-                  selectHandler={() => handleSkillSelected(skill)}
-                  unselectHandler={() => handleSkillUnselected(skill)}
-                />
-              </Box>
-            ))}
-          </TableCell>
-        ))}
+      {/* padding for level column */}
+      <div></div>
+      {attributes.map(
+        (attribute) =>
+          skillsByAttribute[attribute].length > 0 && (
+            <div key={attribute}>
+              {skillsByAttribute[attribute].map((skill) => (
+                <Box key={`${level.level}-${skill}`} className="w-full sm:w-16 lg:w-24">
+                  <SkillSelector
+                    skill={skill}
+                    color={skillUps[skill] > 0 ? 'secondary' : skillUps[skill] < 0 ? 'error' : ''}
+                    value={nextLevel.skills[skill]}
+                    major={majorSkills.includes(skill)}
+                    selectHandler={() => handleSkillSelected(skill)}
+                    unselectHandler={() => handleSkillUnselected(skill)}
+                  />
+                </Box>
+              ))}
+            </div>
+          ),
+      )}
 
-        <TableCell colSpan={4} className="hidden px-0 2xl:table-cell" />
-        <TableCell />
-      </TableRow>
-      <TableRow>
-        <TableCell className="px-0" />
-        {attributes.map((attribute) => (
-          <TableCell align="center" key={attribute} className="px-0">
-            <Typography
-              {...(raisedAttributes.includes(attribute) ? { color: 'secondary' } : {})}
-              className="selfCenter lg:show hidden h-full"
-            >
-              {`${level.attributes[attribute]} + ${attributeBonuses[attribute]}`}
-            </Typography>
-            <Typography
-              {...(raisedAttributes.includes(attribute) ? { color: 'secondary' } : {})}
-              className="selfCenter block h-full"
-            >
-              {`+${attributeBonuses[attribute]}`}
-            </Typography>
-            <Checkbox
-              key={attribute}
-              color="default"
-              disabled={level.attributes[attribute] >= MAX_ATTRIBUTE_LEVEL}
-              checked={raisedAttributes.includes(attribute)}
-              onChange={() => {
-                handleAttributeToggle(attribute);
-              }}
-              name={`${attributeBonuses[attribute]}`}
-            />
-          </TableCell>
-        ))}
-        <TableCell colSpan={4} className="hidden 2xl:table-cell" />
-        <TableCell />
-      </TableRow>
-      <LevelRow level={nextLevel} previousLevel={level} />
-      <TableRow sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
-        <TableCell align="center" colSpan={attributes.length + 6}>
-          <LinearProgress
-            className="w-full"
-            variant="determinate"
-            color="primary"
-            value={Math.min((numMajorSkillUps / NUM_MAJOR_SKILL_UPS_PER_LEVEL) * 100, 100)}
-          />
-          <Button
-            variant="outlined"
-            size="large"
-            onClick={() => {
-              commitLevelUpHandler({
-                skills: skillUps,
-                attributes: raisedAttributes.reduce(
-                  (attributes, attribute) => ({
-                    ...attributes,
-                    [attribute]: attributeBonuses[attribute],
-                  }),
-                  getAttributesSetTemplate(),
-                ),
-              });
-              setSkillUps(getSkillsSetTemplate());
-              setRaisedAttributes([]);
+      <div className="col-span-2">
+        {showSkillFineTuner && (
+          <SkillFineTuner
+            skill={selectedSkill}
+            value={skillUps[selectedSkill]}
+            onIncrement={() => {
+              setSkillUps({ ...skillUps, [selectedSkill]: skillUps[selectedSkill] + 1 });
             }}
-            className="w-full"
-            {...(numMajorSkillUps < NUM_MAJOR_SKILL_UPS_PER_LEVEL ||
-            raisedAttributes.length !== NUM_RAISED_ATTRIBUTES
-              ? { disabled: true }
-              : {})}
+            onDecrement={() => {
+              setSkillUps({ ...skillUps, [selectedSkill]: skillUps[selectedSkill] - 1 });
+            }}
+          />
+        )}
+      </div>
+
+      {/* padding for level column */}
+      <div></div>
+      {attributes.map((attribute) => (
+        <div key={attribute} className="px-0">
+          <Typography
+            {...(raisedAttributes.includes(attribute) ? { color: 'secondary' } : {})}
+            className="selfCenter lg:show hidden h-full"
           >
-            <ArrowUpwardIcon />
-          </Button>
-        </TableCell>
-      </TableRow>
+            {`${level.attributes[attribute]} + ${attributeBonuses[attribute]}`}
+          </Typography>
+          <Typography
+            {...(raisedAttributes.includes(attribute) ? { color: 'secondary' } : {})}
+            className="selfCenter block h-full text-center"
+          >
+            {`+${attributeBonuses[attribute]}`}
+          </Typography>
+          <Checkbox
+            key={attribute}
+            color="default"
+            disabled={level.attributes[attribute] >= MAX_ATTRIBUTE_LEVEL}
+            checked={raisedAttributes.includes(attribute)}
+            onChange={() => {
+              handleAttributeToggle(attribute);
+            }}
+            name={`${attributeBonuses[attribute]}`}
+          />
+        </div>
+      ))}
+
+      {/* Padding for modify level row */}
+      <div></div>
+      <LevelRow level={nextLevel} previousLevel={level} />
+
+      {/* Footer */}
+      <div className="2xl:col-span-14 col-span-10 w-full">
+        <LinearProgress
+          className="w-full"
+          variant="determinate"
+          color="primary"
+          value={Math.min((numMajorSkillUps / NUM_MAJOR_SKILL_UPS_PER_LEVEL) * 100, 100)}
+        />
+        <Button
+          variant="outlined"
+          size="large"
+          className="w-full"
+          onClick={() => {
+            commitLevelUpHandler({
+              skills: skillUps,
+              attributes: raisedAttributes.reduce(
+                (attributes, attribute) => ({
+                  ...attributes,
+                  [attribute]: attributeBonuses[attribute],
+                }),
+                getAttributesSetTemplate(),
+              ),
+            });
+            setSkillUps(getSkillsSetTemplate());
+            setRaisedAttributes([]);
+          }}
+          {...(numMajorSkillUps < NUM_MAJOR_SKILL_UPS_PER_LEVEL ||
+          raisedAttributes.length !== NUM_RAISED_ATTRIBUTES
+            ? { disabled: true }
+            : {})}
+        >
+          <ArrowUpwardIcon />
+        </Button>
+      </div>
     </>
   );
 }
