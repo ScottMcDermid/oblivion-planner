@@ -72,8 +72,9 @@ export default function ModifyLevelRow({
       [skill]: Math.min(MAX_SKILL_LEVEL - level.skills[skill], SKILL_UPS_FOR_MAX_ATTRIBUTE_BONUS),
     });
     const attribute = getAttributeFromSkill(skill);
-    if (!raisedAttributes.includes(attribute))
+    if (!raisedAttributes.includes(attribute)) {
       setRaisedAttributes([...raisedAttributes, attribute]);
+    }
     setSelectedSkill(skill);
   };
 
@@ -91,7 +92,7 @@ export default function ModifyLevelRow({
     if (!attributeSkills) {
       setRaisedAttributes(raisedAttributes.slice(0).filter((a) => a !== attribute));
     }
-    setSelectedSkill(null);
+    setSelectedSkill(skill);
   };
 
   const handleAttributeToggle = (value: Attribute) => {
