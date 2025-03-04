@@ -1,3 +1,4 @@
+import React from 'react';
 import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
@@ -19,7 +20,7 @@ export default function DropDown({
 }) {
   return (
     <FormControl id={name} className="mx-1 flex flex-col">
-      {!!label ? <FormLabel className="text-lg">{label}</FormLabel> : null}
+      {label ? <FormLabel className="text-lg">{label}</FormLabel> : null}
       <RadioGroup
         row
         aria-labelledby={`${name}-group-label`}

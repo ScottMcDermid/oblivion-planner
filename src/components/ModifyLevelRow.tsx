@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
 import { Box, Button, Checkbox, LinearProgress, Typography } from '@mui/material';
 
@@ -40,7 +40,6 @@ export default function ModifyLevelRow({
   const { majorSkills } = useCharacterStore();
   const NUM_MAJOR_SKILL_UPS_PER_LEVEL = 10;
   const NUM_RAISED_ATTRIBUTES = 3;
-  const DEFAULT_SKILL_INCREMENT = 10;
 
   const [nextLevel, setNextLevel] = useState<Level>(levelTemplate);
   const [attributeBonuses, setAttributeBonuses] = useState<AttributesSet>(

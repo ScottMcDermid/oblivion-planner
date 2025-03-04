@@ -1,5 +1,6 @@
 'use client';
-import { useState, useEffect } from 'react';
+
+import React, { useState, useEffect } from 'react';
 import { ThemeProvider } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -75,7 +76,16 @@ export default function Home() {
         [getBaseLevel(race, gender, birthsign, specialization, favoredAttributes, majorSkills)],
       ),
     );
-  }, [race, gender, birthsign, specialization, favoredAttributes, levelUps, majorSkills]);
+  }, [
+    race,
+    gender,
+    birthsign,
+    specialization,
+    favoredAttributes,
+    levelUps,
+    majorSkills,
+    setLevels,
+  ]);
 
   // validation
   useEffect(() => {
