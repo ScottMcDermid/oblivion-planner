@@ -165,7 +165,7 @@ export default function ModifyLevelRow({
           ),
       )}
 
-      <div className="col-span-2">
+      <div className="col-span-2 w-full justify-start xl:col-span-6">
         {selectedSkill && (
           <SkillFineTuner
             skill={selectedSkill}
@@ -180,7 +180,7 @@ export default function ModifyLevelRow({
         )}
       </div>
 
-      {/* padding for level column */}
+      {/* Padding for level column */}
       <div></div>
       {attributes.map((attribute) => (
         <div key={attribute} className="px-0">
@@ -210,11 +210,11 @@ export default function ModifyLevelRow({
       ))}
 
       {/* Padding for modify level row */}
-      <div></div>
+      <div className="xl:col-span-5"></div>
       <LevelRow level={nextLevel} previousLevel={level} />
 
       {/* Footer */}
-      <div className="2xl:col-span-14 col-span-10 w-full">
+      <div className="col-span-full w-full">
         <LinearProgress
           className="w-full"
           variant="determinate"

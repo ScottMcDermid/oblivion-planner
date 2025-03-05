@@ -1,4 +1,4 @@
-import React from 'react'
+import React from 'react';
 import { Box, IconButton, Typography } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
@@ -18,7 +18,7 @@ export default function SkillFineTuner({
   onDecrement: () => void;
 }) {
   return (
-    <Box className="flex flex-col text-center">
+    <Box className="flex w-24 flex-col place-items-center text-center">
       <Typography className="whitespace-nowrap">Fine Tune</Typography>
       <div className="place-items-center">
         <Typography className="hidden whitespace-nowrap text-xs lg:block">{skill}</Typography>

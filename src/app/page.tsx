@@ -205,7 +205,7 @@ export default function Home() {
             <Box className="mx-auto max-h-screen place-items-center divide-y divide-gray-300 overflow-hidden">
               {/* Table Header */}
               <Box
-                className="xl:cols-14 grid grid-cols-10 place-items-center"
+                className="grid grid-cols-[3rem_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr] place-items-center sm:grid-cols-[5rem_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr] xl:grid-cols-[5rem_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr]"
                 sx={{ gridAutoRows: 'minmax(3rem, auto)' }}
               >
                 <Typography className="sm:text-lg">LVL</Typography>
@@ -214,10 +214,10 @@ export default function Home() {
                     {attribute}
                   </Typography>
                 ))}
-                <div className="px0 hidden 2xl:block">Health</div>
-                <div className="px0 hidden 2xl:block">Magicka</div>
-                <div className="px0 hidden 2xl:block">Stamina</div>
-                <div className="px0 hidden 2xl:block">Encumbrance</div>
+                <div className="px0 hidden xl:block">Health</div>
+                <div className="px0 hidden xl:block">Magicka</div>
+                <div className="px0 hidden xl:block">Stamina</div>
+                <div className="px0 hidden xl:block">Encumbrance</div>
 
                 {/* Padding for modify level row */}
                 <div></div>
@@ -225,17 +225,20 @@ export default function Home() {
 
               {/* Table Body */}
               <Box
-                className="grid grid-cols-10 place-items-center"
+                className="grid grid-cols-[3rem_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr] place-items-center sm:grid-cols-[5rem_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr] xl:grid-cols-[5rem_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr]"
                 sx={{ gridAutoRows: 'minmax(3rem, auto)' }}
               >
                 {levels.map((level, i) =>
                   modifyingLevel !== null && modifyingLevel === level.level ? (
-                    <ModifyLevelRow
-                      key={level.level}
-                      level={levels[i - 1]}
-                      levelUp={levelUps[level.level - 2]}
-                      commitLevelUpHandler={(levelUp) => commitLevelUp(levelUp, level.level)}
-                    />
+                    <>
+                      <div>WHAT</div>
+                      <ModifyLevelRow
+                        key={level.level}
+                        level={levels[i - 1]}
+                        levelUp={levelUps[level.level - 2]}
+                        commitLevelUpHandler={(levelUp) => commitLevelUp(levelUp, level.level)}
+                      />
+                    </>
                   ) : (
                     <LevelRow
                       key={level.level}
@@ -254,23 +257,27 @@ export default function Home() {
 
               {/* Table Footer */}
               <Box
-                className="grid grid-cols-10 place-items-center"
+                className="grid grid-cols-[3rem_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr] place-items-center sm:grid-cols-[5rem_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr] xl:grid-cols-[5rem_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr]"
                 sx={{ gridAutoRows: 'minmax(3rem, auto)' }}
               >
                 {modifyingLevel ? null : (
-                  <ModifyLevelRow
-                    level={currentLevel}
-                    commitLevelUpHandler={(levelUp) => commitLevelUp(levelUp)}
-                  />
+                  <>
+                    <ModifyLevelRow
+                      level={currentLevel}
+                      commitLevelUpHandler={(levelUp) => commitLevelUp(levelUp)}
+                    />
+                  </>
                 )}
               </Box>
             </Box>
           ) : (
-            <div className="p-5">
-              <Skeleton height={100} />
-              <Skeleton height={100} />
-              <Skeleton height={100} />
-              <Skeleton height={100} />
+            <div className="w-1/2 p-5">
+              <Skeleton height={50} />
+              <Skeleton height={50} />
+              <Skeleton height={50} />
+              <Skeleton height={50} />
+              <Skeleton height={50} />
+              <Skeleton height={50} />
             </div>
           )}
         </Box>

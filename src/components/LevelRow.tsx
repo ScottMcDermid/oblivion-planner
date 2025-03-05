@@ -1,4 +1,4 @@
-import React from 'react'
+import React from 'react';
 import { IconButton, Tooltip, Typography } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
@@ -55,14 +55,14 @@ export default function LevelRow({
           </Tooltip>
         </div>
       ))}
-      <div className="hidden 2xl:block">
+      <div className="hidden xl:block">
         <Typography
           {...(previousLevel && level.health > previousLevel.health ? { color: 'secondary' } : {})}
         >
           {level.health}
         </Typography>
       </div>
-      <div className="hidden 2xl:block">
+      <div className="hidden xl:block">
         <Typography
           {...(previousLevel && level.magicka > previousLevel.magicka
             ? { color: 'secondary' }
@@ -71,7 +71,7 @@ export default function LevelRow({
           {level.magicka}
         </Typography>
       </div>
-      <div className="hidden 2xl:block">
+      <div className="hidden xl:block">
         <Typography
           {...(previousLevel && level.stamina > previousLevel.stamina
             ? { color: 'secondary' }
@@ -80,7 +80,7 @@ export default function LevelRow({
           {level.stamina}
         </Typography>
       </div>
-      <div className="hidden 2xl:block">
+      <div className="hidden xl:block">
         <Typography
           {...(previousLevel && level.encumbrance > previousLevel.encumbrance
             ? { color: 'secondary' }
