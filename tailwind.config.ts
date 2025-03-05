@@ -12,7 +12,7 @@ const config: Config = {
   },
   important: '#root',
   corePlugins: {
-    preflight: false,
+    preflight: true,
   },
   plugins: [],
 };

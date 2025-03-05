@@ -61,8 +61,9 @@ export default function Home() {
     setRemovingLevel(level);
   };
   const handleRemoveLevel = (confirm: boolean) => {
-    if (!confirm || !removingLevel) return;
-    removeLevel(removingLevel);
+    if (confirm && removingLevel) {
+      removeLevel(removingLevel);
+    }
     setRemovingLevel(null);
   };
 
@@ -202,10 +203,10 @@ export default function Home() {
           </Box>
 
           {levels.length > 0 ? (
-            <Box className="mx-auto max-h-screen place-items-center divide-y divide-gray-300 overflow-hidden">
+            <Box className="mx-auto max-h-screen place-items-center overflow-hidden">
               {/* Table Header */}
               <Box
-                className="grid grid-cols-[3rem_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr] place-items-center sm:grid-cols-[5rem_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr] xl:grid-cols-[5rem_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr]"
+                className="grid w-full grid-cols-[3rem_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr] place-items-center sm:grid-cols-[5rem_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr] xl:grid-cols-[5rem_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr]"
                 sx={{ gridAutoRows: 'minmax(3rem, auto)' }}
               >
                 <Typography className="sm:text-lg">LVL</Typography>
@@ -225,13 +226,12 @@ export default function Home() {
 
               {/* Table Body */}
               <Box
-                className="grid grid-cols-[3rem_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr] place-items-center sm:grid-cols-[5rem_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr] xl:grid-cols-[5rem_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr]"
+                className="grid w-full grid-cols-[3rem_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr] place-items-center sm:grid-cols-[5rem_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr] xl:grid-cols-[5rem_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr]"
                 sx={{ gridAutoRows: 'minmax(3rem, auto)' }}
               >
                 {levels.map((level, i) =>
                   modifyingLevel !== null && modifyingLevel === level.level ? (
                     <>
-                      <div>WHAT</div>
                       <ModifyLevelRow
                         key={level.level}
                         level={levels[i - 1]}
@@ -257,7 +257,7 @@ export default function Home() {
 
               {/* Table Footer */}
               <Box
-                className="grid grid-cols-[3rem_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr] place-items-center sm:grid-cols-[5rem_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr] xl:grid-cols-[5rem_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr]"
+                className="grid w-full grid-cols-[3rem_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr] place-items-center sm:grid-cols-[5rem_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr] xl:grid-cols-[5rem_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr]"
                 sx={{ gridAutoRows: 'minmax(3rem, auto)' }}
               >
                 {modifyingLevel ? null : (
