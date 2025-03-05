@@ -19,7 +19,6 @@ dev-build:
 dev-stop:
 	docker compose --profile development down
 
-
 prod:
 	$(touch_local_env)
 	docker compose --profile production down
@@ -32,3 +31,6 @@ prod-build:
 
 prod-stop:
 	docker compose --profile production down
+
+logs:
+	docker compose --profile production --profile development logs -f
