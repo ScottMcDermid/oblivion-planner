@@ -30,6 +30,6 @@ Naviage to [http://localhost:3000](http://localhost:3000)
 
 You can modify `.env` for any locally defined environment variables
 
-| Name | Purpose                   |
-| ---- | ------------------------- |
-| PORT | Port to run server off of |
+| Name   | Purpose                |
+| ------ | ---------------------- |
+| `PORT` | Port server listens to |
