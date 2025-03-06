@@ -41,10 +41,6 @@ export default function ModifyLevelRow({
   const NUM_MAJOR_SKILL_UPS_PER_LEVEL = 10;
   const NUM_RAISED_ATTRIBUTES = 3;
 
-  const [nextLevel, setNextLevel] = useState<Level>(levelTemplate);
-  const [attributeBonuses, setAttributeBonuses] = useState<AttributesSet>(
-    getAttributesSetTemplate(),
-  );
   const [skillUps, setSkillUps] = useState<SkillsSet>(
     levelUp ? levelUp.skills : getSkillsSetTemplate(),
   );
@@ -113,25 +109,26 @@ export default function ModifyLevelRow({
   };
 
   // compute attribute bonuses
-  useEffect(() => {
-    const newAttributeBonuses: AttributesSet = attributes.reduce((attributeBonuses, attribute) => {
-      const attributeSkillUps: number = skillsByAttribute[attribute].reduce(
-        (sum: number, skill: Skill) => {
-          return sum + skillUps[skill];
-        },
-        0,
-      );
-      const attributeBonus = getAttributeBonusFromSkillUps(
-        level.attributes[attribute],
-        attributeSkillUps,
-      );
-      return { ...attributeBonuses, [attribute]: attributeBonus };
-    }, getAttributesSetTemplate());
-    setAttributeBonuses(newAttributeBonuses);
-  }, [skillUps, level.attributes]);
+  const attributeBonuses: AttributesSet = useMemo(
+    () =>
+      attributes.reduce((bonuses, attribute) => {
+        const attributeSkillUps = skillsByAttribute[attribute].reduce(
+          (sum: number, skill: Skill) => {
+            return sum + skillUps[skill];
+          },
+          0,
+        );
+        const attributeBonus = getAttributeBonusFromSkillUps(
+          level.attributes[attribute],
+          attributeSkillUps,
+        );
+        return { ...bonuses, [attribute]: attributeBonus };
+      }, getAttributesSetTemplate()),
+    [skillUps, level.attributes],
+  );
 
-  useEffect(() => {
-    setNextLevel(
+  const nextLevel = useMemo(
+    () =>
       applyLevelUpToLevel(level, {
         skills: skillUps,
         attributes: raisedAttributes.reduce(
@@ -142,8 +139,8 @@ export default function ModifyLevelRow({
           getAttributesSetTemplate(),
         ),
       }),
-    );
-  }, [level, skillUps, raisedAttributes, attributeBonuses]);
+    [level, skillUps, raisedAttributes, attributeBonuses],
+  );
 
   return (
     <>
