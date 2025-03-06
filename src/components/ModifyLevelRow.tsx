@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
 import { Box, Button, Checkbox, LinearProgress, Typography } from '@mui/material';
 
@@ -24,8 +24,6 @@ import skills, {
   getSkillsSetTemplate,
 } from '@/utils/skillUtils';
 import { applyLevelUpToLevel } from '@/utils/levelUtils';
-import { levelTemplate } from '@/utils/levelUtils';
-
 import { useCharacterStore } from '@/data/characterStore';
 
 export default function ModifyLevelRow({
