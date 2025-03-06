@@ -10,8 +10,8 @@ import attributes, {
   getRemainingSkillUpsForMaxAttribute,
   getAttributesSetTemplate,
 } from '@/utils/attributeUtils';
-import type { Attribute, AttributesSet } from '@/utils/attributeUtils';
-import { MAX_SKILL_LEVEL, Skill, SkillsSet } from '@/utils/skillUtils';
+import type { Attribute } from '@/utils/attributeUtils';
+import { MAX_SKILL_LEVEL, Skill } from '@/utils/skillUtils';
 
 export default function LevelRow({
   level,
@@ -24,15 +24,6 @@ export default function LevelRow({
   onRemoveHandler?: () => void;
   onModifyHandler?: () => void;
 }) {
-  const getExtraSkillUpsForAttribute = (attribute: Attribute, skills: SkillsSet): number => {
-    return (
-      skillsByAttribute[attribute].reduce(
-        (sum, skill: Skill) => sum + MAX_SKILL_LEVEL - skills[skill],
-        0,
-      ) - getRemainingSkillUpsForMaxAttribute(attribute, level.attributes[attribute])
-    );
-  };
-
   const remainingSkillUps = useMemo(
     () =>
       Object.entries(level.attributes).reduce(

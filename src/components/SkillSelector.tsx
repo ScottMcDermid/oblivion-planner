@@ -1,6 +1,6 @@
 import React from 'react';
 import Box from '@mui/material/Box';
-import { MAX_SKILL_LEVEL, shorthandBySkill, Skill } from '@/utils/skillUtils';
+import { shorthandBySkill, Skill } from '@/utils/skillUtils';
 import { ToggleButton, Typography } from '@mui/material';
 
 export default function SkillSelector({
