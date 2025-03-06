@@ -4,7 +4,7 @@ MAKEFLAGS += --silent
 export ROOT_DIR=$(shell dirname $(realpath $(firstword $(MAKEFILE_LIST))))
 ARGS := $(wordlist 2,$(words $(MAKECMDGOALS)),$(MAKECMDGOALS))
 
-init_local_env = cp -n .env.dist .env
+init_local_env = cp --update=none .env.dist .env
 
 dev:
 	$(init_local_env)
