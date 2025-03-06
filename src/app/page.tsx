@@ -186,21 +186,19 @@ export default function Home() {
         </Drawer>
 
         <Box className="align-center flex flex-col content-center font-[family-name:var(--font-geist-sans)]">
-          <Box className="hidden lg:block">
-            <Tooltip title="Character Creation">
-              <Fab
-                size="small"
-                className="m-4 min-w-10"
-                color="default"
-                aria-label="Character Creation"
-                onClick={() => {
-                  setIsCharacterCreationOpen(true);
-                }}
-              >
-                <PersonIcon />
-              </Fab>
-            </Tooltip>
-          </Box>
+          <Tooltip title="Character Creation">
+            <Fab
+              size="small"
+              className="m-4 min-w-10"
+              color="default"
+              aria-label="Character Creation"
+              onClick={() => {
+                setIsCharacterCreationOpen(true);
+              }}
+            >
+              <PersonIcon />
+            </Fab>
+          </Tooltip>
 
           {levels.length > 0 ? (
             <Box className="mx-auto place-items-center overflow-hidden">
