@@ -59,11 +59,13 @@ export const getRemainingSkillUpsForMaxAttribute = (level: number): number => {
 
 export function getAttributeBonusFromSkillUps(attributeLevel: number, numSkillUps: number): number {
   const remainingLevels = MAX_ATTRIBUTE_LEVEL - attributeLevel;
-  if (numSkillUps <= 0) return Math.min(remainingLevels, 1);
-  if (numSkillUps <= 4) return Math.min(remainingLevels, 2);
-  if (numSkillUps <= 7) return Math.min(remainingLevels, 3);
-  if (numSkillUps <= 9) return Math.min(remainingLevels, 4);
-  return Math.min(remainingLevels, 5);
+  let bonus = 0;
+  if (numSkillUps <= 0) bonus = 1;
+  else if (numSkillUps <= 4) bonus = 2;
+  else if (numSkillUps <= 7) bonus = 3;
+  else if (numSkillUps <= 9) bonus = 4;
+  else bonus = 5;
+  return Math.max(0, Math.min(remainingLevels, bonus));
 }
 
 const attributes: Attribute[] = ['STR', 'INT', 'WIL', 'AGL', 'SPD', 'END', 'PER', 'LCK'];

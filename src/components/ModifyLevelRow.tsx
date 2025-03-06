@@ -144,7 +144,6 @@ export default function ModifyLevelRow({
     const raisableAttributes = Object.values(level.attributes).filter(
       (attribute) => attribute < MAX_ATTRIBUTE_LEVEL,
     );
-    console.log(raisableAttributes);
     return Math.min(raisableAttributes.length, NUM_RAISED_ATTRIBUTES);
   }, [level.attributes, NUM_RAISED_ATTRIBUTES]);
 
