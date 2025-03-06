@@ -3,36 +3,23 @@
 import React, { useState, useEffect } from 'react';
 import { ThemeProvider } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
-import Divider from '@mui/material/Divider';
 import PersonIcon from '@mui/icons-material/Person';
 import Skeleton from '@mui/material/Skeleton';
-import { Drawer, Button, StyledEngineProvider } from '@mui/material';
+import { Button, StyledEngineProvider } from '@mui/material';
 
 import theme from '@/app/theme';
 
 import type { Level, LevelUp } from '@/utils/levelUtils';
-import type { Race } from '@/utils/raceUtils';
-import type { Gender } from '@/utils/genderUtils';
-import type { Birthsign } from '@/utils/birthsignUtils';
-import type { Specialization } from '@/utils/specializationUtils';
 
-import DropDown from '@/components/DropDown';
-import SelectFromList from '@/components/SelectFromList';
 import LevelRow from '@/components/LevelRow';
 import ModifyLevelRow from '@/components/ModifyLevelRow';
 import ConfirmDialog from '@/components/ConfirmDialog';
 
 import { useCharacterStore } from '@/data/characterStore';
 
-import attributes, { Attribute, NUM_FAVORED_ATTRIBUTES } from '@/utils/attributeUtils';
-import specializations from '@/utils/specializationUtils';
-import races from '@/utils/raceUtils';
-import genders from '@/utils/genderUtils';
-import birthsigns from '@/utils/birthsignUtils';
-import skills, { NUM_MAJOR_SKILLS } from '@/utils/skillUtils';
-import { Skill } from '@/utils/skillUtils';
+import attributes from '@/utils/attributeUtils';
 import { applyLevelUpToLevel, getBaseLevel } from '@/utils/levelUtils';
-import ToggleButtons from '@/components/ToggleButtons';
+import CharacterCreation from '@/components/CharacterCreation';
 
 export default function Home() {
   const {
@@ -45,7 +32,7 @@ export default function Home() {
     currentLevel,
     levels,
     levelUps,
-    actions: { setCharacterData, setLevelUp, removeLevel, setLevels },
+    actions: { setLevelUp, removeLevel, setLevels },
   } = useCharacterStore();
 
   const [isCharacterCreationOpen, setIsCharacterCreationOpen] = useState<boolean>(false);
@@ -66,9 +53,6 @@ export default function Home() {
     setRemovingLevel(null);
   };
 
-  const [favoredAttributesError, setFavoredAttributesError] = useState('');
-  const [majorSkillsError, setMajorSkillsError] = useState('');
-
   useEffect(() => {
     setLevels(
       levelUps.reduce(
@@ -87,90 +71,14 @@ export default function Home() {
     setLevels,
   ]);
 
-  // validation
-  useEffect(() => {
-    if (favoredAttributes.length !== NUM_FAVORED_ATTRIBUTES) {
-      setFavoredAttributesError(`Choose exactly ${NUM_FAVORED_ATTRIBUTES} favored attributes`);
-    } else {
-      setFavoredAttributesError('');
-    }
-  }, [favoredAttributes]);
-  useEffect(() => {
-    if (majorSkills.length !== NUM_MAJOR_SKILLS) {
-      setMajorSkillsError(`Choose exactly ${NUM_MAJOR_SKILLS} major skills`);
-    } else {
-      setMajorSkillsError('');
-    }
-  }, [majorSkills]);
-
   return (
     <StyledEngineProvider injectFirst>
       <ThemeProvider theme={theme}>
         <CssBaseline />
-        <Drawer
-          onClose={() => {
-            setIsCharacterCreationOpen(false);
-          }}
+        <CharacterCreation
           open={isCharacterCreationOpen}
-          anchor="left"
-        >
-          <div className="p-3">
-            <div className="my-2 text-3xl">Character</div>
-            <DropDown
-              label="Race"
-              value={race}
-              options={races}
-              onChangeHandler={(race) => setCharacterData({ race: race as Race })}
-            />
-            <ToggleButtons
-              name="Gender"
-              value={gender}
-              options={genders}
-              onChangeHandler={(gender) => setCharacterData({ gender: gender as Gender })}
-            />
-            <DropDown
-              label="Birthsign"
-              value={birthsign}
-              options={birthsigns}
-              onChangeHandler={(birthsign) =>
-                setCharacterData({ birthsign: birthsign as Birthsign })
-              }
-            />
-            <Divider className="my-4" />
-            <div className="my-2 text-3xl">Class</div>
-            <ToggleButtons
-              label="Specialization"
-              name="Specialization"
-              value={specialization}
-              options={specializations}
-              onChangeHandler={(specialization) =>
-                setCharacterData({
-                  specialization: specialization as Specialization,
-                })
-              }
-            />
-            <SelectFromList
-              label="Favored Attributes"
-              selectedOptions={favoredAttributes}
-              error={favoredAttributesError}
-              onChangeHandler={(favoredAttributes) =>
-                setCharacterData({
-                  favoredAttributes: favoredAttributes as Attribute[],
-                })
-              }
-              options={attributes}
-            />
-            <SelectFromList
-              label="Major Skills"
-              selectedOptions={majorSkills}
-              error={majorSkillsError}
-              onChangeHandler={(majorSkills) =>
-                setCharacterData({ majorSkills: majorSkills as Skill[] })
-              }
-              options={skills}
-            />
-          </div>
-        </Drawer>
+          handleClose={() => setIsCharacterCreationOpen(false)}
+        />
 
         <div className="flex h-screen flex-col place-items-center overflow-y-auto bg-inherit">
           <div className="flex w-full flex-row justify-start">
