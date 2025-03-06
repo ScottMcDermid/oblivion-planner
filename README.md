@@ -1,6 +1,6 @@
 ## Oblivion Planner
 
-Plan your oblivion character's leveling trajectory.
+Plan your character's leveling trajectory.
 
 ### Launching
 
