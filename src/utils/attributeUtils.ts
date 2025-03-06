@@ -9,8 +9,18 @@ export type AttributesSet = {
 };
 
 export const MAX_ATTRIBUTE_LEVEL = 100;
-export const MAX_ATTRIBUTE_BONUS = 5;
 export const SKILL_UPS_FOR_MAX_ATTRIBUTE_BONUS = 10;
+
+export const maxBonusByAttribute: AttributesSet = {
+  STR: 5,
+  INT: 5,
+  WIL: 5,
+  AGL: 5,
+  SPD: 5,
+  END: 5,
+  PER: 5,
+  LCK: 1,
+};
 
 export const baseAttributes: AttributesSet = {
   STR: 40,
@@ -52,9 +62,14 @@ export const getAttributeFromSkill = (skill: Skill): Attribute => {
   return attribute;
 };
 
-export const getRemainingSkillUpsForMaxAttribute = (level: number): number => {
+export const getRemainingSkillUpsForMaxAttribute = (
+  attribute: Attribute,
+  level: number,
+): number => {
+  console.log(attribute, level);
   const remaining = MAX_ATTRIBUTE_LEVEL - level;
-  return (remaining / MAX_ATTRIBUTE_BONUS) * SKILL_UPS_FOR_MAX_ATTRIBUTE_BONUS;
+  const maxBonus = maxBonusByAttribute[attribute];
+  return (remaining / maxBonus) * SKILL_UPS_FOR_MAX_ATTRIBUTE_BONUS;
 };
 
 export function getAttributeBonusFromSkillUps(attributeLevel: number, numSkillUps: number): number {

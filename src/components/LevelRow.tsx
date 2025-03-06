@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { IconButton, Tooltip, Typography } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
@@ -8,8 +8,9 @@ import type { Level } from '@/utils/levelUtils';
 import attributes, {
   skillsByAttribute,
   getRemainingSkillUpsForMaxAttribute,
+  getAttributesSetTemplate,
 } from '@/utils/attributeUtils';
-import type { Attribute } from '@/utils/attributeUtils';
+import type { Attribute, AttributesSet } from '@/utils/attributeUtils';
 import { MAX_SKILL_LEVEL, Skill, SkillsSet } from '@/utils/skillUtils';
 
 export default function LevelRow({
@@ -25,12 +26,40 @@ export default function LevelRow({
 }) {
   const getExtraSkillUpsForAttribute = (attribute: Attribute, skills: SkillsSet): number => {
     return (
-      skillsByAttribute[attribute].reduce((sum, skill: Skill) => {
-        const remaining = MAX_SKILL_LEVEL - skills[skill];
-        return sum + remaining;
-      }, 0) - getRemainingSkillUpsForMaxAttribute(level.attributes[attribute])
+      skillsByAttribute[attribute].reduce(
+        (sum, skill: Skill) => sum + MAX_SKILL_LEVEL - skills[skill],
+        0,
+      ) - getRemainingSkillUpsForMaxAttribute(attribute, level.attributes[attribute])
     );
   };
+
+  const remainingSkillUps = useMemo(
+    () =>
+      Object.entries(level.attributes).reduce(
+        (remainingSkillUps, [attribute, level]) => ({
+          ...remainingSkillUps,
+          [attribute]: getRemainingSkillUpsForMaxAttribute(attribute as Attribute, level),
+        }),
+        getAttributesSetTemplate(),
+      ),
+    [level.attributes],
+  );
+
+  const extraSkillUps = useMemo(
+    () =>
+      Object.keys(level.attributes).reduce(
+        (extraSkillUps, attribute) => ({
+          ...extraSkillUps,
+          [attribute]:
+            skillsByAttribute[attribute as Attribute].reduce(
+              (sum: number, skill: Skill) => sum + MAX_SKILL_LEVEL - level.skills[skill],
+              0,
+            ) - remainingSkillUps[attribute as Attribute],
+        }),
+        getAttributesSetTemplate(),
+      ),
+    [level.attributes, level.skills],
+  );
 
   return (
     <>
@@ -38,11 +67,19 @@ export default function LevelRow({
       {attributes.map((attribute: Attribute) => (
         <div key={attribute} className="px-0">
           <Tooltip
-            {...(attribute !== 'LCK'
+            {...(extraSkillUps[attribute] >= 0
               ? {
-                  title: `${getRemainingSkillUpsForMaxAttribute(level.attributes[attribute])} skill ups to go (${getExtraSkillUpsForAttribute(attribute, level.skills)} extra)`,
+                  title:
+                    attribute !== 'LCK'
+                      ? `${remainingSkillUps[attribute]} skill ups to go (${extraSkillUps[attribute]} extra)`
+                      : '',
                 }
-              : { title: '' })}
+              : {
+                  title:
+                    attribute !== 'LCK'
+                      ? `${remainingSkillUps[attribute]} skill ups to go (${extraSkillUps[attribute]} short)`
+                      : '',
+                })}
           >
             <Typography
               {...(previousLevel &&
