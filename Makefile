@@ -27,7 +27,9 @@ prod-build:
 	docker compose --profile production up --build -d
 
 stop:
+	$(touch_local_env)
 	docker compose --profile production --profile development down
 
 logs:
+	$(touch_local_env)
 	docker compose --profile production --profile development logs -f
