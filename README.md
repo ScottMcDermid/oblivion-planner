@@ -6,7 +6,7 @@ Plan your character's leveling trajectory.
 
 #### Development
 
-First, ensure `docker` and `make` are installed.
+First, ensure `docker`, `docker compose` and `make` are installed.
 
 Now start the development server
 
