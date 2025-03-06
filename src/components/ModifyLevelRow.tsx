@@ -140,6 +140,14 @@ export default function ModifyLevelRow({
     [level, skillUps, raisedAttributes, attributeBonuses],
   );
 
+  const requiredRaisedAttributes = useMemo(() => {
+    const raisableAttributes = Object.values(level.attributes).filter(
+      (attribute) => attribute < MAX_ATTRIBUTE_LEVEL,
+    );
+    console.log(raisableAttributes);
+    return Math.min(raisableAttributes.length, NUM_RAISED_ATTRIBUTES);
+  }, [level.attributes, NUM_RAISED_ATTRIBUTES]);
+
   return (
     <>
       {/* padding for level column */}
@@ -240,7 +248,7 @@ export default function ModifyLevelRow({
             setRaisedAttributes([]);
           }}
           {...(numMajorSkillUps < NUM_MAJOR_SKILL_UPS_PER_LEVEL ||
-          raisedAttributes.length !== NUM_RAISED_ATTRIBUTES
+          raisedAttributes.length !== requiredRaisedAttributes
             ? { disabled: true }
             : {})}
         >
