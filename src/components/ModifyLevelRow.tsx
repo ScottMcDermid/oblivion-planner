@@ -205,7 +205,6 @@ export default function ModifyLevelRow({
           </Typography>
           <Checkbox
             key={attribute}
-            color="default"
             disabled={level.attributes[attribute] >= MAX_ATTRIBUTE_LEVEL}
             checked={raisedAttributes.includes(attribute)}
             onChange={() => {

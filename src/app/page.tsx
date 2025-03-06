@@ -7,7 +7,7 @@ import CssBaseline from '@mui/material/CssBaseline';
 import Divider from '@mui/material/Divider';
 import PersonIcon from '@mui/icons-material/Person';
 import Skeleton from '@mui/material/Skeleton';
-import { Drawer, Fab, StyledEngineProvider, Tooltip, Typography } from '@mui/material';
+import { Drawer, Button, StyledEngineProvider, Tooltip, Typography } from '@mui/material';
 
 import theme from '@/app/theme';
 
@@ -185,43 +185,42 @@ export default function Home() {
           </Box>
         </Drawer>
 
-        <Box className="align-center flex flex-col content-center font-[family-name:var(--font-geist-sans)]">
-          <Tooltip title="Character Creation">
-            <Fab
-              size="small"
-              className="m-4 min-w-10"
-              color="default"
+        <Box className="mx-auto flex h-screen flex-col place-items-center overflow-y-auto bg-inherit">
+          <div className="flex w-full flex-row justify-start">
+            <Button
               aria-label="Character Creation"
               onClick={() => {
                 setIsCharacterCreationOpen(true);
               }}
+              color="foreground"
             >
               <PersonIcon />
-            </Fab>
-          </Tooltip>
+              <div>Character</div>
+            </Button>
+          </div>
+
+          {/* Table Header */}
+          <div
+            className="sticky top-0 z-10 grid w-full grid-cols-[3rem_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr] place-items-center bg-inherit shadow-lg sm:grid-cols-[5rem_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr] xl:grid-cols-[5rem_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr]"
+            style={{ gridAutoRows: 'minmax(3rem, auto)' }}
+          >
+            <Typography className="sm:text-lg">LVL</Typography>
+            {attributes.map((attribute) => (
+              <Typography className="sm:text-lg" key={attribute}>
+                {attribute}
+              </Typography>
+            ))}
+            <div className="px0 hidden xl:block">Health</div>
+            <div className="px0 hidden xl:block">Magicka</div>
+            <div className="px0 hidden xl:block">Stamina</div>
+            <div className="px0 hidden xl:block">Encumbrance</div>
+
+            {/* Padding for modify level row */}
+            <div></div>
+          </div>
 
           {levels.length > 0 ? (
-            <Box className="mx-auto place-items-center overflow-hidden">
-              {/* Table Header */}
-              <Box
-                className="grid w-full grid-cols-[3rem_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr] place-items-center sm:grid-cols-[5rem_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr] xl:grid-cols-[5rem_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr]"
-                sx={{ gridAutoRows: 'minmax(3rem, auto)' }}
-              >
-                <Typography className="sm:text-lg">LVL</Typography>
-                {attributes.map((attribute) => (
-                  <Typography className="sm:text-lg" key={attribute}>
-                    {attribute}
-                  </Typography>
-                ))}
-                <div className="px0 hidden xl:block">Health</div>
-                <div className="px0 hidden xl:block">Magicka</div>
-                <div className="px0 hidden xl:block">Stamina</div>
-                <div className="px0 hidden xl:block">Encumbrance</div>
-
-                {/* Padding for modify level row */}
-                <div></div>
-              </Box>
-
+            <>
               {/* Table Body */}
               <Box
                 className="grid w-full grid-cols-[3rem_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr] place-items-center sm:grid-cols-[5rem_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr] xl:grid-cols-[5rem_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr]"
@@ -263,9 +262,9 @@ export default function Home() {
                   commitLevelUpHandler={(levelUp) => commitLevelUp(levelUp)}
                 />
               </Box>
-            </Box>
+            </>
           ) : (
-            <div className="w-1/2 p-5">
+            <div className="w-11/12 p-5">
               <Skeleton height={50} />
               <Skeleton height={50} />
               <Skeleton height={50} />

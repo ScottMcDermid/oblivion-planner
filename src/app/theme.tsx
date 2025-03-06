@@ -1,14 +1,20 @@
 import { createTheme } from '@mui/material/styles';
-import { yellow, blue } from '@mui/material/colors';
 
 const theme = createTheme({
   palette: {
     mode: 'dark',
     primary: {
-      main: blue[200],
+      main: '#fde047',
     },
     secondary: {
-      main: yellow[500],
+      main: '#fde047',
+    },
+    background: {
+      default: '#0a0a0a',
+    },
+    text: {
+      primary: '#ededed',
+      secondary: '#fde047',
     },
   },
   typography: {
