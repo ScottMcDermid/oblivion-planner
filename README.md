@@ -1,13 +1,35 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+## Oblivion Planner
 
-## Getting Started
+Plan your oblivion character's leveling trajectory.
 
-First, run the development server:
+### Launching
+
+#### Development
+
+First, ensure `docker` and `make` are installed.
+
+Now start the development server
 
 ```bash
 make dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Naviage to [http://localhost:3000](http://localhost:3000)
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+#### Deploying
+
+Instead of starting the development server, start production:
+
+```bash
+make prod
+```
+
+Naviage to [http://localhost:3000](http://localhost:3000)
+
+### Environment Variables
+
+You can modify `.env` for any locally defined environment variables
+
+| Name | Purpose                   |
+| ---- | ------------------------- |
+| PORT | Port to run server off of |
