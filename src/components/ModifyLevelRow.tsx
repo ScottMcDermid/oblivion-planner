@@ -244,6 +244,7 @@ export default function ModifyLevelRow({
             });
             setSkillUps(getSkillsSetTemplate());
             setRaisedAttributes([]);
+            setSelectedSkill(null);
           }}
           {...(numMajorSkillUps < NUM_MAJOR_SKILL_UPS_PER_LEVEL ||
           raisedAttributes.length !== requiredRaisedAttributes
