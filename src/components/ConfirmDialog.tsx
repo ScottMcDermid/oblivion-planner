@@ -9,7 +9,7 @@ export default function ConfirmDialog({
   handleClose: (confirm: boolean) => void;
 }) {
   return (
-    <Dialog onClose={handleClose} open={open}>
+    <Dialog onClose={() => handleClose(false)} open={open}>
       <DialogTitle>Are you sure?</DialogTitle>
       <DialogContent>
         <Button
