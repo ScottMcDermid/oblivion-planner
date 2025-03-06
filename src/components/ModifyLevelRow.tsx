@@ -71,7 +71,12 @@ export default function ModifyLevelRow({
       [skill]: Math.min(MAX_SKILL_LEVEL - level.skills[skill], SKILL_UPS_FOR_MAX_ATTRIBUTE_BONUS),
     });
     const attribute = getAttributeFromSkill(skill);
-    if (!raisedAttributes.includes(attribute)) {
+
+    // automatically select attribute if associated skill is selected
+    if (
+      !raisedAttributes.includes(attribute) &&
+      level.attributes[attribute] < MAX_ATTRIBUTE_LEVEL
+    ) {
       setRaisedAttributes([...raisedAttributes, attribute]);
     }
     setSelectedSkill(skill);
