@@ -203,7 +203,7 @@ export default function Home() {
           </Box>
 
           {levels.length > 0 ? (
-            <Box className="mx-auto max-h-screen place-items-center overflow-hidden">
+            <Box className="mx-auto place-items-center overflow-hidden">
               {/* Table Header */}
               <Box
                 className="grid w-full grid-cols-[3rem_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr] place-items-center sm:grid-cols-[5rem_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr] xl:grid-cols-[5rem_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr]"
