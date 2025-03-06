@@ -37,7 +37,6 @@ export default function SkillSelector({
       </Typography>
       <ToggleButton
         className="p-1"
-        disabled={base >= MAX_SKILL_LEVEL}
         value={value}
         selected={value !== base}
         onClick={() => {

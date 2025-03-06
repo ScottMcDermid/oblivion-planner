@@ -62,7 +62,10 @@ export default function ModifyLevelRow({
   const handleSkillSelected = (skill: Skill) => {
     setSkillUps({
       ...skillUps,
-      [skill]: Math.min(MAX_SKILL_LEVEL - level.skills[skill], SKILL_UPS_FOR_MAX_ATTRIBUTE_BONUS),
+      [skill]: Math.max(
+        0,
+        Math.min(MAX_SKILL_LEVEL - level.skills[skill], SKILL_UPS_FOR_MAX_ATTRIBUTE_BONUS),
+      ),
     });
     const attribute = getAttributeFromSkill(skill);
 
