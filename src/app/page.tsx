@@ -258,14 +258,10 @@ export default function Home() {
                 className="grid w-full grid-cols-[3rem_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr] place-items-center sm:grid-cols-[5rem_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr] xl:grid-cols-[5rem_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr]"
                 sx={{ gridAutoRows: 'minmax(3rem, auto)' }}
               >
-                {modifyingLevel ? null : (
-                  <>
-                    <ModifyLevelRow
-                      level={currentLevel}
-                      commitLevelUpHandler={(levelUp) => commitLevelUp(levelUp)}
-                    />
-                  </>
-                )}
+                <ModifyLevelRow
+                  level={currentLevel}
+                  commitLevelUpHandler={(levelUp) => commitLevelUp(levelUp)}
+                />
               </Box>
             </Box>
           ) : (
