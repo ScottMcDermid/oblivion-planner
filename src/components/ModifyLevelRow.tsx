@@ -204,6 +204,7 @@ export default function ModifyLevelRow({
             {`+${attributeBonuses[attribute]}`}
           </Typography>
           <Checkbox
+            color="primary"
             key={attribute}
             disabled={level.attributes[attribute] >= MAX_ATTRIBUTE_LEVEL}
             checked={raisedAttributes.includes(attribute)}
@@ -211,6 +212,12 @@ export default function ModifyLevelRow({
               handleAttributeToggle(attribute);
             }}
             name={`${attributeBonuses[attribute]}`}
+            sx={{
+              color: 'var(--primary)',
+              '&.Mui-checked': {
+                color: 'var(--primary)',
+              },
+            }}
           />
         </div>
       ))}

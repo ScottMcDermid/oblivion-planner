@@ -30,7 +30,7 @@ export default function DropDown({
       >
         {options.map((option) => (
           <FormControlLabel
-            control={<Radio color="default" />}
+            control={<Radio color="primary" />}
             key={option}
             label={option}
             name={name}

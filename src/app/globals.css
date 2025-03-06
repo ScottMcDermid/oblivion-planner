@@ -3,18 +3,24 @@
 @tailwind utilities;
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
-  --primary: theme('colors.yellow.300');
-  --secondary: theme('colors.yellow.300');
+  --color-primary: #e5e7eb;
+  --color-secondary: #fde047;
+  --color-danger: #ef4444;
+  --color-bg: #1e1e1e;
+  --color-text: #e5e7eb;
+  --color-card: #252525;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-    --primary: theme('colors.yellow.300');
-    --secondary: theme('colors.yellow.300');
+    --color-primary: #e5e7eb;
+    --color-secondary: #fde047;
+    --color-error: #ef4444;
+    --color-background: #1e1e1e;
+    --color-text: #e5e7eb;
+    --color-text-danger: #ef4444;
+    --color-foreground: #e5e7eb;
+    --color-card: #252525;
   }
 }
 

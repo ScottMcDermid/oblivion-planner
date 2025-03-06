@@ -7,7 +7,7 @@ import CssBaseline from '@mui/material/CssBaseline';
 import Divider from '@mui/material/Divider';
 import PersonIcon from '@mui/icons-material/Person';
 import Skeleton from '@mui/material/Skeleton';
-import { Drawer, Button, StyledEngineProvider, Tooltip, Typography } from '@mui/material';
+import { Drawer, Button, StyledEngineProvider } from '@mui/material';
 
 import theme from '@/app/theme';
 
@@ -18,7 +18,6 @@ import type { Birthsign } from '@/utils/birthsignUtils';
 import type { Specialization } from '@/utils/specializationUtils';
 
 import DropDown from '@/components/DropDown';
-import RadioButtons from '@/components/RadioButtons';
 import SelectFromList from '@/components/SelectFromList';
 import LevelRow from '@/components/LevelRow';
 import ModifyLevelRow from '@/components/ModifyLevelRow';
@@ -34,6 +33,7 @@ import birthsigns from '@/utils/birthsignUtils';
 import skills, { NUM_MAJOR_SKILLS } from '@/utils/skillUtils';
 import { Skill } from '@/utils/skillUtils';
 import { applyLevelUpToLevel, getBaseLevel } from '@/utils/levelUtils';
+import ToggleButtons from '@/components/ToggleButtons';
 
 export default function Home() {
   const {
@@ -91,16 +91,14 @@ export default function Home() {
   // validation
   useEffect(() => {
     if (favoredAttributes.length !== NUM_FAVORED_ATTRIBUTES) {
-      setFavoredAttributesError(
-        `you must choose exactly ${NUM_FAVORED_ATTRIBUTES} favored attributes`,
-      );
+      setFavoredAttributesError(`Choose exactly ${NUM_FAVORED_ATTRIBUTES} favored attributes`);
     } else {
       setFavoredAttributesError('');
     }
   }, [favoredAttributes]);
   useEffect(() => {
     if (majorSkills.length !== NUM_MAJOR_SKILLS) {
-      setMajorSkillsError(`you must choose exactly ${NUM_MAJOR_SKILLS} major skills`);
+      setMajorSkillsError(`Choose exactly ${NUM_MAJOR_SKILLS} major skills`);
     } else {
       setMajorSkillsError('');
     }
@@ -116,24 +114,17 @@ export default function Home() {
             setIsCharacterCreationOpen(false);
           }}
           open={isCharacterCreationOpen}
-          sx={{
-            flexShrink: 0,
-            '& .MuiDrawer-paper': {
-              boxSizing: 'border-box',
-            },
-          }}
           anchor="left"
-          className="p-3"
         >
-          <Box className="p-2">
-            <Typography className="my-2 text-3xl">Character</Typography>
+          <div className="p-3">
+            <div className="my-2 text-3xl">Character</div>
             <DropDown
               label="Race"
               value={race}
               options={races}
               onChangeHandler={(race) => setCharacterData({ race: race as Race })}
             />
-            <RadioButtons
+            <ToggleButtons
               name="Gender"
               value={gender}
               options={genders}
@@ -147,11 +138,9 @@ export default function Home() {
                 setCharacterData({ birthsign: birthsign as Birthsign })
               }
             />
-          </Box>
-          <Divider className="my-4" />
-          <Box className="p-2">
-            <Typography className="my-2 text-3xl">Class</Typography>
-            <RadioButtons
+            <Divider className="my-4" />
+            <div className="my-2 text-3xl">Class</div>
+            <ToggleButtons
               label="Specialization"
               name="Specialization"
               value={specialization}
@@ -182,7 +171,7 @@ export default function Home() {
               }
               options={skills}
             />
-          </Box>
+          </div>
         </Drawer>
 
         <Box className="mx-auto flex h-screen flex-col place-items-center overflow-y-auto bg-inherit">
@@ -192,7 +181,6 @@ export default function Home() {
               onClick={() => {
                 setIsCharacterCreationOpen(true);
               }}
-              color="foreground"
             >
               <PersonIcon />
               <div>Character</div>
@@ -204,11 +192,11 @@ export default function Home() {
             className="sticky top-0 z-10 grid w-full grid-cols-[3rem_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr] place-items-center bg-inherit shadow-lg sm:grid-cols-[5rem_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr] xl:grid-cols-[5rem_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr]"
             style={{ gridAutoRows: 'minmax(3rem, auto)' }}
           >
-            <Typography className="sm:text-lg">LVL</Typography>
+            <div className="sm:text-lg">LVL</div>
             {attributes.map((attribute) => (
-              <Typography className="sm:text-lg" key={attribute}>
+              <div className="sm:text-lg" key={attribute}>
                 {attribute}
-              </Typography>
+              </div>
             ))}
             <div className="px0 hidden xl:block">Health</div>
             <div className="px0 hidden xl:block">Magicka</div>

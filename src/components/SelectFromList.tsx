@@ -1,11 +1,6 @@
-import React from 'react'
+import React from 'react';
 import Checkbox from '@mui/material/Checkbox';
-import FormControl from '@mui/material/FormControl';
-import FormHelperText from '@mui/material/FormHelperText';
-import FormLabel from '@mui/material/FormLabel';
 import FormControlLabel from '@mui/material/FormControlLabel';
-import FormGroup from '@mui/material/FormGroup';
-import Box from '@mui/material/Box';
 
 export default function SelectFromList({
   label,
@@ -34,29 +29,33 @@ export default function SelectFromList({
   };
 
   return (
-    <Box>
-      <FormControl className="my-4" error={!!error} component="fieldset" variant="standard">
-        <FormLabel component="legend">{label}</FormLabel>
-        <FormGroup className="m-2">
-          {options.map((option) => (
-            <FormControlLabel
-              key={option}
-              control={
-                <Checkbox
-                  color="default"
-                  checked={selectedOptions.includes(option)}
-                  onChange={() => {
-                    handleToggle(option);
-                  }}
-                  name={option}
-                />
-              }
-              label={option}
-            />
-          ))}
-        </FormGroup>
-        <FormHelperText className="h-4">{error}</FormHelperText>
-      </FormControl>
-    </Box>
+    <div className="my-4">
+      <div className="text-lg">{label}</div>
+      <div className="m-2 flex flex-col">
+        {options.map((option) => (
+          <FormControlLabel
+            key={option}
+            control={
+              <Checkbox
+                color="primary"
+                checked={selectedOptions.includes(option)}
+                onChange={() => {
+                  handleToggle(option);
+                }}
+                name={option}
+                sx={{
+                  color: 'var(--primary)',
+                  '&.Mui-checked': {
+                    color: 'var(--primary)',
+                  },
+                }}
+              />
+            }
+            label={option}
+          />
+        ))}
+      </div>
+      <div className="h-4 text-xs text-red-500">{error}</div>
+    </div>
   );
 }
