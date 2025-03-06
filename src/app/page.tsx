@@ -2,7 +2,6 @@
 
 import React, { useState, useEffect } from 'react';
 import { ThemeProvider } from '@mui/material/styles';
-import Box from '@mui/material/Box';
 import CssBaseline from '@mui/material/CssBaseline';
 import Divider from '@mui/material/Divider';
 import PersonIcon from '@mui/icons-material/Person';
@@ -108,7 +107,6 @@ export default function Home() {
     <StyledEngineProvider injectFirst>
       <ThemeProvider theme={theme}>
         <CssBaseline />
-
         <Drawer
           onClose={() => {
             setIsCharacterCreationOpen(false);
@@ -174,7 +172,7 @@ export default function Home() {
           </div>
         </Drawer>
 
-        <Box className="mx-auto flex h-screen flex-col place-items-center overflow-y-auto bg-inherit">
+        <div className="flex h-screen flex-col place-items-center overflow-y-auto bg-inherit">
           <div className="flex w-full flex-row justify-start">
             <Button
               aria-label="Character Creation"
@@ -189,7 +187,7 @@ export default function Home() {
 
           {/* Table Header */}
           <div
-            className="sticky top-0 z-10 grid w-full grid-cols-[3rem_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr] place-items-center bg-inherit shadow-lg sm:grid-cols-[5rem_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr] xl:grid-cols-[5rem_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr]"
+            className="sticky top-0 z-10 grid w-full max-w-7xl grid-cols-[3rem_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr] place-items-center bg-inherit shadow-lg sm:grid-cols-[5rem_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr] xl:grid-cols-[5rem_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr]"
             style={{ gridAutoRows: 'minmax(3rem, auto)' }}
           >
             <div className="sm:text-lg">LVL</div>
@@ -210,9 +208,9 @@ export default function Home() {
           {levels.length > 0 ? (
             <>
               {/* Table Body */}
-              <Box
-                className="grid w-full grid-cols-[3rem_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr] place-items-center sm:grid-cols-[5rem_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr] xl:grid-cols-[5rem_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr]"
-                sx={{ gridAutoRows: 'minmax(3rem, auto)' }}
+              <div
+                className="grid w-full max-w-7xl grid-cols-[3rem_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr] place-items-center sm:grid-cols-[5rem_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr] xl:grid-cols-[5rem_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr]"
+                style={{ gridAutoRows: 'minmax(3rem, auto)' }}
               >
                 {levels.map((level, i) =>
                   modifyingLevel !== null && modifyingLevel === level.level ? (
@@ -238,18 +236,18 @@ export default function Home() {
                     />
                   ),
                 )}
-              </Box>
+              </div>
 
               {/* Table Footer */}
-              <Box
-                className="grid w-full grid-cols-[3rem_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr] place-items-center pb-24 sm:grid-cols-[5rem_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr] xl:grid-cols-[5rem_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr]"
-                sx={{ gridAutoRows: 'minmax(3rem, auto)' }}
+              <div
+                className="grid w-full max-w-7xl grid-cols-[3rem_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr] place-items-center pb-24 sm:grid-cols-[5rem_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr] xl:grid-cols-[5rem_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr]"
+                style={{ gridAutoRows: 'minmax(3rem, auto)' }}
               >
                 <ModifyLevelRow
                   level={currentLevel}
                   commitLevelUpHandler={(levelUp) => commitLevelUp(levelUp)}
                 />
-              </Box>
+              </div>
             </>
           ) : (
             <div className="w-11/12 p-5">
@@ -261,7 +259,7 @@ export default function Home() {
               <Skeleton height={50} />
             </div>
           )}
-        </Box>
+        </div>
         <ConfirmDialog open={removingLevel !== null} handleClose={handleRemoveLevel} />
       </ThemeProvider>
     </StyledEngineProvider>
