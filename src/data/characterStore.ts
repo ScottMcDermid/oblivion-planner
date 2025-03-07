@@ -33,6 +33,7 @@ type Action = {
   setLevels: (levels: Level[]) => void;
   setLevelUp: (levelUp: LevelUp, level?: number) => void;
   removeLevel: (level: number) => void;
+  resetLevels: () => void;
 };
 
 type CharacterStore = State & { actions: Action };
@@ -71,6 +72,12 @@ const useCharacterStore = create<CharacterStore>()(
               newLevelUps.splice(level - 2, 1);
               return { levelUps: newLevelUps };
             }),
+          resetLevels: () =>
+            set(() => ({
+              currentLevel: levelTemplate,
+              levels: [],
+              levelUps: [],
+            })),
         },
       };
     },

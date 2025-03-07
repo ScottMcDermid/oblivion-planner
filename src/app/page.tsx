@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { ThemeProvider } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import PersonIcon from '@mui/icons-material/Person';
+import DeleteIcon from '@mui/icons-material/Delete';
 import Skeleton from '@mui/material/Skeleton';
 import { Button, StyledEngineProvider } from '@mui/material';
 
@@ -32,10 +33,11 @@ export default function Home() {
     currentLevel,
     levels,
     levelUps,
-    actions: { setLevelUp, removeLevel, setLevels },
+    actions: { setLevelUp, removeLevel, setLevels, resetLevels },
   } = useCharacterStore();
 
   const [isCharacterCreationOpen, setIsCharacterCreationOpen] = useState<boolean>(false);
+  const [isConfirmingReset, setIsConfirmingReset] = useState<boolean>(false);
   const [modifyingLevel, setModifyingLevel] = useState<number | null>(null);
   const [removingLevel, setRemovingLevel] = useState<number | null>(null);
 
@@ -51,6 +53,13 @@ export default function Home() {
       removeLevel(removingLevel);
     }
     setRemovingLevel(null);
+  };
+
+  const handleReset = (confirm: boolean) => {
+    if (confirm) {
+      resetLevels();
+    }
+    setIsConfirmingReset(false);
   };
 
   useEffect(() => {
@@ -81,7 +90,7 @@ export default function Home() {
         />
 
         <div className="flex h-screen flex-col place-items-center overflow-y-auto bg-inherit">
-          <div className="flex w-full flex-row justify-start">
+          <div className="space-between flex w-full flex-row">
             <Button
               aria-label="Character Creation"
               onClick={() => {
@@ -90,6 +99,16 @@ export default function Home() {
             >
               <PersonIcon />
               <div>Character</div>
+            </Button>
+            <Button
+              color="error"
+              aria-label="Reset Character"
+              onClick={() => {
+                setIsConfirmingReset(true);
+              }}
+            >
+              <DeleteIcon />
+              <div>Reset</div>
             </Button>
           </div>
 
@@ -169,6 +188,7 @@ export default function Home() {
           )}
         </div>
         <ConfirmDialog open={removingLevel !== null} handleClose={handleRemoveLevel} />
+        <ConfirmDialog open={isConfirmingReset} handleClose={handleReset} />
       </ThemeProvider>
     </StyledEngineProvider>
   );
