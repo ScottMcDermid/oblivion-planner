@@ -100,16 +100,18 @@ export default function Home() {
               <PersonIcon />
               <div>Character</div>
             </Button>
-            <Button
-              color="error"
-              aria-label="Reset Character"
-              onClick={() => {
-                setIsConfirmingReset(true);
-              }}
-            >
-              <DeleteIcon />
-              <div>Reset</div>
-            </Button>
+            {levels.length > 1 && (
+              <Button
+                color="error"
+                aria-label="Reset Character"
+                onClick={() => {
+                  setIsConfirmingReset(true);
+                }}
+              >
+                <DeleteIcon />
+                <div>Reset</div>
+              </Button>
+            )}
           </div>
 
           {/* Table Header */}
