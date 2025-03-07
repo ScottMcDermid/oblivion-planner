@@ -66,7 +66,6 @@ export const getRemainingSkillUpsForMaxAttribute = (
   attribute: Attribute,
   level: number,
 ): number => {
-  console.log(attribute, level);
   const remaining = MAX_ATTRIBUTE_LEVEL - level;
   const maxBonus = maxBonusByAttribute[attribute];
   return (remaining / maxBonus) * SKILL_UPS_FOR_MAX_ATTRIBUTE_BONUS;
