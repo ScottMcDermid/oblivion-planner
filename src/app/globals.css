@@ -3,24 +3,26 @@
 @tailwind utilities;
 
 :root {
+  --color-bg: #1e1e1e;
+  --color-card: #252525;
+  --color-danger: #ef4444;
+  --color-ghost: #9ca3af;
   --color-primary: #e5e7eb;
   --color-secondary: #fde047;
-  --color-danger: #ef4444;
-  --color-bg: #1e1e1e;
   --color-text: #e5e7eb;
-  --color-card: #252525;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
+    --color-background: #1e1e1e;
+    --color-card: #252525;
+    --color-error: #ef4444;
+    --color-foreground: #e5e7eb;
+    --color-ghost: #9ca3af;
     --color-primary: #e5e7eb;
     --color-secondary: #fde047;
-    --color-error: #ef4444;
-    --color-background: #1e1e1e;
-    --color-text: #e5e7eb;
     --color-text-danger: #ef4444;
-    --color-foreground: #e5e7eb;
-    --color-card: #252525;
+    --color-text: #e5e7eb;
   }
 }
 

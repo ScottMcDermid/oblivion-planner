@@ -180,7 +180,7 @@ export default function CharacterDialog(props: {
             </React.Fragment>
           ))}
         </div>
-        <div className="h-6 text-xs text-red-500">
+        <div className="h-6 text-xs text-error">
           <span>{favoredAttributesError}</span>
           {!favoredAttributesError && <span>{majorSkillsError}</span>}
         </div>

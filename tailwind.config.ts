@@ -7,8 +7,8 @@ const config: Config = {
       colors: {
         background: 'var(--background)',
         foreground: 'var(--foreground)',
-        error: 'var(--error)',
-        ghost: 'text-gray-400',
+        error: 'var(--color-error)',
+        ghost: 'var(--color-ghost)',
       },
       maxWidth: {
         '8xl': '90rem', // 1440px

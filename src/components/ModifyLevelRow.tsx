@@ -289,7 +289,7 @@ export default function ModifyLevelRow({
         >
           <ArrowUpwardIcon /> <span className="pt-1">Level Up</span>
         </Button>
-        <div className="w-full py-2 text-center text-xs text-gray-400">
+        <div className="w-full py-2 text-center text-xs text-ghost">
           Requires 10 major skill ups and 3 raised attributes
         </div>
       </div>
