@@ -24,6 +24,7 @@ import { applyLevelUpToLevel, getBaseLevel } from '@/utils/levelUtils';
 
 export default function Home() {
   const {
+    isFirstVisit,
     race,
     gender,
     birthsign,
@@ -33,7 +34,7 @@ export default function Home() {
     currentLevel,
     levels,
     levelUps,
-    actions: { setLevelUp, removeLevel, setLevels, resetLevels },
+    actions: { setCharacterData, setLevelUp, removeLevel, setLevels, resetLevels },
   } = useCharacterStore();
 
   const [isCharacterCreationOpen, setIsCharacterCreationOpen] = useState<boolean>(false);
@@ -61,6 +62,13 @@ export default function Home() {
     }
     setIsConfirmingReset(false);
   };
+
+  useEffect(() => {
+    if (useCharacterStore.persist.hasHydrated() && useCharacterStore.getState().isFirstVisit) {
+      setIsCharacterCreationOpen(true);
+      setCharacterData({ isFirstVisit: false });
+    }
+  }, [isFirstVisit]);
 
   useEffect(() => {
     setLevels(
