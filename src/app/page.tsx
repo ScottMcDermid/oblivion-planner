@@ -93,8 +93,9 @@ export default function Home() {
       <ThemeProvider theme={theme}>
         <CssBaseline />
         <div className="flex h-screen flex-col place-items-center overflow-y-auto bg-inherit">
-          <div className="space-between flex w-full flex-row">
+          <div className="space-between flex w-full flex-row p-2">
             <Button
+              variant="contained"
               aria-label="Character Creation"
               onClick={() => {
                 setIsCharacterCreationOpen(true);
