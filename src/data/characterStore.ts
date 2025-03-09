@@ -104,30 +104,33 @@ const useCharacterStore = create<CharacterStore>()(
         levelUps: state.levelUps,
         version: state.version,
       }),
-      migrate: (persistedState: State, version) => {
+      migrate: (persistedState, version) => {
+        const state = persistedState as Partial<State>;
         if (!version) {
-          console.log('Migrating from version 0 to 1...', persistedState.favoredAttributes);
+          console.log('Migrating from version 0 to 1...', state.favoredAttributes);
 
-          // invert shorthand/fullname attributes
-          const fullNameByShorthandAttribute = Object.fromEntries(
-            Object.entries(shorthandByAttribute).map(([key, value]) => [value, key]),
-          );
+          if (state.favoredAttributes) {
+            // invert shorthand/fullname attributes
+            const fullNameByShorthandAttribute = Object.fromEntries(
+              Object.entries(shorthandByAttribute).map(([key, value]) => [value, key]),
+            );
 
-          // migrate shorthand attributes to fullname format
-          const migratedFavoredAttributesWithDuplicates = persistedState.favoredAttributes.map(
-            (attribute: string) => fullNameByShorthandAttribute[attribute] ?? attribute,
-          );
+            // migrate shorthand attributes to fullname format
+            const migratedFavoredAttributesWithDuplicates = state.favoredAttributes.map(
+              (attribute: string) => fullNameByShorthandAttribute[attribute] ?? attribute,
+            );
 
-          // remove duplicates
-          const migratedFavoredAttributes = migratedFavoredAttributesWithDuplicates.filter(
-            (value, index, self) => self.indexOf(value) === index,
-          );
+            // remove duplicates
+            const migratedFavoredAttributes = migratedFavoredAttributesWithDuplicates.filter(
+              (value, index, self) => self.indexOf(value) === index,
+            );
 
-          console.log('Finished migrating!', migratedFavoredAttributes);
-          return {
-            ...persistedState,
-            favoredAttributes: migratedFavoredAttributes,
-          };
+            console.log('Finished migrating!', migratedFavoredAttributes);
+            return {
+              ...state,
+              favoredAttributes: migratedFavoredAttributes,
+            };
+          }
         }
         return persistedState;
       },
