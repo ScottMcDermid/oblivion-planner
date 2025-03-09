@@ -25,7 +25,11 @@ import DropDown from '@/components/DropDown';
 
 import { useCharacterStore } from '@/data/characterStore';
 
-import attributes, { skillsByAttribute, NUM_FAVORED_ATTRIBUTES } from '@/utils/attributeUtils';
+import attributes, {
+  skillsByAttribute,
+  NUM_FAVORED_ATTRIBUTES,
+  shorthandByAttribute,
+} from '@/utils/attributeUtils';
 import specializations from '@/utils/specializationUtils';
 import races from '@/utils/raceUtils';
 import genders from '@/utils/genderUtils';
@@ -138,13 +142,16 @@ export default function CharacterDialog(props: {
           }
         />
         <div className="mt-6 text-xs">Choose 2 favored attributes and 7 major skills</div>
-        <div className="my-4 grid grid-cols-[3rem_1fr_3fr] place-items-center">
+        <div className="my-4 grid grid-cols-[3rem_1fr_3fr] place-items-center lg:grid-cols-[6rem_1fr_3fr]">
           <div></div>
           <div className="text-lg">Favored</div>
           <div className="text-lg">Skills</div>
           {attributes.map((attribute) => (
             <React.Fragment key={attribute}>
-              <div>{attribute}</div>
+              <div className="mt-1 w-full text-right">
+                <span className="inline lg:hidden">{shorthandByAttribute[attribute]}</span>
+                <span className="hidden lg:inline">{attribute}</span>
+              </div>
               <Checkbox
                 checked={favoredAttributes.includes(attribute)}
                 onChange={() => {

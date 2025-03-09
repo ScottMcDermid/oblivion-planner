@@ -19,7 +19,7 @@ import CharacterDialog from '@/components/CharacterDialog';
 
 import { useCharacterStore } from '@/data/characterStore';
 
-import attributes from '@/utils/attributeUtils';
+import attributes, { shorthandByAttribute } from '@/utils/attributeUtils';
 import { applyLevelUpToLevel, getBaseLevel } from '@/utils/levelUtils';
 
 export default function Home() {
@@ -123,10 +123,14 @@ export default function Home() {
             className="sticky top-0 z-10 grid w-full max-w-7xl grid-cols-[3rem_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr] place-items-center bg-inherit shadow-lg sm:grid-cols-[5rem_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr] xl:grid-cols-[5rem_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr]"
             style={{ gridAutoRows: 'minmax(3rem, auto)' }}
           >
-            <div className="sm:text-lg">LVL</div>
+            <div className="sm:text-lg">
+              <span className="inline lg:hidden">LVL</span>
+              <span className="hidden lg:inline">Level</span>
+            </div>
             {attributes.map((attribute) => (
               <div className="sm:text-lg" key={attribute}>
-                {attribute}
+                <span className="inline lg:hidden">{shorthandByAttribute[attribute]}</span>
+                <span className="hidden lg:inline">{attribute}</span>
               </div>
             ))}
             <div className="px0 hidden xl:block">Health</div>

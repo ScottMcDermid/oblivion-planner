@@ -1,6 +1,15 @@
 import type { Skill } from '@/utils/skillUtils';
 
-export type Attribute = 'STR' | 'INT' | 'WIL' | 'AGL' | 'SPD' | 'END' | 'PER' | 'LCK';
+export type Attribute =
+  | 'Strength'
+  | 'Intelligence'
+  | 'Willpower'
+  | 'Agility'
+  | 'Speed'
+  | 'Endurance'
+  | 'Personality'
+  | 'Luck';
+export type AttributeShorthand = 'STR' | 'INT' | 'WIL' | 'AGL' | 'SPD' | 'END' | 'PER' | 'LCK';
 
 export type AttributesModifier = Partial<AttributesSet>;
 
@@ -12,47 +21,47 @@ export const MAX_ATTRIBUTE_LEVEL = 100;
 export const SKILL_UPS_FOR_MAX_ATTRIBUTE_BONUS = 10;
 
 export const maxBonusByAttribute: AttributesSet = {
-  STR: 5,
-  INT: 5,
-  WIL: 5,
-  AGL: 5,
-  SPD: 5,
-  END: 5,
-  PER: 5,
-  LCK: 1,
+  Strength: 5,
+  Intelligence: 5,
+  Willpower: 5,
+  Agility: 5,
+  Speed: 5,
+  Endurance: 5,
+  Personality: 5,
+  Luck: 1,
 };
 
 export const baseAttributes: AttributesSet = {
-  STR: 40,
-  INT: 40,
-  WIL: 40,
-  AGL: 40,
-  SPD: 40,
-  END: 40,
-  PER: 40,
-  LCK: 50,
+  Strength: 40,
+  Intelligence: 40,
+  Willpower: 40,
+  Agility: 40,
+  Speed: 40,
+  Endurance: 40,
+  Personality: 40,
+  Luck: 50,
 };
 
 export const getAttributesSetTemplate: () => AttributesSet = () => ({
-  STR: 0,
-  INT: 0,
-  WIL: 0,
-  AGL: 0,
-  SPD: 0,
-  END: 0,
-  PER: 0,
-  LCK: 0,
+  Strength: 0,
+  Intelligence: 0,
+  Willpower: 0,
+  Agility: 0,
+  Speed: 0,
+  Endurance: 0,
+  Personality: 0,
+  Luck: 0,
 });
 
 export const skillsByAttribute: { [key in Attribute]: Skill[] } = {
-  STR: ['Blade', 'Blunt', 'Hand-to-Hand'],
-  INT: ['Alchemy', 'Conjuration', 'Mysticism'],
-  WIL: ['Alteration', 'Destruction', 'Restoration'],
-  AGL: ['Security', 'Sneak', 'Marksmanship'],
-  SPD: ['Athletics', 'Acrobatics', 'Light Armor'],
-  END: ['Armorer', 'Block', 'Heavy Armor'],
-  PER: ['Mercantile', 'Speechcraft', 'Illusion'],
-  LCK: [],
+  Strength: ['Blade', 'Blunt', 'Hand-to-Hand'],
+  Intelligence: ['Alchemy', 'Conjuration', 'Mysticism'],
+  Willpower: ['Alteration', 'Destruction', 'Restoration'],
+  Agility: ['Security', 'Sneak', 'Marksmanship'],
+  Speed: ['Athletics', 'Acrobatics', 'Light Armor'],
+  Endurance: ['Armorer', 'Block', 'Heavy Armor'],
+  Personality: ['Mercantile', 'Speechcraft', 'Illusion'],
+  Luck: [],
 };
 
 export const getAttributeFromSkill = (skill: Skill): Attribute => {
@@ -82,7 +91,27 @@ export function getAttributeBonusFromSkillUps(attributeLevel: number, numSkillUp
   return Math.max(0, Math.min(remainingLevels, bonus));
 }
 
-const attributes: Attribute[] = ['STR', 'INT', 'WIL', 'AGL', 'SPD', 'END', 'PER', 'LCK'];
+const attributes: Attribute[] = [
+  'Strength',
+  'Intelligence',
+  'Willpower',
+  'Agility',
+  'Speed',
+  'Endurance',
+  'Personality',
+  'Luck',
+];
+
+export const shorthandByAttribute: { [key in Attribute]: AttributeShorthand } = {
+  Strength: 'STR',
+  Intelligence: 'INT',
+  Willpower: 'WIL',
+  Agility: 'AGL',
+  Speed: 'SPD',
+  Endurance: 'END',
+  Personality: 'PER',
+  Luck: 'LCK',
+};
 
 export const NUM_FAVORED_ATTRIBUTES = 2;
 
