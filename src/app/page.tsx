@@ -153,6 +153,7 @@ export default function Home() {
                         level={levels[i - 1]}
                         levelUp={levelUps[level.level - 2]}
                         commitLevelUpHandler={(levelUp) => commitLevelUp(levelUp, level.level)}
+                        onCancelHandler={() => setModifyingLevel(null)}
                       />
                     </>
                   ) : (

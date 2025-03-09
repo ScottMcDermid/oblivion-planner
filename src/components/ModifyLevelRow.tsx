@@ -1,6 +1,15 @@
 import React, { useMemo, useState } from 'react';
 import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
-import { Box, Button, Checkbox, LinearProgress, Typography } from '@mui/material';
+import {
+  Box,
+  Button,
+  Checkbox,
+  IconButton,
+  LinearProgress,
+  Tooltip,
+  Typography,
+} from '@mui/material';
+import CloseIcon from '@mui/icons-material/Close';
 
 import SkillSelector from '@/components/SkillSelector';
 import SkillFineTuner from '@/components/SkillFineTuner';
@@ -30,10 +39,12 @@ export default function ModifyLevelRow({
   level,
   levelUp,
   commitLevelUpHandler,
+  onCancelHandler,
 }: {
   level: Level;
   levelUp?: LevelUp;
   commitLevelUpHandler: (levelUp: LevelUp) => void;
+  onCancelHandler?: () => void;
 }) {
   const { majorSkills } = useCharacterStore();
   const NUM_MAJOR_SKILL_UPS_PER_LEVEL = 10;
@@ -226,7 +237,22 @@ export default function ModifyLevelRow({
       ))}
 
       {/* Padding for modify level row */}
-      <div className="xl:col-span-5"></div>
+      <div className="xl:col-span-5">
+        {onCancelHandler ? (
+          <Tooltip title="Cancel">
+            <IconButton
+              className="p-0 px-1"
+              aria-label="Cancel"
+              onClick={() => onCancelHandler()}
+              sx={(theme) => ({
+                color: theme.palette.grey[500],
+              })}
+            >
+              <CloseIcon />
+            </IconButton>
+          </Tooltip>
+        ) : null}
+      </div>
       <LevelRow level={nextLevel} previousLevel={level} />
 
       {/* Footer */}
