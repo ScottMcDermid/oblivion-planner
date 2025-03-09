@@ -15,15 +15,16 @@ import type { Level, LevelUp } from '@/utils/levelUtils';
 import LevelRow from '@/components/LevelRow';
 import ModifyLevelRow from '@/components/ModifyLevelRow';
 import ConfirmDialog from '@/components/ConfirmDialog';
+import CharacterDialog from '@/components/CharacterDialog';
 
 import { useCharacterStore } from '@/data/characterStore';
 
 import attributes from '@/utils/attributeUtils';
 import { applyLevelUpToLevel, getBaseLevel } from '@/utils/levelUtils';
-import CharacterCreation from '@/components/CharacterCreation';
 
 export default function Home() {
   const {
+    isFirstVisit,
     race,
     gender,
     birthsign,
@@ -33,7 +34,7 @@ export default function Home() {
     currentLevel,
     levels,
     levelUps,
-    actions: { setLevelUp, removeLevel, setLevels, resetLevels },
+    actions: { setCharacterData, setLevelUp, removeLevel, setLevels, resetLevels },
   } = useCharacterStore();
 
   const [isCharacterCreationOpen, setIsCharacterCreationOpen] = useState<boolean>(false);
@@ -63,6 +64,13 @@ export default function Home() {
   };
 
   useEffect(() => {
+    if (useCharacterStore.persist.hasHydrated() && useCharacterStore.getState().isFirstVisit) {
+      setIsCharacterCreationOpen(true);
+      setCharacterData({ isFirstVisit: false });
+    }
+  }, [isFirstVisit]);
+
+  useEffect(() => {
     setLevels(
       levelUps.reduce(
         (levels: Level[], levelUp, i) => [...levels, applyLevelUpToLevel(levels[i], levelUp)],
@@ -84,11 +92,6 @@ export default function Home() {
     <StyledEngineProvider injectFirst>
       <ThemeProvider theme={theme}>
         <CssBaseline />
-        <CharacterCreation
-          open={isCharacterCreationOpen}
-          handleClose={() => setIsCharacterCreationOpen(false)}
-        />
-
         <div className="flex h-screen flex-col place-items-center overflow-y-auto bg-inherit">
           <div className="space-between flex w-full flex-row">
             <Button
@@ -191,6 +194,10 @@ export default function Home() {
         </div>
         <ConfirmDialog open={removingLevel !== null} handleClose={handleRemoveLevel} />
         <ConfirmDialog open={isConfirmingReset} handleClose={handleReset} />
+        <CharacterDialog
+          open={isCharacterCreationOpen}
+          handleClose={() => setIsCharacterCreationOpen(false)}
+        />
       </ThemeProvider>
     </StyledEngineProvider>
   );
