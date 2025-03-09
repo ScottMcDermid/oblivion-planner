@@ -50,11 +50,17 @@ export const SPECIALIZATION_BONUS = 5;
 export const MAJOR_SKILL_BONUS = 20;
 
 export const applyLevelUpToLevel = (level: Level, levelUp: LevelUp): Level => {
-  const { AGL = 0, END = 0, INT = 0, STR = 0, WIL = 0 } = levelUp.attributes;
+  const {
+    Agility = 0,
+    Endurance = 0,
+    Intelligence = 0,
+    Strength = 0,
+    Willpower = 0,
+  } = levelUp.attributes;
 
-  const magicka: number = level.magicka + INT * MAGICKA_MULTIPLIER;
-  const stamina: number = level.stamina + END + STR + AGL + WIL;
-  const encumbrance: number = level.encumbrance + STR * ENCUMBRANCE_MULTIPLIER;
+  const magicka: number = level.magicka + Intelligence * MAGICKA_MULTIPLIER;
+  const stamina: number = level.stamina + Endurance + Strength + Agility + Willpower;
+  const encumbrance: number = level.encumbrance + Strength * ENCUMBRANCE_MULTIPLIER;
 
   const newAttributes: AttributesSet = attributes.reduce(
     (newAttributes, attribute) => ({
@@ -65,7 +71,9 @@ export const applyLevelUpToLevel = (level: Level, levelUp: LevelUp): Level => {
   );
 
   const health =
-    level.health + END * BASE_HEALTH_MULTIPLIER + Math.floor(newAttributes.END * HEALTH_MULTIPLIER);
+    level.health +
+    Endurance * BASE_HEALTH_MULTIPLIER +
+    Math.floor(newAttributes.Endurance * HEALTH_MULTIPLIER);
 
   const newSkills: SkillsSet = skills.reduce((newSkills, skill) => {
     return {
@@ -117,20 +125,26 @@ export const getBaseLevel = (
     };
   }, getSkillsSetTemplate());
 
-  const { AGL = 0, END = 0, INT = 0, STR = 0, WIL = 0 } = newAttributes;
-  const health = END * BASE_HEALTH_MULTIPLIER;
+  const {
+    Agility = 0,
+    Endurance = 0,
+    Intelligence = 0,
+    Strength = 0,
+    Willpower = 0,
+  } = newAttributes;
+  const health = Endurance * BASE_HEALTH_MULTIPLIER;
 
   // compute magicka
   const birthsignMagickaBonus = birthsignModifiers[birthsign].magicka ?? 0;
   const raceMagickaBonus = raceModifiers[race].magicka ?? 0;
-  const baseMagicka = INT * MAGICKA_MULTIPLIER;
+  const baseMagicka = Intelligence * MAGICKA_MULTIPLIER;
   const magicka = baseMagicka + birthsignMagickaBonus + raceMagickaBonus;
 
   // compute base stamina
-  const stamina = END + STR + AGL + WIL;
+  const stamina = Endurance + Strength + Agility + Willpower;
 
   // compute base encumbrance
-  const encumbrance: number = STR * ENCUMBRANCE_MULTIPLIER;
+  const encumbrance: number = Strength * ENCUMBRANCE_MULTIPLIER;
 
   return {
     attributes: newAttributes,

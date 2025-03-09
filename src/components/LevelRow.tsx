@@ -61,13 +61,13 @@ export default function LevelRow({
             {...(extraSkillUps[attribute] >= 0
               ? {
                   title:
-                    attribute !== 'LCK'
+                    attribute !== 'Luck'
                       ? `${remainingSkillUps[attribute]} skill ups to go (${extraSkillUps[attribute]} extra)`
                       : '',
                 }
               : {
                   title:
-                    attribute !== 'LCK'
+                    attribute !== 'Luck'
                       ? `${remainingSkillUps[attribute]} skill ups to go (${extraSkillUps[attribute]} short)`
                       : '',
                 })}
