@@ -49,7 +49,7 @@ export default function LevelRow({
         }),
         getAttributesSetTemplate(),
       ),
-    [level.attributes, level.skills],
+    [level.attributes, level.skills, remainingSkillUps],
   );
 
   return (

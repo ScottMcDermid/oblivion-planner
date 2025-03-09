@@ -68,7 +68,7 @@ export default function Home() {
       setIsCharacterCreationOpen(true);
       setCharacterData({ isFirstVisit: false });
     }
-  }, [isFirstVisit]);
+  }, [isFirstVisit, setCharacterData]);
 
   useEffect(() => {
     setLevels(
