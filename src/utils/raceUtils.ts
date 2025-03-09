@@ -14,14 +14,14 @@ export const raceModifiers: {
   Altmer: {
     attributes: {
       Male: {
-        STR: -10,
-        INT: 10,
-        SPD: -10,
+        Strength: -10,
+        Intelligence: 10,
+        Speed: -10,
       },
       Female: {
-        STR: -10,
-        INT: 10,
-        END: -10,
+        Strength: -10,
+        Intelligence: 10,
+        Endurance: -10,
       },
     },
     magicka: 100,
@@ -37,16 +37,16 @@ export const raceModifiers: {
   Argonian: {
     attributes: {
       Male: {
-        WIL: -10,
-        AGL: 10,
-        SPD: 10,
-        END: -10,
-        PER: -10,
+        Willpower: -10,
+        Agility: 10,
+        Speed: 10,
+        Endurance: -10,
+        Personality: -10,
       },
       Female: {
-        INT: 10,
-        END: -10,
-        PER: -10,
+        Intelligence: 10,
+        Endurance: -10,
+        Personality: -10,
       },
     },
     skills: {
@@ -62,18 +62,18 @@ export const raceModifiers: {
   Bosmer: {
     attributes: {
       Male: {
-        STR: -10,
-        WIL: -10,
-        AGL: 10,
-        SPD: 10,
-        PER: -10,
+        Strength: -10,
+        Willpower: -10,
+        Agility: 10,
+        Speed: 10,
+        Personality: -10,
       },
       Female: {
-        STR: -10,
-        WIL: -10,
-        AGL: 10,
-        SPD: 10,
-        END: -10,
+        Strength: -10,
+        Willpower: -10,
+        Agility: 10,
+        Speed: 10,
+        Endurance: -10,
       },
     },
     skills: {
@@ -88,18 +88,18 @@ export const raceModifiers: {
   Breton: {
     attributes: {
       Male: {
-        INT: 10,
-        WIL: 10,
-        AGL: -10,
-        SPD: -10,
-        END: -10,
+        Intelligence: 10,
+        Willpower: 10,
+        Agility: -10,
+        Speed: -10,
+        Endurance: -10,
       },
       Female: {
-        STR: -10,
-        INT: 10,
-        WIL: 10,
-        AGL: -10,
-        END: -10,
+        Strength: -10,
+        Intelligence: 10,
+        Willpower: 10,
+        Agility: -10,
+        Endurance: -10,
       },
     },
     magicka: 50,
@@ -115,14 +115,14 @@ export const raceModifiers: {
   Dunmer: {
     attributes: {
       Male: {
-        WIL: -10,
-        SPD: 10,
-        PER: -10,
+        Willpower: -10,
+        Speed: 10,
+        Personality: -10,
       },
       Female: {
-        WIL: -10,
-        SPD: 10,
-        END: -10,
+        Willpower: -10,
+        Speed: 10,
+        Endurance: -10,
       },
     },
     skills: {
@@ -138,14 +138,14 @@ export const raceModifiers: {
   Imperial: {
     attributes: {
       Male: {
-        AGL: -10,
-        PER: 10,
-        WIL: -10,
+        Agility: -10,
+        Personality: 10,
+        Willpower: -10,
       },
       Female: {
-        AGL: -10,
-        PER: 10,
-        SPD: -10,
+        Agility: -10,
+        Personality: 10,
+        Speed: -10,
       },
     },
     skills: {
@@ -160,14 +160,14 @@ export const raceModifiers: {
   Khajiit: {
     attributes: {
       Male: {
-        WIL: -10,
-        AGL: 10,
-        END: -10,
+        Willpower: -10,
+        Agility: 10,
+        Endurance: -10,
       },
       Female: {
-        STR: -10,
-        WIL: -10,
-        AGL: 10,
+        Strength: -10,
+        Willpower: -10,
+        Agility: 10,
       },
     },
     skills: {
@@ -183,16 +183,16 @@ export const raceModifiers: {
   Nord: {
     attributes: {
       Male: {
-        STR: 10,
-        INT: -10,
-        WIL: -10,
-        END: 10,
-        PER: -10,
+        Strength: 10,
+        Intelligence: -10,
+        Willpower: -10,
+        Endurance: 10,
+        Personality: -10,
       },
       Female: {
-        STR: 10,
-        INT: -10,
-        PER: -10,
+        Strength: 10,
+        Intelligence: -10,
+        Personality: -10,
       },
     },
     skills: {
@@ -207,21 +207,21 @@ export const raceModifiers: {
   Orc: {
     attributes: {
       Male: {
-        STR: 5,
-        INT: -10,
-        WIL: 10,
-        AGL: -5,
-        SPD: -10,
-        END: 10,
-        PER: -10,
+        Strength: 5,
+        Intelligence: -10,
+        Willpower: 10,
+        Agility: -5,
+        Speed: -10,
+        Endurance: 10,
+        Personality: -10,
       },
       Female: {
-        STR: 5,
-        WIL: 5,
-        AGL: -5,
-        SPD: -10,
-        END: 10,
-        PER: -15,
+        Strength: 5,
+        Willpower: 5,
+        Agility: -5,
+        Speed: -10,
+        Endurance: 10,
+        Personality: -15,
       },
     },
     skills: {
@@ -235,16 +235,16 @@ export const raceModifiers: {
   Redguard: {
     attributes: {
       Male: {
-        STR: 10,
-        INT: -10,
-        WIL: -10,
-        END: 10,
-        PER: -10,
+        Strength: 10,
+        Intelligence: -10,
+        Willpower: -10,
+        Endurance: 10,
+        Personality: -10,
       },
       Female: {
-        INT: -10,
-        WIL: -10,
-        END: 10,
+        Intelligence: -10,
+        Willpower: -10,
+        Endurance: 10,
       },
     },
     skills: {
