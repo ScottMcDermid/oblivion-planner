@@ -13,7 +13,7 @@ import races from '@/utils/raceUtils';
 import genders from '@/utils/genderUtils';
 import birthsigns from '@/utils/birthsignUtils';
 import specializations from '@/utils/specializationUtils';
-import attributes, { NUM_FAVORED_ATTRIBUTES } from '@/utils/attributeUtils';
+import attributes, { NUM_FAVORED_ATTRIBUTES, shorthandByAttribute } from '@/utils/attributeUtils';
 import skills, { NUM_MAJOR_SKILLS } from '@/utils/skillUtils';
 
 type State = {
@@ -27,6 +27,7 @@ type State = {
   currentLevel: Level;
   levels: Level[];
   levelUps: LevelUp[];
+  version: number;
 };
 
 type Action = {
@@ -53,6 +54,7 @@ const useCharacterStore = create<CharacterStore>()(
         currentLevel: levelTemplate,
         levels: [],
         levelUps: [],
+        version: 1,
         actions: {
           setCharacterData: (state: Partial<State>) => set(() => ({ ...state })),
           setLevels: (levels) =>
@@ -85,6 +87,7 @@ const useCharacterStore = create<CharacterStore>()(
     },
     {
       name: 'oblivion-planner',
+      version: 1,
       storage: createJSONStorage(
         () => (typeof window !== 'undefined' ? localStorage : ({} as Storage)), // Fallback for SSR; you might implement a noop Storage if needed
       ),
@@ -99,7 +102,35 @@ const useCharacterStore = create<CharacterStore>()(
         currentLevel: state.currentLevel,
         levels: state.levels,
         levelUps: state.levelUps,
+        version: state.version,
       }),
+      migrate: (persistedState: State, version) => {
+        if (!version) {
+          console.log('Migrating from version 0 to 1...', persistedState.favoredAttributes);
+
+          // invert shorthand/fullname attributes
+          const fullNameByShorthandAttribute = Object.fromEntries(
+            Object.entries(shorthandByAttribute).map(([key, value]) => [value, key]),
+          );
+
+          // migrate shorthand attributes to fullname format
+          const migratedFavoredAttributesWithDuplicates = persistedState.favoredAttributes.map(
+            (attribute: string) => fullNameByShorthandAttribute[attribute] ?? attribute,
+          );
+
+          // remove duplicates
+          const migratedFavoredAttributes = migratedFavoredAttributesWithDuplicates.filter(
+            (value, index, self) => self.indexOf(value) === index,
+          );
+
+          console.log('Finished migrating!', migratedFavoredAttributes);
+          return {
+            ...persistedState,
+            favoredAttributes: migratedFavoredAttributes,
+          };
+        }
+        return persistedState;
+      },
     },
   ),
 );
