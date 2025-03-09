@@ -27,7 +27,7 @@ export default function DropDown({
         }
       >
         {options.map((option) => (
-          <ToggleButton aria-label={option} key={option} value={option}>
+          <ToggleButton aria-label={option} key={option} value={option} className="min-w-24">
             {option}
           </ToggleButton>
         ))}

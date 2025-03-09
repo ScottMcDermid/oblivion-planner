@@ -15,12 +15,12 @@ import type { Level, LevelUp } from '@/utils/levelUtils';
 import LevelRow from '@/components/LevelRow';
 import ModifyLevelRow from '@/components/ModifyLevelRow';
 import ConfirmDialog from '@/components/ConfirmDialog';
+import CharacterDialog from '@/components/CharacterDialog';
 
 import { useCharacterStore } from '@/data/characterStore';
 
 import attributes from '@/utils/attributeUtils';
 import { applyLevelUpToLevel, getBaseLevel } from '@/utils/levelUtils';
-import CharacterCreation from '@/components/CharacterCreation';
 
 export default function Home() {
   const {
@@ -84,11 +84,6 @@ export default function Home() {
     <StyledEngineProvider injectFirst>
       <ThemeProvider theme={theme}>
         <CssBaseline />
-        <CharacterCreation
-          open={isCharacterCreationOpen}
-          handleClose={() => setIsCharacterCreationOpen(false)}
-        />
-
         <div className="flex h-screen flex-col place-items-center overflow-y-auto bg-inherit">
           <div className="space-between flex w-full flex-row">
             <Button
@@ -191,6 +186,10 @@ export default function Home() {
         </div>
         <ConfirmDialog open={removingLevel !== null} handleClose={handleRemoveLevel} />
         <ConfirmDialog open={isConfirmingReset} handleClose={handleReset} />
+        <CharacterDialog
+          open={isCharacterCreationOpen}
+          handleClose={() => setIsCharacterCreationOpen(false)}
+        />
       </ThemeProvider>
     </StyledEngineProvider>
   );
