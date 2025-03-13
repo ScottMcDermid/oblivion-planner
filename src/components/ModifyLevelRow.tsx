@@ -11,12 +11,14 @@ import {
 } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 
+import type { Attribute, AttributesSet } from '@/utils/attributeUtils';
+import type { Level, LevelUp } from '@/utils/levelUtils';
+
 import SkillSelector from '@/components/SkillSelector';
 import SkillFineTuner from '@/components/SkillFineTuner';
 import LevelRow from '@/components/LevelRow';
 
-import type { Attribute, AttributesSet } from '@/utils/attributeUtils';
-import type { Level, LevelUp } from '@/utils/levelUtils';
+import { useCharacterStore } from '@/data/characterStore';
 
 import attributes, {
   MAX_ATTRIBUTE_LEVEL,
@@ -33,7 +35,6 @@ import skills, {
   getSkillsSetTemplate,
 } from '@/utils/skillUtils';
 import { applyLevelUpToLevel } from '@/utils/levelUtils';
-import { useCharacterStore } from '@/data/characterStore';
 
 export default function ModifyLevelRow({
   level,
@@ -161,6 +162,13 @@ export default function ModifyLevelRow({
     return Math.min(raisableAttributes.length, NUM_RAISED_ATTRIBUTES);
   }, [level.attributes, NUM_RAISED_ATTRIBUTES]);
 
+  const canLevelUp = useMemo(
+    () =>
+      numMajorSkillUps !== NUM_MAJOR_SKILL_UPS_PER_LEVEL ||
+      raisedAttributes.length !== requiredRaisedAttributes,
+    [numMajorSkillUps, raisedAttributes],
+  );
+
   return (
     <>
       {/* padding for level column */}
@@ -282,15 +290,12 @@ export default function ModifyLevelRow({
             setRaisedAttributes([]);
             setSelectedSkill(null);
           }}
-          {...(numMajorSkillUps < NUM_MAJOR_SKILL_UPS_PER_LEVEL ||
-          raisedAttributes.length !== requiredRaisedAttributes
-            ? { disabled: true }
-            : {})}
+          {...(canLevelUp ? { disabled: true } : {})}
         >
           <ArrowUpwardIcon /> <span className="pt-1">Level Up</span>
         </Button>
         <div className="w-full py-2 text-center text-xs text-ghost">
-          Requires 10 major skill ups and 3 raised attributes
+          {numMajorSkillUps}/10 major skill ups and {raisedAttributes.length}/3 raised attributes
         </div>
       </div>
     </>
