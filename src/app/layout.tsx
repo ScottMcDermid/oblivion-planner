@@ -1,4 +1,4 @@
-import React from 'react'
+import React from 'react';
 import type { Metadata } from 'next';
 import localFont from 'next/font/local';
 import './globals.css';
@@ -16,7 +16,22 @@ const geistMono = localFont({
 
 export const metadata: Metadata = {
   title: 'Oblivion Planner',
-  description: 'Instead of playing, plan.',
+  description:
+    'Optimize your Oblivion character from start to finish. Plan skills, attributes, and level-ups to avoid inefficiencies and dominate Tamriel.',
+  openGraph: {
+    title: 'Deadbeat Club',
+    description:
+      'Optimize your Oblivion character from start to finish. Plan skills, attributes, and level-ups to avoid inefficiencies and dominate Tamriel.',
+    url: 'https://oblivionplanner.com',
+    siteName: 'Oblivion Planner',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Oblivion Planner',
+    description:
+      'Optimize your Oblivion character from start to finish. Plan skills, attributes, and level-ups to avoid inefficiencies and dominate Tamriel.',
+  },
 };
 
 export default function RootLayout({
