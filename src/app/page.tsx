@@ -93,7 +93,8 @@ export default function Home() {
       <ThemeProvider theme={theme}>
         <CssBaseline />
         <div className="flex h-screen flex-col place-items-center overflow-y-auto bg-inherit">
-          <div className="space-between flex w-full flex-row p-2">
+          <h1 className="absolute items-center text-lg">Oblivion Planner</h1>
+          <div className="space-between flex w-full flex-row pl-2 pt-6 sm:pt-2">
             <Button
               variant="contained"
               aria-label="Character Creation"
@@ -102,7 +103,7 @@ export default function Home() {
               }}
             >
               <PersonIcon />
-              <div>Character</div>
+              <div className="hidden sm:block">Character</div>
             </Button>
             {levels.length > 1 && (
               <Button
@@ -113,14 +114,14 @@ export default function Home() {
                 }}
               >
                 <DeleteIcon />
-                <div>Reset</div>
+                <div className="hidden sm:block">Reset</div>
               </Button>
             )}
           </div>
 
           {/* Table Header */}
           <div
-            className="max-w-8xl sticky top-0 z-10 grid w-full grid-cols-[3rem_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr] place-items-center bg-inherit shadow-lg sm:grid-cols-[5rem_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr] xl:grid-cols-[5rem_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr]"
+            className="sticky top-0 z-10 grid w-full max-w-8xl grid-cols-[3rem_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr] place-items-center bg-inherit shadow-lg sm:grid-cols-[5rem_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr] xl:grid-cols-[5rem_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr]"
             style={{ gridAutoRows: 'minmax(3rem, auto)' }}
           >
             <div className="sm:text-lg">
@@ -146,7 +147,7 @@ export default function Home() {
             <>
               {/* Table Body */}
               <div
-                className="max-w-8xl grid w-full grid-cols-[3rem_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr] place-items-center sm:grid-cols-[5rem_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr] xl:grid-cols-[5rem_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr]"
+                className="grid w-full max-w-8xl grid-cols-[3rem_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr] place-items-center sm:grid-cols-[5rem_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr] xl:grid-cols-[5rem_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr]"
                 style={{ gridAutoRows: 'minmax(3rem, auto)' }}
               >
                 {levels.map((level, i) =>
@@ -178,7 +179,7 @@ export default function Home() {
 
               {/* Table Footer */}
               <div
-                className="max-w-8xl grid w-full grid-cols-[3rem_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr] place-items-center pb-24 sm:grid-cols-[5rem_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr] xl:grid-cols-[5rem_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr]"
+                className="grid w-full max-w-8xl grid-cols-[3rem_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr] place-items-center pb-24 sm:grid-cols-[5rem_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr] xl:grid-cols-[5rem_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr]"
                 style={{ gridAutoRows: 'minmax(3rem, auto)' }}
               >
                 <ModifyLevelRow
