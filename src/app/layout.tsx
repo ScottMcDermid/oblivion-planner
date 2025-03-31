@@ -25,12 +25,32 @@ export const metadata: Metadata = {
     url: 'https://oblivionplanner.com',
     siteName: 'Oblivion Planner',
     type: 'website',
+    locale: 'en_US',
   },
   twitter: {
     card: 'summary_large_image',
     title: 'Oblivion Planner',
     description:
       'Optimize your Oblivion character from start to finish. Plan skills, attributes, and level-ups to avoid inefficiencies and dominate Tamriel.',
+  },
+  alternates: {
+    canonical: 'https://oblivionplanner.com',
+  },
+  viewport: {
+    width: 'device-width',
+    initialScale: 1,
+    maximumScale: 1,
+  },
+  themeColor: '#1e1e1e',
+  robots: {
+    index: true,
+    follow: true,
+    nocache: false,
+    googleBot: {
+      index: true,
+      follow: true,
+      noimageindex: false,
+    },
   },
 };
 
