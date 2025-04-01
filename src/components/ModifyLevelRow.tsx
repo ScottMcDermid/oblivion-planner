@@ -108,6 +108,40 @@ export default function ModifyLevelRow({
     setSelectedSkill(skill);
   };
 
+  const handleSkillIncremented = (skill: Skill) => {
+    setSkillUps({
+      ...skillUps,
+      [skill]: skillUps[skill] + 1,
+    });
+
+    // uncheck attribute if last skill is unchecked
+    const attribute = getAttributeFromSkill(skill);
+    const attributeSkills = Object.entries(skillUps).find(
+      ([s, level]) => skill !== s && level > 0 && getAttributeFromSkill(s as Skill) === attribute,
+    );
+    if (!attributeSkills) {
+      setRaisedAttributes(raisedAttributes.slice(0).filter((a) => a !== attribute));
+    }
+    setSelectedSkill(skill);
+  };
+
+  const handleSkillDecremented = (skill: Skill) => {
+    setSkillUps({
+      ...skillUps,
+      [skill]: skillUps[skill] - 1,
+    });
+
+    // uncheck attribute if last skill is unchecked
+    const attribute = getAttributeFromSkill(skill);
+    const attributeSkills = Object.entries(skillUps).find(
+      ([s, level]) => skill !== s && level > 0 && getAttributeFromSkill(s as Skill) === attribute,
+    );
+    if (!attributeSkills) {
+      setRaisedAttributes(raisedAttributes.slice(0).filter((a) => a !== attribute));
+    }
+    setSelectedSkill(skill);
+  };
+
   const handleAttributeToggle = (value: Attribute) => {
     const currentIndex = raisedAttributes.indexOf(value);
     const newChecked = [...raisedAttributes];
@@ -187,6 +221,8 @@ export default function ModifyLevelRow({
                     major={majorSkills.includes(skill)}
                     selectHandler={() => handleSkillSelected(skill)}
                     unselectHandler={() => handleSkillUnselected(skill)}
+                    incrementHandler={() => handleSkillIncremented(skill)}
+                    decrementHandler={() => handleSkillDecremented(skill)}
                   />
                 </Box>
               ))}
@@ -197,6 +233,7 @@ export default function ModifyLevelRow({
       <div className="col-span-2 w-full justify-start xl:col-span-6">
         {selectedSkill && (
           <SkillFineTuner
+            className="lg:hidden"
             skill={selectedSkill}
             value={skillUps[selectedSkill]}
             onIncrement={() => {

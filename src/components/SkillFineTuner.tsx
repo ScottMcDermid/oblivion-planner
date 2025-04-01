@@ -5,20 +5,23 @@ import RemoveIcon from '@mui/icons-material/Remove';
 
 import type { Skill } from '@/utils/skillUtils';
 import { shorthandBySkill } from '@/utils/skillUtils';
+import { cn } from '@/utils/cn';
 
 export default function SkillFineTuner({
   skill,
   value,
+  className = '',
   onIncrement,
   onDecrement,
 }: {
   skill: Skill;
   value: number;
+  className: string;
   onIncrement: () => void;
   onDecrement: () => void;
 }) {
   return (
-    <Box className="flex w-24 flex-col place-items-center text-center">
+    <Box className={cn('flex w-24 flex-col place-items-center text-center', className)}>
       <Typography className="whitespace-nowrap">Fine Tune</Typography>
       <div className="place-items-center">
         <Typography className="hidden whitespace-nowrap text-xs lg:block">{skill}</Typography>
