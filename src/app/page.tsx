@@ -21,6 +21,8 @@ import { useCharacterStore } from '@/data/characterStore';
 
 import attributes, { shorthandByAttribute } from '@/utils/attributeUtils';
 import { applyLevelUpToLevel, getBaseLevel } from '@/utils/levelUtils';
+import RemasteredModifyLevelRow from '@/components/RemasteredModifyLevelRow';
+import RemasteredLevelRow from '@/components/RemasteredLevelRow';
 
 export default function Home() {
   const {
@@ -163,7 +165,15 @@ export default function Home() {
               >
                 {levels.map((level, i) =>
                   modifyingLevel !== null && modifyingLevel === level.level ? (
-                    <>
+                    remastered ? (
+                      <RemasteredModifyLevelRow
+                        key={level.level}
+                        level={levels[i - 1]}
+                        levelUp={levelUps[level.level - 2]}
+                        commitLevelUpHandler={(levelUp) => commitLevelUp(levelUp, level.level)}
+                        onCancelHandler={() => setModifyingLevel(null)}
+                      />
+                    ) : (
                       <ModifyLevelRow
                         key={level.level}
                         level={levels[i - 1]}
@@ -171,7 +181,31 @@ export default function Home() {
                         commitLevelUpHandler={(levelUp) => commitLevelUp(levelUp, level.level)}
                         onCancelHandler={() => setModifyingLevel(null)}
                       />
-                    </>
+                    )
+                  ) : remastered ? (
+                    <RemasteredLevelRow
+                      key={level.level}
+                      level={level}
+                      {...(level.level > 1
+                        ? {
+                            onRemoveHandler: () => promptConfirmRemoveLevel(level.level),
+                            onModifyHandler: () => setModifyingLevel(level.level),
+                          }
+                        : {})}
+                      previousLevel={levels[i - 1]}
+                    />
+                  ) : remastered ? (
+                    <RemasteredLevelRow
+                      key={level.level}
+                      level={level}
+                      {...(level.level > 1
+                        ? {
+                            onRemoveHandler: () => promptConfirmRemoveLevel(level.level),
+                            onModifyHandler: () => setModifyingLevel(level.level),
+                          }
+                        : {})}
+                      previousLevel={levels[i - 1]}
+                    />
                   ) : (
                     <LevelRow
                       key={level.level}
@@ -193,10 +227,17 @@ export default function Home() {
                 className="grid w-full max-w-8xl grid-cols-[3rem_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr] place-items-center pb-24 sm:grid-cols-[5rem_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr] xl:grid-cols-[5rem_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr]"
                 style={{ gridAutoRows: 'minmax(3rem, auto)' }}
               >
-                <ModifyLevelRow
-                  level={currentLevel}
-                  commitLevelUpHandler={(levelUp) => commitLevelUp(levelUp)}
-                />
+                {remastered ? (
+                  <RemasteredModifyLevelRow
+                    level={currentLevel}
+                    commitLevelUpHandler={(levelUp) => commitLevelUp(levelUp)}
+                  />
+                ) : (
+                  <ModifyLevelRow
+                    level={currentLevel}
+                    commitLevelUpHandler={(levelUp) => commitLevelUp(levelUp)}
+                  />
+                )}
               </div>
             </>
           ) : (
