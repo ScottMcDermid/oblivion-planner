@@ -255,6 +255,7 @@ export default function Home() {
         <ConfirmDialog open={isConfirmingReset} handleClose={handleReset} />
         <CharacterDialog
           open={isCharacterCreationOpen}
+          remastered={remastered}
           handleClose={() => setIsCharacterCreationOpen(false)}
         />
       </ThemeProvider>

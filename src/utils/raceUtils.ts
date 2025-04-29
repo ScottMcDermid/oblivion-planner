@@ -1,5 +1,5 @@
 import type { AttributesModifier } from '@/utils/attributeUtils';
-import type { Gender } from '@/utils/genderUtils';
+import type { Gender, LocationOrigin } from '@/utils/genderUtils';
 import { SkillsModifier } from '@/utils/skillUtils';
 
 export type RaceModifier = {
@@ -257,6 +257,33 @@ export const raceModifiers: {
     },
   },
 };
+
+export const locationOriginsByRace: { [key in Race]: LocationOrigin[] } = {
+  Altmer: ['Auridon', 'Summerset Isle'],
+  Argonian: ['Arnesia', 'Thornmarsh'],
+  Bosmer: ['Grahtwood', "Reaper's March"],
+  Breton: ['Systres', 'High Rock'],
+  Dunmer: ['Vvardenfell', 'Mainland'],
+  Imperial: ['Nibenay', 'Colovia'],
+  Khajiit: ['Anequina', 'Pellitine'],
+  Nord: ['Western', 'Eastern'],
+  Orc: ['Stronghold', 'Orsinium'],
+  Redguard: ['Dragontail Mountains', "Alik'r Desert"],
+};
+
+export const locationOriginByRaceAndGender: { [key in Race]: { [key in Gender]: LocationOrigin } } =
+  {
+    Altmer: { Male: 'Auridon', Female: 'Summerset Isle' },
+    Argonian: { Male: 'Arnesia', Female: 'Thornmarsh' },
+    Bosmer: { Male: 'Grahtwood', Female: "Reaper's March" },
+    Breton: { Male: 'Systres', Female: 'High Rock' },
+    Dunmer: { Male: 'Vvardenfell', Female: 'Mainland' },
+    Imperial: { Male: 'Nibenay', Female: 'Colovia' },
+    Khajiit: { Male: 'Anequina', Female: 'Pellitine' },
+    Nord: { Male: 'Western', Female: 'Eastern' },
+    Orc: { Male: 'Stronghold', Female: 'Orsinium' },
+    Redguard: { Male: 'Dragontail Mountains', Female: "Alik'r Desert" },
+  };
 
 export type Race =
   | 'Altmer'
