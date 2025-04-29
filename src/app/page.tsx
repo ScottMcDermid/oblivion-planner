@@ -6,7 +6,7 @@ import CssBaseline from '@mui/material/CssBaseline';
 import PersonIcon from '@mui/icons-material/Person';
 import DeleteIcon from '@mui/icons-material/Delete';
 import Skeleton from '@mui/material/Skeleton';
-import { Button, StyledEngineProvider } from '@mui/material';
+import { Button, StyledEngineProvider, Switch } from '@mui/material';
 
 import theme from '@/app/theme';
 
@@ -41,6 +41,7 @@ export default function Home() {
   const [isConfirmingReset, setIsConfirmingReset] = useState<boolean>(false);
   const [modifyingLevel, setModifyingLevel] = useState<number | null>(null);
   const [removingLevel, setRemovingLevel] = useState<number | null>(null);
+  const [remastered, setRemastered] = useState(false);
 
   const commitLevelUp = (levelUp: LevelUp, level?: number): void => {
     setLevelUp(levelUp, level);
@@ -94,29 +95,39 @@ export default function Home() {
         <CssBaseline />
         <div className="flex h-screen flex-col place-items-center overflow-y-auto bg-inherit">
           <h1 className="absolute items-center text-lg">Oblivion Planner</h1>
-          <div className="space-between flex w-full flex-row pl-2 pt-6 sm:pt-2">
-            <Button
-              variant="contained"
-              aria-label="Character Creation"
-              onClick={() => {
-                setIsCharacterCreationOpen(true);
-              }}
-            >
-              <PersonIcon />
-              <div className="hidden sm:block">Character</div>
-            </Button>
-            {levels.length > 1 && (
+          <div className="flex w-full flex-row justify-between pl-2 pt-6 sm:pt-2">
+            <div className="flex place-items-center">
               <Button
-                color="error"
-                aria-label="Reset Character"
+                variant="contained"
+                aria-label="Character Creation"
                 onClick={() => {
-                  setIsConfirmingReset(true);
+                  setIsCharacterCreationOpen(true);
                 }}
               >
-                <DeleteIcon />
-                <div className="hidden sm:block">Reset</div>
+                <PersonIcon />
+                <div className="hidden sm:block">Character</div>
               </Button>
-            )}
+              {levels.length > 1 && (
+                <Button
+                  color="error"
+                  aria-label="Reset Character"
+                  onClick={() => {
+                    setIsConfirmingReset(true);
+                  }}
+                >
+                  <DeleteIcon />
+                  <div className="hidden sm:block">Reset</div>
+                </Button>
+              )}
+            </div>
+            <div className="flex place-items-center">
+              <div>Remastered</div>
+              <Switch
+                checked={remastered}
+                color="secondary"
+                onChange={() => setRemastered(!remastered)}
+              />
+            </div>
           </div>
 
           {/* Table Header */}
