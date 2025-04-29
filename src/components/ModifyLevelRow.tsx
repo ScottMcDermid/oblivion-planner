@@ -176,16 +176,20 @@ export default function ModifyLevelRow({
 
   const nextLevel = useMemo(
     () =>
-      applyLevelUpToLevel(level, {
-        skills: skillUps,
-        attributes: raisedAttributes.reduce(
-          (attributes, attribute) => ({
-            ...attributes,
-            [attribute]: attributeBonuses[attribute],
-          }),
-          getAttributesSetTemplate(),
-        ),
-      }),
+      applyLevelUpToLevel(
+        level,
+        {
+          skills: skillUps,
+          attributes: raisedAttributes.reduce(
+            (attributes, attribute) => ({
+              ...attributes,
+              [attribute]: attributeBonuses[attribute],
+            }),
+            getAttributesSetTemplate(),
+          ),
+        },
+        false,
+      ),
     [level, skillUps, raisedAttributes, attributeBonuses],
   );
 

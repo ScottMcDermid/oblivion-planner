@@ -49,7 +49,7 @@ export const FAVORED_ATTRIBUTE_BONUS = 5;
 export const SPECIALIZATION_BONUS = 5;
 export const MAJOR_SKILL_BONUS = 20;
 
-export const applyLevelUpToLevel = (level: Level, levelUp: LevelUp): Level => {
+export const applyLevelUpToLevel = (level: Level, levelUp: LevelUp, remastered: boolean): Level => {
   const {
     Agility = 0,
     Endurance = 0,
@@ -70,10 +70,11 @@ export const applyLevelUpToLevel = (level: Level, levelUp: LevelUp): Level => {
     getAttributesSetTemplate(),
   );
 
-  const health =
-    level.health +
-    Endurance * BASE_HEALTH_MULTIPLIER +
-    Math.floor(newAttributes.Endurance * HEALTH_MULTIPLIER);
+  const health = remastered
+    ? Math.floor((Strength * 2) / 3 + (Endurance * 4) / 3 + (Endurance / 10) * level.level)
+    : level.health +
+      Endurance * BASE_HEALTH_MULTIPLIER +
+      Math.floor(newAttributes.Endurance * HEALTH_MULTIPLIER);
 
   const newSkills: SkillsSet = skills.reduce((newSkills, skill) => {
     return {

@@ -76,7 +76,10 @@ export default function Home() {
   useEffect(() => {
     setLevels(
       levelUps.reduce(
-        (levels: Level[], levelUp, i) => [...levels, applyLevelUpToLevel(levels[i], levelUp)],
+        (levels: Level[], levelUp, i) => [
+          ...levels,
+          applyLevelUpToLevel(levels[i], levelUp, remastered),
+        ],
         [getBaseLevel(race, gender, birthsign, specialization, favoredAttributes, majorSkills)],
       ),
     );
