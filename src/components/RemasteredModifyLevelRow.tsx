@@ -36,7 +36,7 @@ import skills, {
 } from '@/utils/skillUtils';
 import { applyLevelUpToLevel } from '@/utils/levelUtils';
 
-export default function ModifyLevelRow({
+export default function RemasteredModifyLevelRow({
   level,
   levelUp,
   commitLevelUpHandler,

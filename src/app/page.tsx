@@ -41,6 +41,7 @@ export default function Home() {
 
   const [isCharacterCreationOpen, setIsCharacterCreationOpen] = useState<boolean>(false);
   const [isConfirmingReset, setIsConfirmingReset] = useState<boolean>(false);
+  const [isConfirmingRemastered, setIsConfirmingRemastered] = useState<boolean>(false);
   const [modifyingLevel, setModifyingLevel] = useState<number | null>(null);
   const [removingLevel, setRemovingLevel] = useState<number | null>(null);
   const [remastered, setRemastered] = useState(false);
@@ -57,6 +58,14 @@ export default function Home() {
       removeLevel(removingLevel);
     }
     setRemovingLevel(null);
+  };
+
+  const handleRemasteredToggle = (confirm: boolean) => {
+    if (confirm) {
+      setRemastered(!remastered);
+      resetLevels();
+    }
+    setIsConfirmingRemastered(false);
   };
 
   const handleReset = (confirm: boolean) => {
@@ -130,7 +139,9 @@ export default function Home() {
               <Switch
                 checked={remastered}
                 color="secondary"
-                onChange={() => setRemastered(!remastered)}
+                onClick={() => {
+                  setIsConfirmingRemastered(true);
+                }}
               />
             </div>
           </div>
@@ -255,7 +266,16 @@ export default function Home() {
           )}
         </div>
         <ConfirmDialog open={removingLevel !== null} handleClose={handleRemoveLevel} />
-        <ConfirmDialog open={isConfirmingReset} handleClose={handleReset} />
+        <ConfirmDialog
+          open={isConfirmingReset}
+          description="This will delete all levels"
+          handleClose={handleReset}
+        />
+        <ConfirmDialog
+          open={isConfirmingRemastered}
+          description="This will delete all levels"
+          handleClose={handleRemasteredToggle}
+        />
         <CharacterDialog
           open={isCharacterCreationOpen}
           remastered={remastered}
