@@ -194,7 +194,8 @@ export default function RemasteredModifyLevelRow({
     () =>
       numRaisedAttributes === requiredRaisedAttributes &&
       (virtuesConsumed === NUM_VIRTUES_PER_LEVEL ||
-        numAttributesWithMaxedVirtues === requiredRaisedAttributes),
+        (virtuesConsumed <= NUM_VIRTUES_PER_LEVEL &&
+          numAttributesWithMaxedVirtues === requiredRaisedAttributes)),
     [numRaisedAttributes, virtuesConsumed],
   );
 

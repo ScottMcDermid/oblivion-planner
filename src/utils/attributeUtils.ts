@@ -19,7 +19,7 @@ export type AttributesSet = {
 
 export const MAX_ATTRIBUTE_LEVEL = 100;
 export const SKILL_UPS_FOR_MAX_ATTRIBUTE_BONUS = 10;
-export const NUM_VIRTUES_PER_LEVEL = 14;
+export const NUM_VIRTUES_PER_LEVEL = 12;
 export const VIRTUES_PER_LUCK = 4;
 
 export const maxBonusByAttribute: AttributesSet = {
