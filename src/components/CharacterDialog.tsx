@@ -16,7 +16,7 @@ import CloseIcon from '@mui/icons-material/Close';
 
 import type { Attribute } from '@/utils/attributeUtils';
 import type { Birthsign } from '@/utils/birthsignUtils';
-import type { Gender } from '@/utils/genderUtils';
+import type { Gender, LocationOrigin } from '@/utils/genderUtils';
 import type { Race } from '@/utils/raceUtils';
 import type { Skill } from '@/utils/skillUtils';
 import type { Specialization } from '@/utils/specializationUtils';
@@ -31,15 +31,15 @@ import attributes, {
   shorthandByAttribute,
 } from '@/utils/attributeUtils';
 import specializations from '@/utils/specializationUtils';
-import races from '@/utils/raceUtils';
-import genders from '@/utils/genderUtils';
+import races, { locationOriginByRaceAndGender, locationOriginsByRace } from '@/utils/raceUtils';
+import genders, { genderByLocationOrigin } from '@/utils/genderUtils';
 import birthsigns from '@/utils/birthsignUtils';
 import { NUM_MAJOR_SKILLS, shorthandBySkill } from '@/utils/skillUtils';
 import ToggleButtons from '@/components/ToggleButtons';
 
 export default function CharacterDialog(props: {
   open: boolean;
-
+  remastered: boolean;
   handleClose: () => void;
 }) {
   const {
@@ -116,12 +116,24 @@ export default function CharacterDialog(props: {
           options={races}
           onChangeHandler={(race) => setCharacterData({ race: race as Race })}
         />
-        <ToggleButtons
-          name="Gender"
-          value={gender}
-          options={genders}
-          onChangeHandler={(gender) => setCharacterData({ gender: gender as Gender })}
-        />
+        {props.remastered ? (
+          <ToggleButtons
+            name="Location Origin"
+            value={locationOriginByRaceAndGender[race][gender]}
+            options={locationOriginsByRace[race]}
+            onChangeHandler={(locationOrigin) =>
+              setCharacterData({ gender: genderByLocationOrigin[locationOrigin as LocationOrigin] })
+            }
+          />
+        ) : (
+          <ToggleButtons
+            name="Gender"
+            value={gender}
+            options={genders}
+            onChangeHandler={(gender) => setCharacterData({ gender: gender as Gender })}
+          />
+        )}
+
         <DropDown
           label="Birthsign"
           value={birthsign}

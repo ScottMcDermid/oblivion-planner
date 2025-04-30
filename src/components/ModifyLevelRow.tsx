@@ -176,16 +176,20 @@ export default function ModifyLevelRow({
 
   const nextLevel = useMemo(
     () =>
-      applyLevelUpToLevel(level, {
-        skills: skillUps,
-        attributes: raisedAttributes.reduce(
-          (attributes, attribute) => ({
-            ...attributes,
-            [attribute]: attributeBonuses[attribute],
-          }),
-          getAttributesSetTemplate(),
-        ),
-      }),
+      applyLevelUpToLevel(
+        level,
+        {
+          skills: skillUps,
+          attributes: raisedAttributes.reduce(
+            (attributes, attribute) => ({
+              ...attributes,
+              [attribute]: attributeBonuses[attribute],
+            }),
+            getAttributesSetTemplate(),
+          ),
+        },
+        false,
+      ),
     [level, skillUps, raisedAttributes, attributeBonuses],
   );
 
@@ -198,9 +202,9 @@ export default function ModifyLevelRow({
 
   const canLevelUp = useMemo(
     () =>
-      numMajorSkillUps !== NUM_MAJOR_SKILL_UPS_PER_LEVEL ||
-      raisedAttributes.length !== requiredRaisedAttributes,
-    [numMajorSkillUps, raisedAttributes],
+      numMajorSkillUps === NUM_MAJOR_SKILL_UPS_PER_LEVEL &&
+      raisedAttributes.length === requiredRaisedAttributes,
+    [numMajorSkillUps, raisedAttributes, requiredRaisedAttributes],
   );
 
   return (
@@ -327,12 +331,13 @@ export default function ModifyLevelRow({
             setRaisedAttributes([]);
             setSelectedSkill(null);
           }}
-          {...(canLevelUp ? { disabled: true } : {})}
+          {...(!canLevelUp ? { disabled: true } : {})}
         >
           <ArrowUpwardIcon /> <span className="pt-1">Level Up</span>
         </Button>
         <div className="w-full py-2 text-center text-xs text-ghost">
-          {numMajorSkillUps}/10 major skill ups and {raisedAttributes.length}/3 raised attributes
+          {numMajorSkillUps}/{NUM_MAJOR_SKILL_UPS_PER_LEVEL} major skill ups and{' '}
+          {raisedAttributes.length}/{NUM_RAISED_ATTRIBUTES} raised attributes
         </div>
       </div>
     </>

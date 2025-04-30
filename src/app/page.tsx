@@ -6,7 +6,7 @@ import CssBaseline from '@mui/material/CssBaseline';
 import PersonIcon from '@mui/icons-material/Person';
 import DeleteIcon from '@mui/icons-material/Delete';
 import Skeleton from '@mui/material/Skeleton';
-import { Button, StyledEngineProvider } from '@mui/material';
+import { Button, StyledEngineProvider, Switch } from '@mui/material';
 
 import theme from '@/app/theme';
 
@@ -21,9 +21,12 @@ import { useCharacterStore } from '@/data/characterStore';
 
 import attributes, { shorthandByAttribute } from '@/utils/attributeUtils';
 import { applyLevelUpToLevel, getBaseLevel } from '@/utils/levelUtils';
+import RemasteredModifyLevelRow from '@/components/RemasteredModifyLevelRow';
+import RemasteredLevelRow from '@/components/RemasteredLevelRow';
 
 export default function Home() {
   const {
+    remastered,
     isFirstVisit,
     race,
     gender,
@@ -39,6 +42,7 @@ export default function Home() {
 
   const [isCharacterCreationOpen, setIsCharacterCreationOpen] = useState<boolean>(false);
   const [isConfirmingReset, setIsConfirmingReset] = useState<boolean>(false);
+  const [isConfirmingRemastered, setIsConfirmingRemastered] = useState<boolean>(false);
   const [modifyingLevel, setModifyingLevel] = useState<number | null>(null);
   const [removingLevel, setRemovingLevel] = useState<number | null>(null);
 
@@ -54,6 +58,14 @@ export default function Home() {
       removeLevel(removingLevel);
     }
     setRemovingLevel(null);
+  };
+
+  const handleRemasteredToggle = (confirm: boolean) => {
+    if (confirm) {
+      setCharacterData({ remastered: !remastered });
+      resetLevels();
+    }
+    setIsConfirmingRemastered(false);
   };
 
   const handleReset = (confirm: boolean) => {
@@ -73,7 +85,10 @@ export default function Home() {
   useEffect(() => {
     setLevels(
       levelUps.reduce(
-        (levels: Level[], levelUp, i) => [...levels, applyLevelUpToLevel(levels[i], levelUp)],
+        (levels: Level[], levelUp, i) => [
+          ...levels,
+          applyLevelUpToLevel(levels[i], levelUp, remastered),
+        ],
         [getBaseLevel(race, gender, birthsign, specialization, favoredAttributes, majorSkills)],
       ),
     );
@@ -86,6 +101,7 @@ export default function Home() {
     levelUps,
     majorSkills,
     setLevels,
+    remastered,
   ]);
 
   return (
@@ -94,29 +110,42 @@ export default function Home() {
         <CssBaseline />
         <div className="flex h-screen flex-col place-items-center overflow-y-auto bg-inherit">
           <h1 className="absolute items-center text-lg">Oblivion Planner</h1>
-          <div className="space-between flex w-full flex-row pl-2 pt-6 sm:pt-2">
-            <Button
-              variant="contained"
-              aria-label="Character Creation"
-              onClick={() => {
-                setIsCharacterCreationOpen(true);
-              }}
-            >
-              <PersonIcon />
-              <div className="hidden sm:block">Character</div>
-            </Button>
-            {levels.length > 1 && (
+          <div className="flex w-full flex-row justify-between pl-2 pt-6 sm:pt-2">
+            <div className="flex place-items-center">
               <Button
-                color="error"
-                aria-label="Reset Character"
+                variant="contained"
+                aria-label="Character Creation"
                 onClick={() => {
-                  setIsConfirmingReset(true);
+                  setIsCharacterCreationOpen(true);
                 }}
               >
-                <DeleteIcon />
-                <div className="hidden sm:block">Reset</div>
+                <PersonIcon />
+                <div className="hidden sm:block">Character</div>
               </Button>
-            )}
+              {levels.length > 1 && (
+                <Button
+                  color="error"
+                  aria-label="Reset Character"
+                  onClick={() => {
+                    setIsConfirmingReset(true);
+                  }}
+                >
+                  <DeleteIcon />
+                  <div className="hidden sm:block">Reset</div>
+                </Button>
+              )}
+            </div>
+            <div className="flex place-items-center">
+              <div>Remastered</div>
+              <Switch
+                checked={remastered}
+                color="secondary"
+                onClick={() => {
+                  if (levels.length > 1) setIsConfirmingRemastered(true);
+                  else handleRemasteredToggle(true);
+                }}
+              />
+            </div>
           </div>
 
           {/* Table Header */}
@@ -152,7 +181,15 @@ export default function Home() {
               >
                 {levels.map((level, i) =>
                   modifyingLevel !== null && modifyingLevel === level.level ? (
-                    <>
+                    remastered ? (
+                      <RemasteredModifyLevelRow
+                        key={level.level}
+                        level={levels[i - 1]}
+                        levelUp={levelUps[level.level - 2]}
+                        commitLevelUpHandler={(levelUp) => commitLevelUp(levelUp, level.level)}
+                        onCancelHandler={() => setModifyingLevel(null)}
+                      />
+                    ) : (
                       <ModifyLevelRow
                         key={level.level}
                         level={levels[i - 1]}
@@ -160,7 +197,31 @@ export default function Home() {
                         commitLevelUpHandler={(levelUp) => commitLevelUp(levelUp, level.level)}
                         onCancelHandler={() => setModifyingLevel(null)}
                       />
-                    </>
+                    )
+                  ) : remastered ? (
+                    <RemasteredLevelRow
+                      key={level.level}
+                      level={level}
+                      {...(level.level > 1
+                        ? {
+                            onRemoveHandler: () => promptConfirmRemoveLevel(level.level),
+                            onModifyHandler: () => setModifyingLevel(level.level),
+                          }
+                        : {})}
+                      previousLevel={levels[i - 1]}
+                    />
+                  ) : remastered ? (
+                    <RemasteredLevelRow
+                      key={level.level}
+                      level={level}
+                      {...(level.level > 1
+                        ? {
+                            onRemoveHandler: () => promptConfirmRemoveLevel(level.level),
+                            onModifyHandler: () => setModifyingLevel(level.level),
+                          }
+                        : {})}
+                      previousLevel={levels[i - 1]}
+                    />
                   ) : (
                     <LevelRow
                       key={level.level}
@@ -182,10 +243,17 @@ export default function Home() {
                 className="grid w-full max-w-8xl grid-cols-[3rem_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr] place-items-center pb-24 sm:grid-cols-[5rem_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr] xl:grid-cols-[5rem_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr]"
                 style={{ gridAutoRows: 'minmax(3rem, auto)' }}
               >
-                <ModifyLevelRow
-                  level={currentLevel}
-                  commitLevelUpHandler={(levelUp) => commitLevelUp(levelUp)}
-                />
+                {remastered ? (
+                  <RemasteredModifyLevelRow
+                    level={currentLevel}
+                    commitLevelUpHandler={(levelUp) => commitLevelUp(levelUp)}
+                  />
+                ) : (
+                  <ModifyLevelRow
+                    level={currentLevel}
+                    commitLevelUpHandler={(levelUp) => commitLevelUp(levelUp)}
+                  />
+                )}
               </div>
             </>
           ) : (
@@ -200,9 +268,19 @@ export default function Home() {
           )}
         </div>
         <ConfirmDialog open={removingLevel !== null} handleClose={handleRemoveLevel} />
-        <ConfirmDialog open={isConfirmingReset} handleClose={handleReset} />
+        <ConfirmDialog
+          open={isConfirmingReset}
+          description="This will delete all levels"
+          handleClose={handleReset}
+        />
+        <ConfirmDialog
+          open={isConfirmingRemastered}
+          description="This will delete all levels"
+          handleClose={handleRemasteredToggle}
+        />
         <CharacterDialog
           open={isCharacterCreationOpen}
+          remastered={remastered}
           handleClose={() => setIsCharacterCreationOpen(false)}
         />
       </ThemeProvider>
