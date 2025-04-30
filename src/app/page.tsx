@@ -141,7 +141,8 @@ export default function Home() {
                 checked={remastered}
                 color="secondary"
                 onClick={() => {
-                  setIsConfirmingRemastered(true);
+                  if (levels.length > 1) setIsConfirmingRemastered(true);
+                  else handleRemasteredToggle(true);
                 }}
               />
             </div>
