@@ -17,6 +17,7 @@ import attributes, { NUM_FAVORED_ATTRIBUTES, shorthandByAttribute } from '@/util
 import skills, { NUM_MAJOR_SKILLS } from '@/utils/skillUtils';
 
 type State = {
+  remastered: boolean;
   isFirstVisit: boolean;
   race: Race;
   gender: Gender;
@@ -44,6 +45,7 @@ const useCharacterStore = create<CharacterStore>()(
   persist(
     (set) => {
       return {
+        remastered: false,
         isFirstVisit: true,
         race: races[0],
         gender: genders[0],
@@ -92,6 +94,7 @@ const useCharacterStore = create<CharacterStore>()(
         () => (typeof window !== 'undefined' ? localStorage : ({} as Storage)), // Fallback for SSR; you might implement a noop Storage if needed
       ),
       partialize: (state) => ({
+        remastered: state.remastered,
         isFirstVisit: state.isFirstVisit,
         race: state.race,
         gender: state.gender,

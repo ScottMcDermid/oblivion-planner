@@ -26,6 +26,7 @@ import RemasteredLevelRow from '@/components/RemasteredLevelRow';
 
 export default function Home() {
   const {
+    remastered,
     isFirstVisit,
     race,
     gender,
@@ -44,7 +45,6 @@ export default function Home() {
   const [isConfirmingRemastered, setIsConfirmingRemastered] = useState<boolean>(false);
   const [modifyingLevel, setModifyingLevel] = useState<number | null>(null);
   const [removingLevel, setRemovingLevel] = useState<number | null>(null);
-  const [remastered, setRemastered] = useState(false);
 
   const commitLevelUp = (levelUp: LevelUp, level?: number): void => {
     setLevelUp(levelUp, level);
@@ -62,7 +62,7 @@ export default function Home() {
 
   const handleRemasteredToggle = (confirm: boolean) => {
     if (confirm) {
-      setRemastered(!remastered);
+      setCharacterData({ remastered: !remastered });
       resetLevels();
     }
     setIsConfirmingRemastered(false);
