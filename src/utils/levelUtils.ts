@@ -72,7 +72,11 @@ export const applyLevelUpToLevel = (level: Level, levelUp: LevelUp, remastered: 
   );
 
   const health = remastered
-    ? Math.floor((Strength * 2) / 3 + (Endurance * 4) / 3 + (Endurance / 10) * level.level)
+    ? Math.floor(
+        (newAttributes.Strength * 2) / 3 +
+          (newAttributes.Endurance * 4) / 3 +
+          (newAttributes.Endurance / 10) * level.level,
+      )
     : level.health +
       Endurance * BASE_HEALTH_MULTIPLIER +
       Math.floor(newAttributes.Endurance * HEALTH_MULTIPLIER);
