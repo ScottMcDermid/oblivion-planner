@@ -27,7 +27,7 @@ export default function AttributeSelector({
 }) {
   const isAttributeMaxed = useMemo(
     () => value >= MAX_ATTRIBUTE_LEVEL || value - base >= maxIncrease,
-    [value, base],
+    [value, base, maxIncrease],
   );
 
   const isAttributeMin = useMemo(() => value <= 0 || value === base, [value, base]);

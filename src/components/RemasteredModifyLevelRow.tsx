@@ -49,8 +49,8 @@ export default function RemasteredModifyLevelRow({
   const [selectedAttribute, setSelectedAttribute] = useState<Attribute | null>(null);
   const numRaisedAttributes = useMemo(
     () =>
-      Object.entries(attributeUps).reduce(
-        (numRaisedAttributes, [_attribute, modifier]) =>
+      Object.values(attributeUps).reduce(
+        (numRaisedAttributes, modifier) =>
           modifier > 0 ? numRaisedAttributes + 1 : numRaisedAttributes,
         0,
       ),
@@ -196,7 +196,7 @@ export default function RemasteredModifyLevelRow({
       (virtuesConsumed === NUM_VIRTUES_PER_LEVEL ||
         (virtuesConsumed <= NUM_VIRTUES_PER_LEVEL &&
           numAttributesWithMaxedVirtues === requiredRaisedAttributes)),
-    [numRaisedAttributes, virtuesConsumed],
+    [numRaisedAttributes, virtuesConsumed, numAttributesWithMaxedVirtues, requiredRaisedAttributes],
   );
 
   return (

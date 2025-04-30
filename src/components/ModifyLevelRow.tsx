@@ -204,7 +204,7 @@ export default function ModifyLevelRow({
     () =>
       numMajorSkillUps === NUM_MAJOR_SKILL_UPS_PER_LEVEL &&
       raisedAttributes.length === requiredRaisedAttributes,
-    [numMajorSkillUps, raisedAttributes],
+    [numMajorSkillUps, raisedAttributes, requiredRaisedAttributes],
   );
 
   return (

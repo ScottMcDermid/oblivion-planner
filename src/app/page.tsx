@@ -101,6 +101,7 @@ export default function Home() {
     levelUps,
     majorSkills,
     setLevels,
+    remastered,
   ]);
 
   return (
