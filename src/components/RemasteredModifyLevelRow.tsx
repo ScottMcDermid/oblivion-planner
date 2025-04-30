@@ -1,14 +1,6 @@
 import React, { useMemo, useState } from 'react';
 import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
-import {
-  Box,
-  Button,
-  Checkbox,
-  IconButton,
-  LinearProgress,
-  Tooltip,
-  Typography,
-} from '@mui/material';
+import { Box, Button, IconButton, LinearProgress, Tooltip } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 
 import type { Attribute, AttributesSet } from '@/utils/attributeUtils';
@@ -16,25 +8,22 @@ import type { Level, LevelUp } from '@/utils/levelUtils';
 
 import SkillSelector from '@/components/SkillSelector';
 import SkillFineTuner from '@/components/SkillFineTuner';
-import LevelRow from '@/components/LevelRow';
+import RemasteredLevelRow from '@/components/RemasteredLevelRow';
 
 import { useCharacterStore } from '@/data/characterStore';
 
 import attributes, {
   MAX_ATTRIBUTE_LEVEL,
+  NUM_VIRTUES_PER_LEVEL,
   SKILL_UPS_FOR_MAX_ATTRIBUTE_BONUS,
-  getAttributeBonusFromSkillUps,
-  getAttributeFromSkill,
+  VIRTUES_PER_LUCK,
   getAttributesSetTemplate,
   skillsByAttribute,
 } from '@/utils/attributeUtils';
-import skills, {
-  MAX_SKILL_LEVEL,
-  Skill,
-  SkillsSet,
-  getSkillsSetTemplate,
-} from '@/utils/skillUtils';
-import { applyLevelUpToLevel } from '@/utils/levelUtils';
+import { MAX_SKILL_LEVEL, Skill, SkillsSet, getSkillsSetTemplate } from '@/utils/skillUtils';
+import { applyLevelUpToLevel, MAX_VIRTUES_PER_ATTRIBUTE } from '@/utils/levelUtils';
+import AttributeSelector from '@/components/AttributeSelector';
+import AttributeFineTuner from '@/components/AttributeFineTuner';
 
 export default function RemasteredModifyLevelRow({
   level,
@@ -48,149 +37,54 @@ export default function RemasteredModifyLevelRow({
   onCancelHandler?: () => void;
 }) {
   const { majorSkills } = useCharacterStore();
-  const NUM_MAJOR_SKILL_UPS_PER_LEVEL = 10;
   const NUM_RAISED_ATTRIBUTES = 3;
 
   const [skillUps, setSkillUps] = useState<SkillsSet>(
     levelUp ? levelUp.skills : getSkillsSetTemplate(),
   );
-  const [raisedAttributes, setRaisedAttributes] = useState<Attribute[]>(
-    levelUp ? attributes.filter((attribute) => levelUp.attributes[attribute] > 0) : [],
+  const [attributeUps, setAttributeUps] = useState<AttributesSet>(
+    levelUp ? levelUp.attributes : getAttributesSetTemplate(),
   );
   const [selectedSkill, setSelectedSkill] = useState<Skill | null>(null);
-
-  const numMajorSkillUps = useMemo(
+  const [selectedAttribute, setSelectedAttribute] = useState<Attribute | null>(null);
+  const numRaisedAttributes = useMemo(
     () =>
-      skills.reduce((sum, skill) => {
-        if (majorSkills.includes(skill)) {
-          const newSkill = skillUps[skill];
-          return sum + newSkill;
-        }
-        return sum;
-      }, 0),
-    [skillUps, majorSkills],
-  );
-
-  const handleSkillSelected = (skill: Skill) => {
-    setSkillUps({
-      ...skillUps,
-      [skill]: Math.max(
+      Object.entries(attributeUps).reduce(
+        (numRaisedAttributes, [_attribute, modifier]) =>
+          modifier > 0 ? numRaisedAttributes + 1 : numRaisedAttributes,
         0,
-        Math.min(MAX_SKILL_LEVEL - level.skills[skill], SKILL_UPS_FOR_MAX_ATTRIBUTE_BONUS),
       ),
-    });
-    const attribute = getAttributeFromSkill(skill);
-
-    // automatically select attribute if associated skill is selected
-    if (
-      !raisedAttributes.includes(attribute) &&
-      level.attributes[attribute] < MAX_ATTRIBUTE_LEVEL
-    ) {
-      setRaisedAttributes([...raisedAttributes, attribute]);
-    }
-    setSelectedSkill(skill);
-  };
-
-  const handleSkillUnselected = (skill: Skill) => {
-    setSkillUps({
-      ...skillUps,
-      [skill]: 0,
-    });
-
-    // uncheck attribute if last skill is unchecked
-    const attribute = getAttributeFromSkill(skill);
-    const attributeSkills = Object.entries(skillUps).find(
-      ([s, level]) => skill !== s && level > 0 && getAttributeFromSkill(s as Skill) === attribute,
-    );
-    if (!attributeSkills) {
-      setRaisedAttributes(raisedAttributes.slice(0).filter((a) => a !== attribute));
-    }
-    setSelectedSkill(skill);
-  };
-
-  const handleSkillIncremented = (skill: Skill) => {
-    setSkillUps({
-      ...skillUps,
-      [skill]: skillUps[skill] + 1,
-    });
-
-    // uncheck attribute if last skill is unchecked
-    const attribute = getAttributeFromSkill(skill);
-    const attributeSkills = Object.entries(skillUps).find(
-      ([s, level]) => skill !== s && level > 0 && getAttributeFromSkill(s as Skill) === attribute,
-    );
-    if (!attributeSkills) {
-      setRaisedAttributes(raisedAttributes.slice(0).filter((a) => a !== attribute));
-    }
-    setSelectedSkill(skill);
-  };
-
-  const handleSkillDecremented = (skill: Skill) => {
-    setSkillUps({
-      ...skillUps,
-      [skill]: skillUps[skill] - 1,
-    });
-
-    // uncheck attribute if last skill is unchecked
-    const attribute = getAttributeFromSkill(skill);
-    const attributeSkills = Object.entries(skillUps).find(
-      ([s, level]) => skill !== s && level > 0 && getAttributeFromSkill(s as Skill) === attribute,
-    );
-    if (!attributeSkills) {
-      setRaisedAttributes(raisedAttributes.slice(0).filter((a) => a !== attribute));
-    }
-    setSelectedSkill(skill);
-  };
-
-  const handleAttributeToggle = (value: Attribute) => {
-    const currentIndex = raisedAttributes.indexOf(value);
-    const newChecked = [...raisedAttributes];
-
-    if (currentIndex === -1) {
-      newChecked.push(value);
-    } else {
-      newChecked.splice(currentIndex, 1);
-    }
-
-    setRaisedAttributes(newChecked);
-  };
-
-  // compute attribute bonuses
-  const attributeBonuses: AttributesSet = useMemo(
+    [attributeUps],
+  );
+  const virtuesConsumed = useMemo(
     () =>
-      attributes.reduce((bonuses, attribute) => {
-        const attributeSkillUps = skillsByAttribute[attribute].reduce(
-          (sum: number, skill: Skill) => {
-            return sum + skillUps[skill];
-          },
-          0,
-        );
-        const attributeBonus = getAttributeBonusFromSkillUps(
-          level.attributes[attribute],
-          attributeSkillUps,
-        );
-        return { ...bonuses, [attribute]: attributeBonus };
-      }, getAttributesSetTemplate()),
-    [skillUps, level.attributes],
+      Object.entries(attributeUps).reduce(
+        (virtuesConsumed, [attribute, modifier]) =>
+          virtuesConsumed + modifier * (attribute === 'Luck' ? VIRTUES_PER_LUCK : 1),
+        0,
+      ),
+    [attributeUps],
   );
 
-  const nextLevel = useMemo(
+  // Tracks number of attributes that have exhausted the maximum amount of virtue points allowed
+  const numAttributesWithMaxedVirtues = useMemo(
     () =>
-      applyLevelUpToLevel(
-        level,
-        {
-          skills: skillUps,
-          attributes: raisedAttributes.reduce(
-            (attributes, attribute) => ({
-              ...attributes,
-              [attribute]: attributeBonuses[attribute],
-            }),
-            getAttributesSetTemplate(),
-          ),
+      Object.entries(attributeUps).reduce(
+        (numAttributesWithMaxedVirtues, [attribute, modifier]) => {
+          if (modifier > 0) {
+            if (attribute === 'Luck') {
+              if (modifier === 1) return numAttributesWithMaxedVirtues + 1;
+            } else {
+              if (modifier === MAX_VIRTUES_PER_ATTRIBUTE) return numAttributesWithMaxedVirtues + 1;
+              if (level.attributes[attribute as Attribute] + modifier === MAX_ATTRIBUTE_LEVEL)
+                return numAttributesWithMaxedVirtues + 1;
+            }
+          }
+          return numAttributesWithMaxedVirtues;
         },
-        true,
+        0,
       ),
-    [level, skillUps, raisedAttributes, attributeBonuses],
+    [attributeUps, level],
   );
 
   const requiredRaisedAttributes = useMemo(() => {
@@ -200,11 +94,108 @@ export default function RemasteredModifyLevelRow({
     return Math.min(raisableAttributes.length, NUM_RAISED_ATTRIBUTES);
   }, [level.attributes, NUM_RAISED_ATTRIBUTES]);
 
+  const handleSkillSelected = (skill: Skill) => {
+    setSkillUps({
+      ...skillUps,
+      [skill]: Math.max(
+        0,
+        Math.min(MAX_SKILL_LEVEL - level.skills[skill], SKILL_UPS_FOR_MAX_ATTRIBUTE_BONUS),
+      ),
+    });
+    setSelectedSkill(skill);
+    setSelectedAttribute(null);
+  };
+
+  const handleSkillUnselected = (skill: Skill) => {
+    setSkillUps({
+      ...skillUps,
+      [skill]: 0,
+    });
+    setSelectedSkill(skill);
+    setSelectedAttribute(null);
+  };
+
+  const handleSkillIncremented = (skill: Skill) => {
+    setSkillUps({
+      ...skillUps,
+      [skill]: skillUps[skill] + 1,
+    });
+    setSelectedSkill(skill);
+    setSelectedAttribute(null);
+  };
+
+  const handleSkillDecremented = (skill: Skill) => {
+    setSkillUps({
+      ...skillUps,
+      [skill]: skillUps[skill] - 1,
+    });
+    setSelectedSkill(skill);
+    setSelectedAttribute(null);
+  };
+
+  const handleAttributeSelected = (attribute: Attribute) => {
+    setAttributeUps({
+      ...attributeUps,
+      [attribute]:
+        attribute === 'Luck'
+          ? Math.max(0, Math.min(MAX_ATTRIBUTE_LEVEL - level.attributes[attribute], 1))
+          : Math.max(
+              0,
+              Math.min(
+                MAX_ATTRIBUTE_LEVEL - level.attributes[attribute],
+                MAX_VIRTUES_PER_ATTRIBUTE,
+              ),
+            ),
+    });
+    setSelectedSkill(null);
+    setSelectedAttribute(attribute);
+  };
+  const handleAttributeUnselected = (attribute: Attribute) => {
+    setAttributeUps({
+      ...attributeUps,
+      [attribute]: 0,
+    });
+    setSelectedSkill(null);
+    setSelectedAttribute(attribute);
+  };
+
+  const handleAttributeIncremented = (attribute: Attribute) => {
+    setAttributeUps({
+      ...attributeUps,
+      [attribute]: attributeUps[attribute] + 1,
+    });
+    setSelectedSkill(null);
+    setSelectedAttribute(attribute);
+  };
+  const handleAttributeDecremented = (attribute: Attribute) => {
+    setAttributeUps({
+      ...attributeUps,
+      [attribute]: attributeUps[attribute] - 1,
+    });
+    setSelectedSkill(null);
+    setSelectedAttribute(attribute);
+  };
+
+  // compute attribute bonuses
+  const nextLevel = useMemo(
+    () =>
+      applyLevelUpToLevel(
+        level,
+        {
+          skills: skillUps,
+          attributes: attributeUps,
+        },
+        true,
+      ),
+    [level, skillUps, attributeUps],
+  );
+
   const canLevelUp = useMemo(
     () =>
-      numMajorSkillUps !== NUM_MAJOR_SKILL_UPS_PER_LEVEL ||
-      raisedAttributes.length !== requiredRaisedAttributes,
-    [numMajorSkillUps, raisedAttributes],
+      numRaisedAttributes === requiredRaisedAttributes &&
+      (virtuesConsumed === NUM_VIRTUES_PER_LEVEL ||
+        numAttributesWithMaxedVirtues === requiredRaisedAttributes),
+    [numRaisedAttributes, virtuesConsumed],
   );
 
   return (
@@ -248,39 +239,52 @@ export default function RemasteredModifyLevelRow({
             }}
           />
         )}
+        {selectedAttribute && (
+          <AttributeFineTuner
+            className="lg:hidden"
+            attribute={selectedAttribute}
+            max={
+              selectedAttribute === 'Luck'
+                ? Math.min(MAX_ATTRIBUTE_LEVEL - level.attributes[selectedAttribute], 1)
+                : Math.min(
+                    MAX_ATTRIBUTE_LEVEL - level.attributes[selectedAttribute],
+                    MAX_VIRTUES_PER_ATTRIBUTE,
+                  )
+            }
+            min={0}
+            value={attributeUps[selectedAttribute]}
+            onIncrement={() => {
+              setAttributeUps({
+                ...attributeUps,
+                [selectedAttribute]: attributeUps[selectedAttribute] + 1,
+              });
+            }}
+            onDecrement={() => {
+              setAttributeUps({
+                ...attributeUps,
+                [selectedAttribute]: attributeUps[selectedAttribute] - 1,
+              });
+            }}
+          />
+        )}
       </div>
 
       {/* Padding for level column */}
-      <div></div>
+      <div>Virtues</div>
       {attributes.map((attribute) => (
         <div key={attribute} className="px-0">
-          <Typography
-            {...(raisedAttributes.includes(attribute) ? { color: 'secondary' } : {})}
-            className="selfCenter lg:show hidden h-full"
-          >
-            {`${level.attributes[attribute]} + ${attributeBonuses[attribute]}`}
-          </Typography>
-          <Typography
-            {...(raisedAttributes.includes(attribute) ? { color: 'secondary' } : {})}
-            className="selfCenter block h-full text-center"
-          >
-            {`+${attributeBonuses[attribute]}`}
-          </Typography>
-          <Checkbox
-            color="primary"
-            key={attribute}
-            disabled={level.attributes[attribute] >= MAX_ATTRIBUTE_LEVEL}
-            checked={raisedAttributes.includes(attribute)}
-            onChange={() => {
-              handleAttributeToggle(attribute);
-            }}
-            name={`${attributeBonuses[attribute]}`}
-            sx={{
-              color: 'var(--primary)',
-              '&.Mui-checked': {
-                color: 'var(--primary)',
-              },
-            }}
+          <AttributeSelector
+            attribute={attribute}
+            color={
+              attributeUps[attribute] > 0 ? 'secondary' : attributeUps[attribute] < 0 ? 'error' : ''
+            }
+            base={level.attributes[attribute]}
+            maxIncrease={attribute === 'Luck' ? 1 : MAX_VIRTUES_PER_ATTRIBUTE}
+            value={nextLevel.attributes[attribute]}
+            selectHandler={() => handleAttributeSelected(attribute)}
+            unselectHandler={() => handleAttributeUnselected(attribute)}
+            incrementHandler={() => handleAttributeIncremented(attribute)}
+            decrementHandler={() => handleAttributeDecremented(attribute)}
           />
         </div>
       ))}
@@ -302,7 +306,7 @@ export default function RemasteredModifyLevelRow({
           </Tooltip>
         ) : null}
       </div>
-      <LevelRow level={nextLevel} previousLevel={level} />
+      <RemasteredLevelRow level={nextLevel} previousLevel={level} />
 
       {/* Footer */}
       <div className="col-span-full w-full">
@@ -310,7 +314,7 @@ export default function RemasteredModifyLevelRow({
           className="w-full"
           variant="determinate"
           color="primary"
-          value={Math.min((numMajorSkillUps / NUM_MAJOR_SKILL_UPS_PER_LEVEL) * 100, 100)}
+          value={Math.min((virtuesConsumed / NUM_VIRTUES_PER_LEVEL) * 100, 100)}
         />
         <Button
           variant="outlined"
@@ -319,24 +323,20 @@ export default function RemasteredModifyLevelRow({
           onClick={() => {
             commitLevelUpHandler({
               skills: skillUps,
-              attributes: raisedAttributes.reduce(
-                (attributes, attribute) => ({
-                  ...attributes,
-                  [attribute]: attributeBonuses[attribute],
-                }),
-                getAttributesSetTemplate(),
-              ),
+              attributes: attributeUps,
             });
             setSkillUps(getSkillsSetTemplate());
-            setRaisedAttributes([]);
+            setAttributeUps(getAttributesSetTemplate());
             setSelectedSkill(null);
+            setSelectedAttribute(null);
           }}
-          {...(canLevelUp ? { disabled: true } : {})}
+          {...(!canLevelUp ? { disabled: true } : {})}
         >
           <ArrowUpwardIcon /> <span className="pt-1">Level Up</span>
         </Button>
         <div className="w-full py-2 text-center text-xs text-ghost">
-          {numMajorSkillUps}/10 major skill ups and {raisedAttributes.length}/3 raised attributes
+          {virtuesConsumed}/{NUM_VIRTUES_PER_LEVEL} virtues and {numRaisedAttributes}/
+          {requiredRaisedAttributes} raised attributes
         </div>
       </div>
     </>

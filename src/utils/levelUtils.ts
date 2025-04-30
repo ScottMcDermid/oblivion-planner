@@ -48,6 +48,7 @@ export const MAGICKA_MULTIPLIER = 2;
 export const FAVORED_ATTRIBUTE_BONUS = 5;
 export const SPECIALIZATION_BONUS = 5;
 export const MAJOR_SKILL_BONUS = 20;
+export const MAX_VIRTUES_PER_ATTRIBUTE = 5;
 
 export const applyLevelUpToLevel = (level: Level, levelUp: LevelUp, remastered: boolean): Level => {
   const {
