@@ -2,6 +2,8 @@
 
 Plan your character's leveling trajectory.
 
+Source for https://oblivionplanner.com
+
 ### Launching
 
 #### Development
