@@ -55,6 +55,7 @@ const useCharacterStore = create<CharacterStore>()(
         favoredAttributes: attributes.slice(0, NUM_FAVORED_ATTRIBUTES),
         majorSkills: skills.slice(0, NUM_MAJOR_SKILLS),
         currentLevel: levelTemplate,
+        currentLevelUp: levelUpTemplate,
         setCurrentLevelUp: levelUpTemplate,
         levels: [],
         levelUps: [],

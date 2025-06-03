@@ -75,7 +75,7 @@ export default function ModifyLevelRow({
 
   useEffect(() => {
     onLevelUpChange?.(currentLevelUp);
-  }, [skillUps, raisedAttributes]);
+  }, [skillUps, raisedAttributes, currentLevelUp, onLevelUpChange]);
 
   const handleSkillSelected = (skill: Skill) => {
     setSkillUps({
@@ -194,7 +194,7 @@ export default function ModifyLevelRow({
         getAttributesSetTemplate(),
       ),
     }),
-    [skillUps, raisedAttributes],
+    [skillUps, raisedAttributes, attributeBonuses],
   );
 
   const nextLevel = useMemo(

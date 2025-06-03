@@ -99,7 +99,7 @@ export default function RemasteredModifyLevelRow({
 
   useEffect(() => {
     onLevelUpChange?.(currentLevelUp);
-  }, [skillUps, attributeUps]);
+  }, [skillUps, attributeUps, currentLevelUp, onLevelUpChange]);
 
   const requiredRaisedAttributes = useMemo(() => {
     const raisableAttributes = Object.values(level.attributes).filter(
