@@ -39,13 +39,13 @@ import { applyLevelUpToLevel } from '@/utils/levelUtils';
 export default function ModifyLevelRow({
   level,
   levelUp,
-  commitLevelUpHandler,
+  onCommitLevelUp,
   onLevelUpChange,
   onCancelHandler,
 }: {
   level: Level;
   levelUp?: LevelUp;
-  commitLevelUpHandler: (levelUp: LevelUp) => void;
+  onCommitLevelUp: (levelUp: LevelUp) => void;
   onLevelUpChange?: (levelUp: LevelUp) => void;
   onCancelHandler?: () => void;
 }) {
@@ -72,10 +72,6 @@ export default function ModifyLevelRow({
       }, 0),
     [skillUps, majorSkills],
   );
-
-  useEffect(() => {
-    onLevelUpChange?.(currentLevelUp);
-  }, [skillUps, raisedAttributes, currentLevelUp, onLevelUpChange]);
 
   const handleSkillSelected = (skill: Skill) => {
     setSkillUps({
@@ -196,6 +192,11 @@ export default function ModifyLevelRow({
     }),
     [skillUps, raisedAttributes, attributeBonuses],
   );
+
+  useEffect(() => {
+    onLevelUpChange?.(currentLevelUp);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentLevelUp]);
 
   const nextLevel = useMemo(
     () =>
@@ -340,7 +341,7 @@ export default function ModifyLevelRow({
           size="large"
           className="w-full"
           onClick={() => {
-            commitLevelUpHandler({
+            onCommitLevelUp({
               skills: skillUps,
               attributes: raisedAttributes.reduce(
                 (attributes, attribute) => ({
