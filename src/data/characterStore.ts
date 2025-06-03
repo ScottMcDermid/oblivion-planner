@@ -7,7 +7,7 @@ import type { Birthsign } from '@/utils/birthsignUtils';
 import type { Specialization } from '@/utils/specializationUtils';
 import type { Attribute } from '@/utils/attributeUtils';
 import type { Skill } from '@/utils/skillUtils';
-import { levelTemplate, type Level, type LevelUp } from '@/utils/levelUtils';
+import { levelTemplate, levelUpTemplate, type Level, type LevelUp } from '@/utils/levelUtils';
 
 import races from '@/utils/raceUtils';
 import genders from '@/utils/genderUtils';
@@ -26,6 +26,7 @@ type State = {
   favoredAttributes: Attribute[];
   majorSkills: Skill[];
   currentLevel: Level;
+  currentLevelUp: LevelUp;
   levels: Level[];
   levelUps: LevelUp[];
   version: number;
@@ -54,6 +55,8 @@ const useCharacterStore = create<CharacterStore>()(
         favoredAttributes: attributes.slice(0, NUM_FAVORED_ATTRIBUTES),
         majorSkills: skills.slice(0, NUM_MAJOR_SKILLS),
         currentLevel: levelTemplate,
+        currentLevelUp: levelUpTemplate,
+        setCurrentLevelUp: levelUpTemplate,
         levels: [],
         levelUps: [],
         version: 1,
@@ -81,6 +84,7 @@ const useCharacterStore = create<CharacterStore>()(
           resetLevels: () =>
             set(() => ({
               currentLevel: levelTemplate,
+              currentLevelUp: levelUpTemplate,
               levels: [],
               levelUps: [],
             })),
@@ -103,6 +107,7 @@ const useCharacterStore = create<CharacterStore>()(
         favoredAttributes: state.favoredAttributes,
         majorSkills: state.majorSkills,
         currentLevel: state.currentLevel,
+        currentLevelUp: state.currentLevelUp,
         levels: state.levels,
         levelUps: state.levelUps,
         version: state.version,

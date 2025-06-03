@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
 import { Box, Button, IconButton, LinearProgress, Tooltip } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
@@ -29,11 +29,13 @@ export default function RemasteredModifyLevelRow({
   level,
   levelUp,
   commitLevelUpHandler,
+  onLevelUpChange,
   onCancelHandler,
 }: {
   level: Level;
   levelUp?: LevelUp;
   commitLevelUpHandler: (levelUp: LevelUp) => void;
+  onLevelUpChange?: (levelUp: LevelUp) => void;
   onCancelHandler?: () => void;
 }) {
   const { majorSkills } = useCharacterStore();
@@ -86,6 +88,18 @@ export default function RemasteredModifyLevelRow({
       ),
     [attributeUps, level],
   );
+
+  const currentLevelUp: LevelUp = useMemo(
+    () => ({
+      skills: skillUps,
+      attributes: attributeUps,
+    }),
+    [skillUps, attributeUps],
+  );
+
+  useEffect(() => {
+    onLevelUpChange?.(currentLevelUp);
+  }, [skillUps, attributeUps, currentLevelUp, onLevelUpChange]);
 
   const requiredRaisedAttributes = useMemo(() => {
     const raisableAttributes = Object.values(level.attributes).filter(
