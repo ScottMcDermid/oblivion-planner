@@ -105,6 +105,9 @@ export default function Home() {
     remastered,
   ]);
 
+  const handleLevelUpChange = (levelUp: LevelUp) => setCharacterData({ currentLevelUp: levelUp });
+  const handleCommitLevelUp = (levelUp: LevelUp) => commitLevelUp(levelUp);
+
   return (
     <StyledEngineProvider injectFirst>
       <ThemeProvider theme={theme}>
@@ -187,7 +190,7 @@ export default function Home() {
                         key={level.level}
                         level={levels[i - 1]}
                         levelUp={levelUps[level.level - 2]}
-                        commitLevelUpHandler={(levelUp) => commitLevelUp(levelUp, level.level)}
+                        onCommitLevelUp={handleCommitLevelUp}
                         onCancelHandler={() => setModifyingLevel(null)}
                       />
                     ) : (
@@ -195,7 +198,7 @@ export default function Home() {
                         key={level.level}
                         level={levels[i - 1]}
                         levelUp={levelUps[level.level - 2]}
-                        commitLevelUpHandler={(levelUp) => commitLevelUp(levelUp, level.level)}
+                        onCommitLevelUp={handleCommitLevelUp}
                         onCancelHandler={() => setModifyingLevel(null)}
                       />
                     )
@@ -205,9 +208,9 @@ export default function Home() {
                       level={level}
                       {...(level.level > 1
                         ? {
-                          onRemoveHandler: () => promptConfirmRemoveLevel(level.level),
-                          onModifyHandler: () => setModifyingLevel(level.level),
-                        }
+                            onRemoveHandler: () => promptConfirmRemoveLevel(level.level),
+                            onModifyHandler: () => setModifyingLevel(level.level),
+                          }
                         : {})}
                       previousLevel={levels[i - 1]}
                     />
@@ -217,9 +220,9 @@ export default function Home() {
                       level={level}
                       {...(level.level > 1
                         ? {
-                          onRemoveHandler: () => promptConfirmRemoveLevel(level.level),
-                          onModifyHandler: () => setModifyingLevel(level.level),
-                        }
+                            onRemoveHandler: () => promptConfirmRemoveLevel(level.level),
+                            onModifyHandler: () => setModifyingLevel(level.level),
+                          }
                         : {})}
                       previousLevel={levels[i - 1]}
                     />
@@ -229,9 +232,9 @@ export default function Home() {
                       level={level}
                       {...(level.level > 1
                         ? {
-                          onRemoveHandler: () => promptConfirmRemoveLevel(level.level),
-                          onModifyHandler: () => setModifyingLevel(level.level),
-                        }
+                            onRemoveHandler: () => promptConfirmRemoveLevel(level.level),
+                            onModifyHandler: () => setModifyingLevel(level.level),
+                          }
                         : {})}
                       previousLevel={levels[i - 1]}
                     />
@@ -248,15 +251,15 @@ export default function Home() {
                   <RemasteredModifyLevelRow
                     level={currentLevel}
                     levelUp={currentLevelUp}
-                    onLevelUpChange={(levelUp) => setCharacterData({ currentLevelUp: levelUp })}
-                    commitLevelUpHandler={(levelUp) => commitLevelUp(levelUp)}
+                    onLevelUpChange={handleLevelUpChange}
+                    onCommitLevelUp={handleCommitLevelUp}
                   />
                 ) : (
                   <ModifyLevelRow
                     level={currentLevel}
                     levelUp={currentLevelUp}
-                    onLevelUpChange={(levelUp) => setCharacterData({ currentLevelUp: levelUp })}
-                    commitLevelUpHandler={(levelUp) => commitLevelUp(levelUp)}
+                    onLevelUpChange={handleLevelUpChange}
+                    onCommitLevelUp={handleCommitLevelUp}
                   />
                 )}
               </div>

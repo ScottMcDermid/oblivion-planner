@@ -28,13 +28,13 @@ import AttributeFineTuner from '@/components/AttributeFineTuner';
 export default function RemasteredModifyLevelRow({
   level,
   levelUp,
-  commitLevelUpHandler,
+  onCommitLevelUp,
   onLevelUpChange,
   onCancelHandler,
 }: {
   level: Level;
   levelUp?: LevelUp;
-  commitLevelUpHandler: (levelUp: LevelUp) => void;
+  onCommitLevelUp: (levelUp: LevelUp) => void;
   onLevelUpChange?: (levelUp: LevelUp) => void;
   onCancelHandler?: () => void;
 }) {
@@ -99,7 +99,8 @@ export default function RemasteredModifyLevelRow({
 
   useEffect(() => {
     onLevelUpChange?.(currentLevelUp);
-  }, [skillUps, attributeUps, currentLevelUp, onLevelUpChange]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentLevelUp]);
 
   const requiredRaisedAttributes = useMemo(() => {
     const raisableAttributes = Object.values(level.attributes).filter(
@@ -336,7 +337,7 @@ export default function RemasteredModifyLevelRow({
           size="large"
           className="w-full"
           onClick={() => {
-            commitLevelUpHandler({
+            onCommitLevelUp({
               skills: skillUps,
               attributes: attributeUps,
             });
