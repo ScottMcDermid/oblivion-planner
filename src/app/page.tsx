@@ -35,6 +35,7 @@ export default function Home() {
     favoredAttributes,
     majorSkills,
     currentLevel,
+    currentLevelUp,
     levels,
     levelUps,
     actions: { setCharacterData, setLevelUp, removeLevel, setLevels, resetLevels },
@@ -204,9 +205,9 @@ export default function Home() {
                       level={level}
                       {...(level.level > 1
                         ? {
-                            onRemoveHandler: () => promptConfirmRemoveLevel(level.level),
-                            onModifyHandler: () => setModifyingLevel(level.level),
-                          }
+                          onRemoveHandler: () => promptConfirmRemoveLevel(level.level),
+                          onModifyHandler: () => setModifyingLevel(level.level),
+                        }
                         : {})}
                       previousLevel={levels[i - 1]}
                     />
@@ -216,9 +217,9 @@ export default function Home() {
                       level={level}
                       {...(level.level > 1
                         ? {
-                            onRemoveHandler: () => promptConfirmRemoveLevel(level.level),
-                            onModifyHandler: () => setModifyingLevel(level.level),
-                          }
+                          onRemoveHandler: () => promptConfirmRemoveLevel(level.level),
+                          onModifyHandler: () => setModifyingLevel(level.level),
+                        }
                         : {})}
                       previousLevel={levels[i - 1]}
                     />
@@ -228,9 +229,9 @@ export default function Home() {
                       level={level}
                       {...(level.level > 1
                         ? {
-                            onRemoveHandler: () => promptConfirmRemoveLevel(level.level),
-                            onModifyHandler: () => setModifyingLevel(level.level),
-                          }
+                          onRemoveHandler: () => promptConfirmRemoveLevel(level.level),
+                          onModifyHandler: () => setModifyingLevel(level.level),
+                        }
                         : {})}
                       previousLevel={levels[i - 1]}
                     />
@@ -246,11 +247,15 @@ export default function Home() {
                 {remastered ? (
                   <RemasteredModifyLevelRow
                     level={currentLevel}
+                    levelUp={currentLevelUp}
+                    onLevelUpChange={(levelUp) => setCharacterData({ currentLevelUp: levelUp })}
                     commitLevelUpHandler={(levelUp) => commitLevelUp(levelUp)}
                   />
                 ) : (
                   <ModifyLevelRow
                     level={currentLevel}
+                    levelUp={currentLevelUp}
+                    onLevelUpChange={(levelUp) => setCharacterData({ currentLevelUp: levelUp })}
                     commitLevelUpHandler={(levelUp) => commitLevelUp(levelUp)}
                   />
                 )}

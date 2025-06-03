@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useMemo, useState, useEffect } from 'react';
 import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
 import {
   Box,
@@ -40,11 +40,13 @@ export default function ModifyLevelRow({
   level,
   levelUp,
   commitLevelUpHandler,
+  onLevelUpChange,
   onCancelHandler,
 }: {
   level: Level;
   levelUp?: LevelUp;
   commitLevelUpHandler: (levelUp: LevelUp) => void;
+  onLevelUpChange?: (levelUp: LevelUp) => void;
   onCancelHandler?: () => void;
 }) {
   const { majorSkills } = useCharacterStore();
@@ -70,6 +72,10 @@ export default function ModifyLevelRow({
       }, 0),
     [skillUps, majorSkills],
   );
+
+  useEffect(() => {
+    onLevelUpChange?.(currentLevelUp);
+  }, [skillUps, raisedAttributes]);
 
   const handleSkillSelected = (skill: Skill) => {
     setSkillUps({
@@ -105,6 +111,7 @@ export default function ModifyLevelRow({
     if (!attributeSkills) {
       setRaisedAttributes(raisedAttributes.slice(0).filter((a) => a !== attribute));
     }
+
     setSelectedSkill(skill);
   };
 
@@ -122,6 +129,7 @@ export default function ModifyLevelRow({
     if (!attributeSkills) {
       setRaisedAttributes(raisedAttributes.slice(0).filter((a) => a !== attribute));
     }
+
     setSelectedSkill(skill);
   };
 
@@ -139,6 +147,7 @@ export default function ModifyLevelRow({
     if (!attributeSkills) {
       setRaisedAttributes(raisedAttributes.slice(0).filter((a) => a !== attribute));
     }
+
     setSelectedSkill(skill);
   };
 
@@ -172,6 +181,20 @@ export default function ModifyLevelRow({
         return { ...bonuses, [attribute]: attributeBonus };
       }, getAttributesSetTemplate()),
     [skillUps, level.attributes],
+  );
+
+  const currentLevelUp: LevelUp = useMemo(
+    () => ({
+      skills: skillUps,
+      attributes: raisedAttributes.reduce(
+        (attributes, attribute) => ({
+          ...attributes,
+          [attribute]: attributeBonuses[attribute],
+        }),
+        getAttributesSetTemplate(),
+      ),
+    }),
+    [skillUps, raisedAttributes],
   );
 
   const nextLevel = useMemo(
