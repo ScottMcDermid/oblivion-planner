@@ -106,7 +106,8 @@ export default function Home() {
   ]);
 
   const handleLevelUpChange = (levelUp: LevelUp) => setCharacterData({ currentLevelUp: levelUp });
-  const handleCommitLevelUp = (levelUp: LevelUp) => commitLevelUp(levelUp);
+  const handleCommitLevelUp = (levelUp: LevelUp) =>
+    modifyingLevel !== null ? commitLevelUp(levelUp, modifyingLevel) : commitLevelUp(levelUp);
 
   return (
     <StyledEngineProvider injectFirst>
