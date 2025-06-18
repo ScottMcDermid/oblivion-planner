@@ -25,18 +25,15 @@ import type { Skill, SkillsSet } from '@/utils/skillUtils';
 
 import { useCharacterStore } from '@/data/characterStore';
 
-import attributes, {
-  SKILL_UPS_FOR_MAX_ATTRIBUTE_BONUS,
-  skillsByAttribute,
-} from '@/utils/attributeUtils';
-import { diffSkillSet, MAX_SKILL_LEVEL, sumSkillSet } from '@/utils/skillUtils';
+import attributes, { skillsByAttribute } from '@/utils/attributeUtils';
+import { diffSkillSet, getSkillsSetTemplate, sumSkillSet } from '@/utils/skillUtils';
 import SkillSelector from '@/components/SkillSelector';
 import SkillFineTuner from '@/components/SkillFineTuner';
 import ToggleButtons from '@/components/ToggleButtons';
+import ConfirmDialog from './ConfirmDialog';
 
 export default function CharacterDialog(props: { open: boolean; handleClose: () => void }) {
   const {
-    majorSkills,
     activeAbilities,
     abilityModifiers,
     actions: { setCharacterData },
@@ -44,6 +41,8 @@ export default function CharacterDialog(props: { open: boolean; handleClose: () 
 
   const [selectedSkill, setSelectedSkill] = useState<Skill | null>(null);
   const [vampiricStage, setVampiricStage] = useState<VampiricStage | null>(null);
+
+  const [isConfirmingReset, setIsConfirmingReset] = useState<boolean>(false);
 
   function handleToggleActiveAbility(name: AbilityName) {
     const isEnabling = !activeAbilities.includes(name);
@@ -61,26 +60,19 @@ export default function CharacterDialog(props: { open: boolean; handleClose: () 
     });
   }
 
+  const resetAbilities = (confirm: boolean) => {
+    if (confirm) {
+      setCharacterData({ abilityModifiers: getSkillsSetTemplate(), activeAbilities: [] });
+      setVampiricStage(null);
+    }
+    setIsConfirmingReset(false);
+  };
+
   const handleSkillSelected = (skill: Skill) => {
-    setCharacterData({
-      abilityModifiers: {
-        ...abilityModifiers,
-        [skill]: Math.max(
-          0,
-          Math.min(MAX_SKILL_LEVEL - abilityModifiers[skill], SKILL_UPS_FOR_MAX_ATTRIBUTE_BONUS),
-        ),
-      },
-    });
     setSelectedSkill(skill);
   };
 
   const handleSkillUnselected = (skill: Skill) => {
-    setCharacterData({
-      abilityModifiers: {
-        ...abilityModifiers,
-        [skill]: 0,
-      },
-    });
     setSelectedSkill(skill);
   };
 
@@ -126,6 +118,7 @@ export default function CharacterDialog(props: { open: boolean; handleClose: () 
       activeAbilities: newActiveAbilities,
       abilityModifiers: newAbilityModifiers,
     });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [vampiricStage]);
 
   return (
@@ -145,10 +138,7 @@ export default function CharacterDialog(props: { open: boolean; handleClose: () 
         <div className="my-2 text-3xl">Abilities</div>
         <div className="my-4">Abilities modify skills without altering level progress.</div>
 
-        <div
-          className="grid w-full max-w-8xl grid-cols-[3rem_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr] place-items-center sm:grid-cols-[5rem_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr] xl:grid-cols-[5rem_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr]"
-          style={{ gridAutoRows: 'minmax(3rem, auto)' }}
-        >
+        <div className="grid w-full max-w-8xl grid-cols-[1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr] place-items-center lg:grid-cols-[1fr_1fr_1fr_1fr_1fr_1fr_1fr]">
           {attributes.map(
             (attribute) =>
               skillsByAttribute[attribute].length > 0 && (
@@ -166,7 +156,6 @@ export default function CharacterDialog(props: { open: boolean; handleClose: () 
                         }
                         base={0}
                         value={abilityModifiers[skill]}
-                        major={majorSkills.includes(skill)}
                         selectHandler={() => handleSkillSelected(skill)}
                         unselectHandler={() => handleSkillUnselected(skill)}
                         incrementHandler={() => handleSkillIncremented(skill)}
@@ -178,7 +167,7 @@ export default function CharacterDialog(props: { open: boolean; handleClose: () 
               ),
           )}
 
-          <div className="col-span-2 w-full justify-start xl:col-span-6">
+          <div className="w-full">
             {selectedSkill && (
               <SkillFineTuner
                 className="lg:hidden"
@@ -206,7 +195,8 @@ export default function CharacterDialog(props: { open: boolean; handleClose: () 
         </div>
 
         <Divider className="my-4" />
-        <div className="align-center my-4 grid grid-cols-[2rem_10rem] place-items-center">
+        <div className="mt-6 text-lg">Abilities</div>
+        <div className="align-center my-4 grid grid-cols-[2rem_10rem] items-center">
           {Object.keys(abilities)
             .filter((name) => !name.startsWith('Vampirism'))
             .map((name) => (
@@ -223,7 +213,7 @@ export default function CharacterDialog(props: { open: boolean; handleClose: () 
                     },
                   }}
                 />
-                <div className="items-center">{name}</div>
+                <div className="flex justify-start">{name}</div>
               </React.Fragment>
             ))}
         </div>
@@ -238,9 +228,23 @@ export default function CharacterDialog(props: { open: boolean; handleClose: () 
           }
         />
       </DialogContent>
-      <DialogActions className="pull-right">
-        <Button onClick={props.handleClose}>Done</Button>
+      <DialogActions className="space-between flex">
+        <Button
+          color="error"
+          aria-label="Reset Abilities"
+          onClick={() => {
+            setIsConfirmingReset(true);
+          }}
+        >
+          Reset
+        </Button>
+        <Button onClick={props.handleClose}>DONE</Button>
       </DialogActions>
+      <ConfirmDialog
+        open={isConfirmingReset}
+        description="This will reset all abilities"
+        handleClose={resetAbilities}
+      />
     </Dialog>
   );
 }

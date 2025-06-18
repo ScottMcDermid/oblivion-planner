@@ -15,7 +15,7 @@ export default function SkillSelector({
   decrementHandler,
 }: {
   skill: Skill;
-  major: boolean;
+  major?: boolean;
   base: number;
   value: number;
   color?: string;
@@ -27,7 +27,7 @@ export default function SkillSelector({
   return (
     <Box className="m-1 flex flex-col">
       <Typography
-        {...(major ? { color: 'default' } : { color: 'grey' })}
+        {...(major !== false ? { color: 'default' } : { color: 'grey' })}
         className="whitespace-nowrap text-center text-xs"
       >
         <Typography className="hidden lg:block" component={'span'}>

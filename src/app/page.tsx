@@ -142,9 +142,11 @@ export default function Home() {
                   <div className="hidden sm:block">&nbsp;Reset</div>
                 </Button>
               )}
+            </div>
 
+            <div className="flex place-items-center">
               <Button
-                variant="contained"
+                className="mx-2"
                 aria-label=""
                 onClick={() => {
                   setIsAbilitiesOpen(true);
@@ -153,8 +155,6 @@ export default function Home() {
                 <ImportContacts />
                 <div className="hidden sm:block">&nbsp;Abilities</div>
               </Button>
-            </div>
-            <div className="flex place-items-center">
               <div>Remastered</div>
               <Switch
                 checked={remastered}
