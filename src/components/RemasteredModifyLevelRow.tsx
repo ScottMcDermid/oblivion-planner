@@ -20,18 +20,26 @@ import attributes, {
   getAttributesSetTemplate,
   skillsByAttribute,
 } from '@/utils/attributeUtils';
-import { MAX_SKILL_LEVEL, Skill, SkillsSet, getSkillsSetTemplate } from '@/utils/skillUtils';
+import {
+  MAX_SKILL_LEVEL,
+  Skill,
+  SkillsSet,
+  getSkillsSetTemplate,
+  sumSkillSet,
+} from '@/utils/skillUtils';
 import { applyLevelUpToLevel, MAX_VIRTUES_PER_ATTRIBUTE } from '@/utils/levelUtils';
 import AttributeSelector from '@/components/AttributeSelector';
 import AttributeFineTuner from '@/components/AttributeFineTuner';
 
 export default function RemasteredModifyLevelRow({
+  abilities = getSkillsSetTemplate(),
   level,
   levelUp,
   onCommitLevelUp,
   onLevelUpChange,
   onCancelHandler,
 }: {
+  abilities?: SkillsSet;
   level: Level;
   levelUp?: LevelUp;
   onCommitLevelUp: (levelUp: LevelUp) => void;
@@ -67,6 +75,8 @@ export default function RemasteredModifyLevelRow({
       ),
     [attributeUps],
   );
+
+  const baseSkills = useMemo(() => sumSkillSet(abilities, level.skills), [abilities, level]);
 
   // Tracks number of attributes that have exhausted the maximum amount of virtue points allowed
   const numAttributesWithMaxedVirtues = useMemo(
@@ -227,8 +237,8 @@ export default function RemasteredModifyLevelRow({
                   <SkillSelector
                     skill={skill}
                     color={skillUps[skill] > 0 ? 'secondary' : skillUps[skill] < 0 ? 'error' : ''}
-                    base={level.skills[skill]}
-                    value={nextLevel.skills[skill]}
+                    base={baseSkills[skill]}
+                    value={abilities[skill] + nextLevel.skills[skill]}
                     major={majorSkills.includes(skill)}
                     selectHandler={() => handleSkillSelected(skill)}
                     unselectHandler={() => handleSkillUnselected(skill)}

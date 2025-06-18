@@ -18,7 +18,7 @@ export const skillsBySpecialization: { [key in Specialization]: Skill[] } = {
   Stealth: [
     'Acrobatics',
     'Light Armor',
-    'Marksmanship',
+    'Marksman',
     'Mercantile',
     'Security',
     'Sneak',

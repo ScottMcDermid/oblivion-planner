@@ -33,16 +33,19 @@ import skills, {
   Skill,
   SkillsSet,
   getSkillsSetTemplate,
+  sumSkillSet,
 } from '@/utils/skillUtils';
 import { applyLevelUpToLevel } from '@/utils/levelUtils';
 
 export default function ModifyLevelRow({
+  abilities = getSkillsSetTemplate(),
   level,
   levelUp,
   onCommitLevelUp,
   onLevelUpChange,
   onCancelHandler,
 }: {
+  abilities?: SkillsSet;
   level: Level;
   levelUp?: LevelUp;
   onCommitLevelUp: (levelUp: LevelUp) => void;
@@ -78,7 +81,10 @@ export default function ModifyLevelRow({
       ...skillUps,
       [skill]: Math.max(
         0,
-        Math.min(MAX_SKILL_LEVEL - level.skills[skill], SKILL_UPS_FOR_MAX_ATTRIBUTE_BONUS),
+        Math.min(
+          MAX_SKILL_LEVEL - level.skills[skill] - abilities[skill],
+          SKILL_UPS_FOR_MAX_ATTRIBUTE_BONUS,
+        ),
       ),
     });
     const attribute = getAttributeFromSkill(skill);
@@ -193,6 +199,8 @@ export default function ModifyLevelRow({
     [skillUps, raisedAttributes, attributeBonuses],
   );
 
+  const baseSkills = useMemo(() => sumSkillSet(abilities, level.skills), [abilities, level]);
+
   useEffect(() => {
     onLevelUpChange?.(currentLevelUp);
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -244,8 +252,8 @@ export default function ModifyLevelRow({
                   <SkillSelector
                     skill={skill}
                     color={skillUps[skill] > 0 ? 'secondary' : skillUps[skill] < 0 ? 'error' : ''}
-                    base={level.skills[skill]}
-                    value={nextLevel.skills[skill]}
+                    base={baseSkills[skill]}
+                    value={abilities[skill] + nextLevel.skills[skill]}
                     major={majorSkills.includes(skill)}
                     selectHandler={() => handleSkillSelected(skill)}
                     unselectHandler={() => handleSkillUnselected(skill)}
@@ -326,7 +334,7 @@ export default function ModifyLevelRow({
           </Tooltip>
         ) : null}
       </div>
-      <LevelRow level={nextLevel} previousLevel={level} />
+      <LevelRow abilities={abilities} level={nextLevel} previousLevel={level} />
 
       {/* Footer */}
       <div className="col-span-full w-full">

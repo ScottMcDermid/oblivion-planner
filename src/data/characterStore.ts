@@ -6,7 +6,8 @@ import type { Gender } from '@/utils/genderUtils';
 import type { Birthsign } from '@/utils/birthsignUtils';
 import type { Specialization } from '@/utils/specializationUtils';
 import type { Attribute } from '@/utils/attributeUtils';
-import type { Skill } from '@/utils/skillUtils';
+import type { Skill, SkillsSet } from '@/utils/skillUtils';
+import type { AbilityName } from '@/utils/abilityUtils';
 import { levelTemplate, levelUpTemplate, type Level, type LevelUp } from '@/utils/levelUtils';
 
 import races from '@/utils/raceUtils';
@@ -14,10 +15,12 @@ import genders from '@/utils/genderUtils';
 import birthsigns from '@/utils/birthsignUtils';
 import specializations from '@/utils/specializationUtils';
 import attributes, { NUM_FAVORED_ATTRIBUTES, shorthandByAttribute } from '@/utils/attributeUtils';
-import skills, { NUM_MAJOR_SKILLS } from '@/utils/skillUtils';
+import skills, { getSkillsSetTemplate, NUM_MAJOR_SKILLS } from '@/utils/skillUtils';
 
 type State = {
   remastered: boolean;
+  activeAbilities: AbilityName[];
+  abilityModifiers: SkillsSet;
   isFirstVisit: boolean;
   race: Race;
   gender: Gender;
@@ -47,6 +50,8 @@ const useCharacterStore = create<CharacterStore>()(
     (set) => {
       return {
         remastered: false,
+        activeAbilities: [],
+        abilityModifiers: getSkillsSetTemplate(),
         isFirstVisit: true,
         race: races[0],
         gender: genders[0],
@@ -83,6 +88,8 @@ const useCharacterStore = create<CharacterStore>()(
             }),
           resetLevels: () =>
             set(() => ({
+              abilityModifiers: getSkillsSetTemplate(),
+              activeAbilities: [],
               currentLevel: levelTemplate,
               currentLevelUp: levelUpTemplate,
               levels: [],
@@ -99,6 +106,8 @@ const useCharacterStore = create<CharacterStore>()(
       ),
       partialize: (state) => ({
         remastered: state.remastered,
+        activeAbilities: state.activeAbilities,
+        abilityModifiers: state.abilityModifiers,
         isFirstVisit: state.isFirstVisit,
         race: state.race,
         gender: state.gender,

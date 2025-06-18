@@ -59,7 +59,7 @@ export const skillsByAttribute: { [key in Attribute]: Skill[] } = {
   Strength: ['Blade', 'Blunt', 'Hand-to-Hand'],
   Intelligence: ['Alchemy', 'Conjuration', 'Mysticism'],
   Willpower: ['Alteration', 'Destruction', 'Restoration'],
-  Agility: ['Security', 'Sneak', 'Marksmanship'],
+  Agility: ['Security', 'Sneak', 'Marksman'],
   Speed: ['Athletics', 'Acrobatics', 'Light Armor'],
   Endurance: ['Armorer', 'Block', 'Heavy Armor'],
   Personality: ['Mercantile', 'Speechcraft', 'Illusion'],
