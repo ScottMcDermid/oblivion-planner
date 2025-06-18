@@ -29,6 +29,7 @@ import RemasteredLevelRow from '@/components/RemasteredLevelRow';
 export default function Home() {
   const {
     remastered,
+    abilityModifiers,
     isFirstVisit,
     race,
     gender,
@@ -132,6 +133,7 @@ export default function Home() {
               </Button>
               {levels.length > 1 && (
                 <Button
+                  className="mx-2"
                   color="error"
                   aria-label="Reset Character"
                   onClick={() => {
@@ -203,6 +205,7 @@ export default function Home() {
                     remastered ? (
                       <RemasteredModifyLevelRow
                         key={level.level}
+                        abilities={abilityModifiers}
                         level={levels[i - 1]}
                         levelUp={levelUps[level.level - 2]}
                         onCommitLevelUp={handleCommitLevelUp}
@@ -211,6 +214,7 @@ export default function Home() {
                     ) : (
                       <ModifyLevelRow
                         key={level.level}
+                        abilities={abilityModifiers}
                         level={levels[i - 1]}
                         levelUp={levelUps[level.level - 2]}
                         onCommitLevelUp={handleCommitLevelUp}
@@ -244,6 +248,7 @@ export default function Home() {
                   ) : (
                     <LevelRow
                       key={level.level}
+                      abilities={abilityModifiers}
                       level={level}
                       {...(level.level > 1
                         ? {
@@ -264,6 +269,7 @@ export default function Home() {
               >
                 {remastered ? (
                   <RemasteredModifyLevelRow
+                    abilities={abilityModifiers}
                     level={currentLevel}
                     levelUp={currentLevelUp}
                     onLevelUpChange={handleLevelUpChange}
@@ -271,6 +277,7 @@ export default function Home() {
                   />
                 ) : (
                   <ModifyLevelRow
+                    abilities={abilityModifiers}
                     level={currentLevel}
                     levelUp={currentLevelUp}
                     onLevelUpChange={handleLevelUpChange}

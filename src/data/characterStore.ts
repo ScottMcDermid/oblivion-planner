@@ -88,6 +88,8 @@ const useCharacterStore = create<CharacterStore>()(
             }),
           resetLevels: () =>
             set(() => ({
+              abilityModifiers: getSkillsSetTemplate(),
+              activeAbilities: [],
               currentLevel: levelTemplate,
               currentLevelUp: levelUpTemplate,
               levels: [],

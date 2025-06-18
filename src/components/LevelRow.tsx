@@ -11,14 +11,16 @@ import attributes, {
   getAttributesSetTemplate,
 } from '@/utils/attributeUtils';
 import type { Attribute } from '@/utils/attributeUtils';
-import { MAX_SKILL_LEVEL, Skill } from '@/utils/skillUtils';
+import { getSkillsSetTemplate, MAX_SKILL_LEVEL, Skill, SkillsSet } from '@/utils/skillUtils';
 
 export default function LevelRow({
+  abilities = getSkillsSetTemplate(),
   level,
   previousLevel,
   onRemoveHandler,
   onModifyHandler,
 }: {
+  abilities?: SkillsSet;
   level: Level;
   previousLevel: Level | undefined;
   onRemoveHandler?: () => void;
@@ -43,13 +45,14 @@ export default function LevelRow({
           ...extraSkillUps,
           [attribute]:
             skillsByAttribute[attribute as Attribute].reduce(
-              (sum: number, skill: Skill) => sum + MAX_SKILL_LEVEL - level.skills[skill],
+              (sum: number, skill: Skill) =>
+                sum + MAX_SKILL_LEVEL - level.skills[skill] - abilities[skill],
               0,
             ) - remainingSkillUps[attribute as Attribute],
         }),
         getAttributesSetTemplate(),
       ),
-    [level.attributes, level.skills, remainingSkillUps],
+    [level.attributes, level.skills, remainingSkillUps, abilities],
   );
 
   return (

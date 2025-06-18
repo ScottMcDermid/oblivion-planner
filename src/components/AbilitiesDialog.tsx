@@ -19,6 +19,7 @@ import {
   type AbilityName,
   abilityNameByVampiricStage,
   abilityModifierByVampiricStage,
+  getVampiricStageFromAbilities,
 } from '@/utils/abilityUtils';
 
 import type { Skill, SkillsSet } from '@/utils/skillUtils';
@@ -32,7 +33,7 @@ import SkillFineTuner from '@/components/SkillFineTuner';
 import ToggleButtons from '@/components/ToggleButtons';
 import ConfirmDialog from './ConfirmDialog';
 
-export default function CharacterDialog(props: { open: boolean; handleClose: () => void }) {
+export default function AbilitiesDialog(props: { open: boolean; handleClose: () => void }) {
   const {
     activeAbilities,
     abilityModifiers,
@@ -40,7 +41,9 @@ export default function CharacterDialog(props: { open: boolean; handleClose: () 
   } = useCharacterStore();
 
   const [selectedSkill, setSelectedSkill] = useState<Skill | null>(null);
-  const [vampiricStage, setVampiricStage] = useState<VampiricStage | null>(null);
+  const [vampiricStage, setVampiricStage] = useState<VampiricStage | null>(
+    getVampiricStageFromAbilities(activeAbilities),
+  );
 
   const [isConfirmingReset, setIsConfirmingReset] = useState<boolean>(false);
 
@@ -96,6 +99,7 @@ export default function CharacterDialog(props: { open: boolean; handleClose: () 
   };
 
   useEffect(() => {
+    if (!props.open) return;
     const newActiveAbilities = activeAbilities.filter(
       (ability) => !ability.startsWith('Vampirism'),
     );
@@ -119,10 +123,24 @@ export default function CharacterDialog(props: { open: boolean; handleClose: () 
       abilityModifiers: newAbilityModifiers,
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [vampiricStage]);
+  }, [vampiricStage, props.open]);
+
+  useEffect(() => {
+    if (!props.open) return;
+    const vampiricStage = getVampiricStageFromAbilities(activeAbilities);
+    setVampiricStage(vampiricStage);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [props.open]);
 
   return (
-    <Dialog onClose={() => props.handleClose()} open={props.open}>
+    <Dialog
+      onClose={() => props.handleClose()}
+      open={props.open}
+      keepMounted={false}
+      TransitionProps={{
+        onExited: () => props.handleClose,
+      }}
+    >
       <IconButton
         aria-label="close"
         onClick={props.handleClose}
@@ -136,7 +154,7 @@ export default function CharacterDialog(props: { open: boolean; handleClose: () 
       </IconButton>
       <DialogContent className="p-3">
         <div className="my-2 text-3xl">Abilities</div>
-        <div className="my-4">Abilities modify skills without altering level progress.</div>
+        <div className="my-4">Modify skills without altering level progress.</div>
 
         <div className="grid w-full max-w-8xl grid-cols-[1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr] place-items-center lg:grid-cols-[1fr_1fr_1fr_1fr_1fr_1fr_1fr]">
           {attributes.map(

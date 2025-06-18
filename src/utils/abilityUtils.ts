@@ -75,3 +75,10 @@ export const abilityNameByVampiricStage: Record<VampiricStage, AbilityName> = {
   'Stage 3': 'Vampirism (Stage 3)',
   'Stage 4': 'Vampirism (Stage 4)',
 };
+
+export function getVampiricStageFromAbilities(abilities: AbilityName[]): VampiricStage | null {
+  const vampiricAbility = abilities.find((ability) => ability.startsWith('Vampirism'));
+  if (!vampiricAbility) return null;
+  const match = vampiricAbility.match(/\(([^)]+)\)/);
+  return match ? (match[1] as VampiricStage) : null;
+}
