@@ -64,7 +64,7 @@ const useCharacterStore = create<CharacterStore>()(
         setCurrentLevelUp: levelUpTemplate,
         levels: [],
         levelUps: [],
-        version: 1,
+        version: 2,
         actions: {
           setCharacterData: (state: Partial<State>) => set(() => ({ ...state })),
           setLevels: (levels) =>
@@ -100,7 +100,7 @@ const useCharacterStore = create<CharacterStore>()(
     },
     {
       name: 'oblivion-planner',
-      version: 1,
+      version: 2,
       storage: createJSONStorage(
         () => (typeof window !== 'undefined' ? localStorage : ({} as Storage)), // Fallback for SSR; you might implement a noop Storage if needed
       ),
@@ -148,6 +148,54 @@ const useCharacterStore = create<CharacterStore>()(
               favoredAttributes: migratedFavoredAttributes,
             };
           }
+        }
+        if (version < 2) {
+          console.log('Migrating from version 1 to 2...');
+
+          const newState = { ...state };
+
+          // rename marksmanship -> marksman
+          if (state.levels) {
+            newState.levels = state.levels.map((level) => {
+              // @ts-expect-error: Migrating from old state types
+              console.log(`updating level.skills.Marksman to ${level.skills.Marksmanship}`);
+              // @ts-expect-error: Migrating from old state types
+              level.skills.Marksman = level.skills.Marksmanship;
+              // @ts-expect-error: Migrating from old state types
+              delete level.skills.Marksmanship;
+
+              return level;
+            });
+          }
+
+          if (state.levelUps) {
+            newState.levelUps = state.levelUps.map((levelUp) => {
+              // @ts-expect-error: Migrating from old state types
+              console.log(`updating levelUp.skills.Marksman to ${levelUp.skills.Marksmanship}`);
+              // @ts-expect-error: Migrating from old state types
+              levelUp.skills.Marksman = levelUp.skills.Marksmanship;
+              // @ts-expect-error: Migrating from old state types
+              delete levelUp.skills.Marksmanship;
+
+              return levelUp;
+            });
+          }
+          if (state.currentLevel) {
+            // @ts-expect-error: Migrating from old state types
+            newState.currentLevel.skills.Marksman = state.currentLevel.Marksmanship;
+          }
+          if (state.currentLevelUp) {
+            // @ts-expect-error: Migrating from old state types
+            newState.currentLevelUp.skills.Marksman = state.currentLevelUp.skills.Marksmanship;
+          }
+
+          if (state.abilityModifiers) {
+            // @ts-expect-error: Migrating from old state types
+            newState.abilityModifiers.Marksman = state.abilityModifiers.Marksmanship;
+          }
+
+          console.log('Finished migrating!');
+          return newState;
         }
         return persistedState;
       },
