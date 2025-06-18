@@ -11,7 +11,7 @@ export default function ToggleButtons({
 }: {
   name: string;
   label?: string;
-  value: string;
+  value: string | null;
   options: string[];
   onChangeHandler: (a: string) => void;
 }) {

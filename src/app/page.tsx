@@ -5,6 +5,7 @@ import { ThemeProvider } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import PersonIcon from '@mui/icons-material/Person';
 import DeleteIcon from '@mui/icons-material/Delete';
+import ImportContacts from '@mui/icons-material/ImportContacts';
 import Skeleton from '@mui/material/Skeleton';
 import { Button, StyledEngineProvider, Switch } from '@mui/material';
 
@@ -16,6 +17,7 @@ import LevelRow from '@/components/LevelRow';
 import ModifyLevelRow from '@/components/ModifyLevelRow';
 import ConfirmDialog from '@/components/ConfirmDialog';
 import CharacterDialog from '@/components/CharacterDialog';
+import AbilitiesDialog from '@/components/AbilitiesDialog';
 
 import { useCharacterStore } from '@/data/characterStore';
 
@@ -42,6 +44,7 @@ export default function Home() {
   } = useCharacterStore();
 
   const [isCharacterCreationOpen, setIsCharacterCreationOpen] = useState<boolean>(false);
+  const [isAbilitiesOpen, setIsAbilitiesOpen] = useState<boolean>(false);
   const [isConfirmingReset, setIsConfirmingReset] = useState<boolean>(false);
   const [isConfirmingRemastered, setIsConfirmingRemastered] = useState<boolean>(false);
   const [modifyingLevel, setModifyingLevel] = useState<number | null>(null);
@@ -125,7 +128,7 @@ export default function Home() {
                 }}
               >
                 <PersonIcon />
-                <div className="hidden sm:block">Character</div>
+                <div className="hidden sm:block">&nbsp;Character</div>
               </Button>
               {levels.length > 1 && (
                 <Button
@@ -136,9 +139,20 @@ export default function Home() {
                   }}
                 >
                   <DeleteIcon />
-                  <div className="hidden sm:block">Reset</div>
+                  <div className="hidden sm:block">&nbsp;Reset</div>
                 </Button>
               )}
+
+              <Button
+                variant="contained"
+                aria-label=""
+                onClick={() => {
+                  setIsAbilitiesOpen(true);
+                }}
+              >
+                <ImportContacts />
+                <div className="hidden sm:block">&nbsp;Abilities</div>
+              </Button>
             </div>
             <div className="flex place-items-center">
               <div>Remastered</div>
@@ -292,6 +306,7 @@ export default function Home() {
           remastered={remastered}
           handleClose={() => setIsCharacterCreationOpen(false)}
         />
+        <AbilitiesDialog open={isAbilitiesOpen} handleClose={() => setIsAbilitiesOpen(false)} />
       </ThemeProvider>
     </StyledEngineProvider>
   );

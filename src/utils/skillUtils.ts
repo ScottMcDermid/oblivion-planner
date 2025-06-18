@@ -13,7 +13,7 @@ export type Skill =
   | 'Heavy Armor'
   | 'Illusion'
   | 'Light Armor'
-  | 'Marksmanship'
+  | 'Marksman'
   | 'Mercantile'
   | 'Mysticism'
   | 'Restoration'
@@ -66,7 +66,7 @@ export const baseSkills: SkillsSet = {
   'Heavy Armor': 5,
   Illusion: 5,
   'Light Armor': 5,
-  Marksmanship: 5,
+  Marksman: 5,
   Mercantile: 5,
   Mysticism: 5,
   Restoration: 5,
@@ -90,7 +90,7 @@ export const getSkillsSetTemplate: () => SkillsSet = () => ({
   'Heavy Armor': 0,
   Illusion: 0,
   'Light Armor': 0,
-  Marksmanship: 0,
+  Marksman: 0,
   Mercantile: 0,
   Mysticism: 0,
   Restoration: 0,
@@ -114,7 +114,7 @@ const skills: Skill[] = [
   'Heavy Armor',
   'Illusion',
   'Light Armor',
-  'Marksmanship',
+  'Marksman',
   'Mercantile',
   'Mysticism',
   'Restoration',
@@ -138,7 +138,7 @@ export const shorthandBySkill: { [key in Skill]: SkillShorthand } = {
   'Heavy Armor': 'HAR',
   Illusion: 'ILL',
   'Light Armor': 'LAR',
-  Marksmanship: 'MRK',
+  Marksman: 'MRK',
   Mercantile: 'MRC',
   Mysticism: 'MYS',
   Restoration: 'RST',
@@ -148,5 +148,23 @@ export const shorthandBySkill: { [key in Skill]: SkillShorthand } = {
 };
 
 export const NUM_MAJOR_SKILLS = 7;
+
+export function sumSkillSet(baseSkills: SkillsSet, modifier: SkillsModifier): SkillsSet {
+  return Object.fromEntries(
+    (Object.keys(baseSkills) as (keyof SkillsSet)[]).map((skill) => [
+      skill,
+      baseSkills[skill as Skill] + (modifier[skill] ?? 0),
+    ]),
+  ) as SkillsSet;
+}
+
+export function diffSkillSet(baseSkills: SkillsSet, modifier: SkillsModifier): SkillsSet {
+  return Object.fromEntries(
+    (Object.keys(baseSkills) as (keyof SkillsSet)[]).map((skill) => [
+      skill,
+      baseSkills[skill as Skill] - (modifier[skill] ?? 0),
+    ]),
+  ) as SkillsSet;
+}
 
 export default skills;
