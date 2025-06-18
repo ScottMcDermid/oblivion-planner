@@ -194,9 +194,17 @@ const useCharacterStore = create<CharacterStore>()(
             newState.abilityModifiers.Marksman = state.abilityModifiers.Marksmanship;
           }
 
+          if (state.majorSkills) {
+            newState.majorSkills = state.majorSkills.map((skill) =>
+              // @ts-expect-error: Migrating from old state types
+              skill === 'Marksmanship' ? 'Marksman' : skill,
+            );
+          }
+
           console.log('Finished migrating!');
           return newState;
         }
+
         return persistedState;
       },
     },
