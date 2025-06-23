@@ -32,6 +32,7 @@ Naviage to [http://localhost:3000](http://localhost:3000)
 
 You can modify `.env` for any locally defined environment variables
 
-| Name   | Purpose                |
-| ------ | ---------------------- |
-| `PORT` | Port server listens to |
+| Name             | Purpose                |
+| ---------------- | ---------------------- |
+| `CONTAINER_NAME` | Docker container name  |
+| `PORT`           | Port server listens to |
