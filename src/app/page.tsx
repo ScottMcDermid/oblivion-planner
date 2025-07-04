@@ -297,6 +297,30 @@ export default function Home() {
             </div>
           )}
         </div>
+
+        <footer className="mt-16 w-full border-t border-gray-700 bg-neutral-900 px-6 py-8 text-sm text-gray-400">
+          <div className="mx-auto max-w-4xl space-y-2 text-center">
+            <p>Oblivion Tool Suite © 2025 Scott McDermid</p>
+            <p>
+              Licensed under the{' '}
+              <a
+                href="https://www.gnu.org/licenses/gpl-3.0.html"
+                className="underline hover:text-gray-200"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                GNU General Public License v3.0
+              </a>
+              .
+            </p>
+            <p>
+              The Elder Scrolls and Oblivion are trademarks of Bethesda Softworks LLC, a ZeniMax
+              Media company.
+            </p>
+            <p>This site is fan-made and not affiliated with Bethesda.</p>
+          </div>
+        </footer>
+
         <ConfirmDialog open={removingLevel !== null} handleClose={handleRemoveLevel} />
         <ConfirmDialog
           open={isConfirmingReset}
