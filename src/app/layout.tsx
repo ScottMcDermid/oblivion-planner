@@ -19,10 +19,10 @@ export const metadata: Metadata = {
   description:
     'Optimize your Oblivion character from start to finish. Plan skills, attributes, and level-ups to avoid inefficiencies and dominate Tamriel.',
   openGraph: {
-    title: 'Deadbeat Club',
+    title: 'Oblivion Planner',
     description:
       'Optimize your Oblivion character from start to finish. Plan skills, attributes, and level-ups to avoid inefficiencies and dominate Tamriel.',
-    url: 'https://oblivionplanner.com',
+    url: 'https://plan.oblivion.tools',
     siteName: 'Oblivion Planner',
     type: 'website',
     locale: 'en_US',
@@ -34,7 +34,7 @@ export const metadata: Metadata = {
       'Optimize your Oblivion character from start to finish. Plan skills, attributes, and level-ups to avoid inefficiencies and dominate Tamriel.',
   },
   alternates: {
-    canonical: 'https://oblivionplanner.com',
+    canonical: 'https://plan.oblivion.tools',
   },
   viewport: {
     width: 'device-width',
