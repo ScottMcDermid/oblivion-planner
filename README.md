@@ -2,7 +2,7 @@
 
 Plan your character's leveling trajectory.
 
-Source for https://oblivionplanner.com
+Source for https://plan.oblivion.tools
 
 ### Launching
 
