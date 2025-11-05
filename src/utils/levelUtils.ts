@@ -118,10 +118,11 @@ export const getBaseLevel = (
       [attribute]: base + modifier + birthsignModifier + favored,
     };
   }, getAttributesSetTemplate());
+  const specializationSkills = skillsBySpecialization[specialization] ?? [];
   const newSkills: SkillsSet = skills.reduce((newSkills, skill) => {
     const base = baseSkills[skill];
     const modifier: number = raceModifiers[race].skills[skill] ?? 0;
-    const specializationBonus = skillsBySpecialization[specialization].includes(skill)
+    const specializationBonus = specializationSkills.includes(skill)
       ? SPECIALIZATION_BONUS
       : 0;
     const majorSkillBonus = majorSkills.includes(skill) ? MAJOR_SKILL_BONUS : 0;
