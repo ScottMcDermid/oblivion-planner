@@ -37,6 +37,11 @@ Create or modify a local `.env` file to tweak runtime configuration.
 | `CONTAINER_NAME` | Docker container name  |
 | `PORT`           | Port server listens to |
 
+## ⚖️ Legal & Transparency
+- **Trademarks:** “The Elder Scrolls” and “Oblivion” are trademarks of ZeniMax Media Inc. and/or Bethesda Softworks LLC. This planner is an unofficial fan project and is not endorsed by, affiliated with, or sponsored by those rights holders.
+- **Copyright:** Source code is released under the MIT License—see `LICENSE` for the full text. Please ensure any contributed assets (text, imagery, data) are original or properly licensed so they can be redistributed under the project’s terms.
+- **Community Transparency:** Issues, pull requests, and discussions are public. By contributing you agree that project maintainers may reference your contributions in release notes or community updates. We do not collect or store personal data beyond what GitHub or your chosen communication channel provides.
+
 ## 🆘 Need Help?
 - 🐛 Found a bug or have feedback? Open an issue or start a discussion.
 - 💡 Ideas for new features? PRs are welcome!
