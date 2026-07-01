@@ -6,8 +6,12 @@ import CssBaseline from '@mui/material/CssBaseline';
 import PersonIcon from '@mui/icons-material/Person';
 import DeleteIcon from '@mui/icons-material/Delete';
 import ImportContacts from '@mui/icons-material/ImportContacts';
+import ShareIcon from '@mui/icons-material/Share';
 import Skeleton from '@mui/material/Skeleton';
-import { Button, StyledEngineProvider, Switch } from '@mui/material';
+import { Button, Snackbar, StyledEngineProvider, Switch } from '@mui/material';
+
+import { useShareBuild } from '@/hooks/useShareBuild';
+import { encodeBuild } from '@/utils/buildCodec';
 
 import theme from '@/app/theme';
 
@@ -29,6 +33,7 @@ import RemasteredLevelRow from '@/components/RemasteredLevelRow';
 export default function Home() {
   const {
     remastered,
+    activeAbilities,
     abilityModifiers,
     isFirstVisit,
     race,
@@ -50,6 +55,14 @@ export default function Home() {
   const [isConfirmingRemastered, setIsConfirmingRemastered] = useState<boolean>(false);
   const [modifyingLevel, setModifyingLevel] = useState<number | null>(null);
   const [removingLevel, setRemovingLevel] = useState<number | null>(null);
+  const [shareSnackbar, setShareSnackbar] = useState<string | null>(null);
+
+  const { copyShareUrl } = useShareBuild();
+
+  const handleShare = async () => {
+    const success = await copyShareUrl();
+    setShareSnackbar(success ? 'Link copied to clipboard!' : 'Failed to copy link');
+  };
 
   const commitLevelUp = (levelUp: LevelUp, level?: number): void => {
     setLevelUp(levelUp, level);
@@ -109,6 +122,34 @@ export default function Home() {
     remastered,
   ]);
 
+  // Sync the URL to reflect current build state
+  useEffect(() => {
+    if (!useCharacterStore.persist.hasHydrated()) return;
+    const state = useCharacterStore.getState();
+    const code = encodeBuild({
+      remastered: state.remastered,
+      race: state.race,
+      gender: state.gender,
+      birthsign: state.birthsign,
+      specialization: state.specialization,
+      favoredAttributes: state.favoredAttributes,
+      majorSkills: state.majorSkills,
+      activeAbilities: state.activeAbilities,
+      levelUps: state.levelUps,
+    });
+    window.history.replaceState(null, '', `/b/${code}`);
+  }, [
+    remastered,
+    race,
+    gender,
+    birthsign,
+    specialization,
+    favoredAttributes,
+    majorSkills,
+    activeAbilities,
+    levelUps,
+  ]);
+
   const handleLevelUpChange = (levelUp: LevelUp) => setCharacterData({ currentLevelUp: levelUp });
   const handleCommitLevelUp = (levelUp: LevelUp) =>
     modifyingLevel !== null ? commitLevelUp(levelUp, modifyingLevel) : commitLevelUp(levelUp);
@@ -147,6 +188,14 @@ export default function Home() {
             </div>
 
             <div className="flex place-items-center">
+              <Button
+                className="mx-2"
+                aria-label="Share Build"
+                onClick={handleShare}
+              >
+                <ShareIcon />
+                <div className="hidden sm:block">&nbsp;Share</div>
+              </Button>
               <Button
                 className="mx-2"
                 aria-label=""
@@ -358,6 +407,12 @@ export default function Home() {
           handleClose={() => setIsCharacterCreationOpen(false)}
         />
         <AbilitiesDialog open={isAbilitiesOpen} handleClose={() => setIsAbilitiesOpen(false)} />
+        <Snackbar
+          open={shareSnackbar !== null}
+          autoHideDuration={3000}
+          onClose={() => setShareSnackbar(null)}
+          message={shareSnackbar}
+        />
       </ThemeProvider>
     </StyledEngineProvider>
   );
