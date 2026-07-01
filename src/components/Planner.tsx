@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { ThemeProvider } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import PersonIcon from '@mui/icons-material/Person';
@@ -11,7 +11,7 @@ import Skeleton from '@mui/material/Skeleton';
 import { Button, Snackbar, StyledEngineProvider, Switch } from '@mui/material';
 
 import { useShareBuild } from '@/hooks/useShareBuild';
-import { encodeBuild } from '@/utils/buildCodec';
+import { type BuildData } from '@/utils/buildCodec';
 
 import theme from '@/app/theme';
 
@@ -27,28 +27,78 @@ import { useCharacterStore } from '@/data/characterStore';
 
 import attributes, { shorthandByAttribute } from '@/utils/attributeUtils';
 import { applyLevelUpToLevel, getBaseLevel } from '@/utils/levelUtils';
+import { getSkillsSetTemplate, type SkillsSet } from '@/utils/skillUtils';
+import { abilities as abilitiesData } from '@/utils/abilityUtils';
 import RemasteredModifyLevelRow from '@/components/RemasteredModifyLevelRow';
 import RemasteredLevelRow from '@/components/RemasteredLevelRow';
 
-export default function Planner() {
+interface PlannerProps {
+  sharedBuild?: BuildData;
+}
+
+export default function Planner({ sharedBuild }: PlannerProps) {
+  const isViewOnly = !!sharedBuild;
+
+  // --- Store state (used when NOT in view-only mode) ---
   const {
-    remastered,
-    activeAbilities,
-    abilityModifiers,
+    remastered: storeRemastered,
+    abilityModifiers: storeAbilityModifiers,
     isFirstVisit,
-    race,
-    gender,
-    birthsign,
-    specialization,
-    favoredAttributes,
-    majorSkills,
+    race: storeRace,
+    gender: storeGender,
+    birthsign: storeBirthsign,
+    specialization: storeSpecialization,
+    favoredAttributes: storeFavoredAttributes,
+    majorSkills: storeMajorSkills,
     currentLevel,
     currentLevelUp,
-    levels,
-    levelUps,
+    levels: storeLevels,
+    levelUps: storeLevelUps,
     actions: { setCharacterData, setLevelUp, removeLevel, setLevels, resetLevels },
   } = useCharacterStore();
 
+  // --- Compute shared build's abilityModifiers ---
+  const sharedAbilityModifiers = useMemo(() => {
+    if (!sharedBuild) return getSkillsSetTemplate();
+    const mods: SkillsSet = getSkillsSetTemplate();
+    for (const abilityName of sharedBuild.activeAbilities) {
+      const abilityMods = abilitiesData[abilityName];
+      if (abilityMods) {
+        for (const [skill, value] of Object.entries(abilityMods)) {
+          mods[skill as keyof SkillsSet] += value as number;
+        }
+      }
+    }
+    return mods;
+  }, [sharedBuild]);
+
+  // --- Compute shared build's levels ---
+  const sharedLevels = useMemo(() => {
+    if (!sharedBuild) return [];
+    const baseLevel = getBaseLevel(
+      sharedBuild.race,
+      sharedBuild.gender,
+      sharedBuild.birthsign,
+      sharedBuild.specialization,
+      sharedBuild.favoredAttributes,
+      sharedBuild.majorSkills,
+    );
+    return sharedBuild.levelUps.reduce(
+      (levels: Level[], levelUp, i) => [
+        ...levels,
+        applyLevelUpToLevel(levels[i], levelUp, sharedBuild.remastered),
+      ],
+      [baseLevel],
+    );
+  }, [sharedBuild]);
+
+  // --- Select which data to render ---
+  const remastered = isViewOnly ? sharedBuild!.remastered : storeRemastered;
+  const abilityModifiers = isViewOnly ? sharedAbilityModifiers : storeAbilityModifiers;
+  const levels = isViewOnly ? sharedLevels : storeLevels;
+  const levelUps = isViewOnly ? sharedBuild!.levelUps : storeLevelUps;
+
+  // --- UI state ---
   const [isCharacterCreationOpen, setIsCharacterCreationOpen] = useState<boolean>(false);
   const [isAbilitiesOpen, setIsAbilitiesOpen] = useState<boolean>(false);
   const [isConfirmingReset, setIsConfirmingReset] = useState<boolean>(false);
@@ -62,6 +112,26 @@ export default function Planner() {
   const handleShare = async () => {
     const success = await copyShareUrl();
     setShareSnackbar(success ? 'Link copied to clipboard!' : 'Failed to copy link');
+  };
+
+  const handleCopyToMyPlanner = () => {
+    if (!sharedBuild) return;
+    setCharacterData({
+      remastered: sharedBuild.remastered,
+      race: sharedBuild.race,
+      gender: sharedBuild.gender,
+      birthsign: sharedBuild.birthsign,
+      specialization: sharedBuild.specialization,
+      favoredAttributes: sharedBuild.favoredAttributes,
+      majorSkills: sharedBuild.majorSkills,
+      activeAbilities: sharedBuild.activeAbilities,
+      abilityModifiers: sharedAbilityModifiers,
+      levelUps: sharedBuild.levelUps,
+      isFirstVisit: false,
+    });
+    setShareSnackbar('Build copied to your planner!');
+    // Navigate to the main page so the user is now editing their own copy
+    window.location.href = '/';
   };
 
   const commitLevelUp = (levelUp: LevelUp, level?: number): void => {
@@ -80,7 +150,7 @@ export default function Planner() {
 
   const handleRemasteredToggle = (confirm: boolean) => {
     if (confirm) {
-      setCharacterData({ remastered: !remastered });
+      setCharacterData({ remastered: !storeRemastered });
       resetLevels();
     }
     setIsConfirmingRemastered(false);
@@ -93,61 +163,38 @@ export default function Planner() {
     setIsConfirmingReset(false);
   };
 
+  // First visit: open character creation dialog (only in editable mode)
   useEffect(() => {
+    if (isViewOnly) return;
     if (useCharacterStore.persist.hasHydrated() && useCharacterStore.getState().isFirstVisit) {
       setIsCharacterCreationOpen(true);
       setCharacterData({ isFirstVisit: false });
     }
-  }, [isFirstVisit, setCharacterData]);
+  }, [isFirstVisit, setCharacterData, isViewOnly]);
 
+  // Compute levels from levelUps (only in editable mode)
   useEffect(() => {
+    if (isViewOnly) return;
     setLevels(
-      levelUps.reduce(
+      storeLevelUps.reduce(
         (levels: Level[], levelUp, i) => [
           ...levels,
-          applyLevelUpToLevel(levels[i], levelUp, remastered),
+          applyLevelUpToLevel(levels[i], levelUp, storeRemastered),
         ],
-        [getBaseLevel(race, gender, birthsign, specialization, favoredAttributes, majorSkills)],
+        [getBaseLevel(storeRace, storeGender, storeBirthsign, storeSpecialization, storeFavoredAttributes, storeMajorSkills)],
       ),
     );
   }, [
-    race,
-    gender,
-    birthsign,
-    specialization,
-    favoredAttributes,
-    levelUps,
-    majorSkills,
+    storeRace,
+    storeGender,
+    storeBirthsign,
+    storeSpecialization,
+    storeFavoredAttributes,
+    storeLevelUps,
+    storeMajorSkills,
     setLevels,
-    remastered,
-  ]);
-
-  // Sync the URL to reflect current build state
-  useEffect(() => {
-    if (!useCharacterStore.persist.hasHydrated()) return;
-    const state = useCharacterStore.getState();
-    const code = encodeBuild({
-      remastered: state.remastered,
-      race: state.race,
-      gender: state.gender,
-      birthsign: state.birthsign,
-      specialization: state.specialization,
-      favoredAttributes: state.favoredAttributes,
-      majorSkills: state.majorSkills,
-      activeAbilities: state.activeAbilities,
-      levelUps: state.levelUps,
-    });
-    window.history.replaceState(null, '', `/b/${code}`);
-  }, [
-    remastered,
-    race,
-    gender,
-    birthsign,
-    specialization,
-    favoredAttributes,
-    majorSkills,
-    activeAbilities,
-    levelUps,
+    storeRemastered,
+    isViewOnly,
   ]);
 
   const handleLevelUpChange = (levelUp: LevelUp) => setCharacterData({ currentLevelUp: levelUp });
@@ -159,62 +206,96 @@ export default function Planner() {
       <ThemeProvider theme={theme}>
         <CssBaseline />
         <div className="flex h-screen flex-col place-items-center overflow-y-auto bg-inherit">
-          <h1 className="absolute items-center text-lg">Oblivion Planner</h1>
+          <h1 className="absolute z-30 items-center text-lg">Oblivion Planner</h1>
+
+          {/* Shared Build Banner */}
+          {isViewOnly && (
+            <div className="sticky top-0 z-20 flex w-full items-center justify-between bg-yellow-900/80 px-4 py-2 text-sm text-yellow-200 backdrop-blur-sm">
+              <span>Viewing a shared build</span>
+              <div className="flex gap-2">
+                <Button
+                  size="small"
+                  variant="contained"
+                  color="secondary"
+                  onClick={handleCopyToMyPlanner}
+                >
+                  Copy to my planner
+                </Button>
+                <Button
+                  size="small"
+                  variant="outlined"
+                  color="inherit"
+                  href="/"
+                >
+                  Back to my build
+                </Button>
+              </div>
+            </div>
+          )}
+
           <div className="flex w-full flex-row justify-between pl-2 pt-6 sm:pt-2">
             <div className="flex place-items-center">
-              <Button
-                variant="contained"
-                aria-label="Character Creation"
-                onClick={() => {
-                  setIsCharacterCreationOpen(true);
-                }}
-              >
-                <PersonIcon />
-                <div className="hidden sm:block">&nbsp;Character</div>
-              </Button>
-              {levels.length > 1 && (
-                <Button
-                  className="mx-2"
-                  color="error"
-                  aria-label="Reset Character"
-                  onClick={() => {
-                    setIsConfirmingReset(true);
-                  }}
-                >
-                  <DeleteIcon />
-                  <div className="hidden sm:block">&nbsp;Reset</div>
-                </Button>
+              {!isViewOnly && (
+                <>
+                  <Button
+                    variant="contained"
+                    aria-label="Character Creation"
+                    onClick={() => {
+                      setIsCharacterCreationOpen(true);
+                    }}
+                  >
+                    <PersonIcon />
+                    <div className="hidden sm:block">&nbsp;Character</div>
+                  </Button>
+                  {levels.length > 1 && (
+                    <Button
+                      className="mx-2"
+                      color="error"
+                      aria-label="Reset Character"
+                      onClick={() => {
+                        setIsConfirmingReset(true);
+                      }}
+                    >
+                      <DeleteIcon />
+                      <div className="hidden sm:block">&nbsp;Reset</div>
+                    </Button>
+                  )}
+                </>
               )}
             </div>
 
             <div className="flex place-items-center">
-              <Button
-                className="mx-2"
-                aria-label="Share Build"
-                onClick={handleShare}
-              >
-                <ShareIcon />
-                <div className="hidden sm:block">&nbsp;Share</div>
-              </Button>
-              <Button
-                className="mx-2"
-                aria-label=""
-                onClick={() => {
-                  setIsAbilitiesOpen(true);
-                }}
-              >
-                <ImportContacts />
-                <div className="hidden sm:block">&nbsp;Abilities</div>
-              </Button>
-              <div>Remastered</div>
-              <Switch
-                checked={remastered}
-                color="secondary"
-                onClick={() => {
-                  if (levels.length > 1) setIsConfirmingRemastered(true);
-                  else handleRemasteredToggle(true);
-                }}
-              />
+              {!isViewOnly && (
+                <>
+                  <Button
+                    className="mx-2"
+                    aria-label="Share Build"
+                    onClick={handleShare}
+                  >
+                    <ShareIcon />
+                    <div className="hidden sm:block">&nbsp;Share</div>
+                  </Button>
+                  <Button
+                    className="mx-2"
+                    aria-label=""
+                    onClick={() => {
+                      setIsAbilitiesOpen(true);
+                    }}
+                  >
+                    <ImportContacts />
+                    <div className="hidden sm:block">&nbsp;Abilities</div>
+                  </Button>
+                  <div>Remastered</div>
+                  <Switch
+                    checked={remastered}
+                    color="secondary"
+                    onClick={() => {
+                      if (levels.length > 1) setIsConfirmingRemastered(true);
+                      else handleRemasteredToggle(true);
+                    }}
+                  />
+                </>
+              )}
             </div>
           </div>
 
@@ -250,7 +331,7 @@ export default function Planner() {
                 style={{ gridAutoRows: 'minmax(3rem, auto)' }}
               >
                 {levels.map((level, i) =>
-                  modifyingLevel !== null && modifyingLevel === level.level ? (
+                  !isViewOnly && modifyingLevel !== null && modifyingLevel === level.level ? (
                     remastered ? (
                       <RemasteredModifyLevelRow
                         key={level.level}
@@ -274,19 +355,7 @@ export default function Planner() {
                     <RemasteredLevelRow
                       key={level.level}
                       level={level}
-                      {...(level.level > 1
-                        ? {
-                            onRemoveHandler: () => promptConfirmRemoveLevel(level.level),
-                            onModifyHandler: () => setModifyingLevel(level.level),
-                          }
-                        : {})}
-                      previousLevel={levels[i - 1]}
-                    />
-                  ) : remastered ? (
-                    <RemasteredLevelRow
-                      key={level.level}
-                      level={level}
-                      {...(level.level > 1
+                      {...(!isViewOnly && level.level > 1
                         ? {
                             onRemoveHandler: () => promptConfirmRemoveLevel(level.level),
                             onModifyHandler: () => setModifyingLevel(level.level),
@@ -299,7 +368,7 @@ export default function Planner() {
                       key={level.level}
                       abilities={abilityModifiers}
                       level={level}
-                      {...(level.level > 1
+                      {...(!isViewOnly && level.level > 1
                         ? {
                             onRemoveHandler: () => promptConfirmRemoveLevel(level.level),
                             onModifyHandler: () => setModifyingLevel(level.level),
@@ -311,29 +380,31 @@ export default function Planner() {
                 )}
               </div>
 
-              {/* Table Footer */}
-              <div
-                className="grid w-full max-w-8xl grid-cols-[3rem_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr] place-items-center pb-24 sm:grid-cols-[5rem_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr] xl:grid-cols-[5rem_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr]"
-                style={{ gridAutoRows: 'minmax(3rem, auto)' }}
-              >
-                {remastered ? (
-                  <RemasteredModifyLevelRow
-                    abilities={abilityModifiers}
-                    level={currentLevel}
-                    levelUp={currentLevelUp}
-                    onLevelUpChange={handleLevelUpChange}
-                    onCommitLevelUp={handleCommitLevelUp}
-                  />
-                ) : (
-                  <ModifyLevelRow
-                    abilities={abilityModifiers}
-                    level={currentLevel}
-                    levelUp={currentLevelUp}
-                    onLevelUpChange={handleLevelUpChange}
-                    onCommitLevelUp={handleCommitLevelUp}
-                  />
-                )}
-              </div>
+              {/* Table Footer — level-up editor (only in editable mode) */}
+              {!isViewOnly && (
+                <div
+                  className="grid w-full max-w-8xl grid-cols-[3rem_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr] place-items-center pb-24 sm:grid-cols-[5rem_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr] xl:grid-cols-[5rem_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr]"
+                  style={{ gridAutoRows: 'minmax(3rem, auto)' }}
+                >
+                  {remastered ? (
+                    <RemasteredModifyLevelRow
+                      abilities={abilityModifiers}
+                      level={currentLevel}
+                      levelUp={currentLevelUp}
+                      onLevelUpChange={handleLevelUpChange}
+                      onCommitLevelUp={handleCommitLevelUp}
+                    />
+                  ) : (
+                    <ModifyLevelRow
+                      abilities={abilityModifiers}
+                      level={currentLevel}
+                      levelUp={currentLevelUp}
+                      onLevelUpChange={handleLevelUpChange}
+                      onCommitLevelUp={handleCommitLevelUp}
+                    />
+                  )}
+                </div>
+              )}
             </>
           ) : (
             <div className="w-11/12 p-5">
@@ -390,23 +461,27 @@ export default function Planner() {
           </div>
         </footer>
 
-        <ConfirmDialog open={removingLevel !== null} handleClose={handleRemoveLevel} />
-        <ConfirmDialog
-          open={isConfirmingReset}
-          description="This will delete all levels"
-          handleClose={handleReset}
-        />
-        <ConfirmDialog
-          open={isConfirmingRemastered}
-          description="This will delete all levels"
-          handleClose={handleRemasteredToggle}
-        />
-        <CharacterDialog
-          open={isCharacterCreationOpen}
-          remastered={remastered}
-          handleClose={() => setIsCharacterCreationOpen(false)}
-        />
-        <AbilitiesDialog open={isAbilitiesOpen} handleClose={() => setIsAbilitiesOpen(false)} />
+        {!isViewOnly && (
+          <>
+            <ConfirmDialog open={removingLevel !== null} handleClose={handleRemoveLevel} />
+            <ConfirmDialog
+              open={isConfirmingReset}
+              description="This will delete all levels"
+              handleClose={handleReset}
+            />
+            <ConfirmDialog
+              open={isConfirmingRemastered}
+              description="This will delete all levels"
+              handleClose={handleRemasteredToggle}
+            />
+            <CharacterDialog
+              open={isCharacterCreationOpen}
+              remastered={remastered}
+              handleClose={() => setIsCharacterCreationOpen(false)}
+            />
+            <AbilitiesDialog open={isAbilitiesOpen} handleClose={() => setIsAbilitiesOpen(false)} />
+          </>
+        )}
         <Snackbar
           open={shareSnackbar !== null}
           autoHideDuration={3000}

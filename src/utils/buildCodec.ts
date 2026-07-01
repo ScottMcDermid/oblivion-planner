@@ -127,25 +127,25 @@ export function encodeBuild(data: BuildData): string {
   writer.writeBits(data.remastered ? 1 : 0, 1);
 
   // Race (4 bits)
-  writer.writeBits(races.indexOf(data.race), 4);
+  writer.writeBits(Math.max(0, races.indexOf(data.race)), 4);
 
   // Gender (1 bit)
-  writer.writeBits(genders.indexOf(data.gender), 1);
+  writer.writeBits(Math.max(0, genders.indexOf(data.gender)), 1);
 
   // Birthsign (4 bits)
-  writer.writeBits(birthsigns.indexOf(data.birthsign), 4);
+  writer.writeBits(Math.max(0, birthsigns.indexOf(data.birthsign)), 4);
 
   // Specialization (2 bits)
-  writer.writeBits(specializations.indexOf(data.specialization), 2);
+  writer.writeBits(Math.max(0, specializations.indexOf(data.specialization)), 2);
 
   // Favored Attributes (2x 3 bits)
   for (const attr of data.favoredAttributes) {
-    writer.writeBits(attributes.indexOf(attr), 3);
+    writer.writeBits(Math.max(0, attributes.indexOf(attr)), 3);
   }
 
   // Major Skills (7x 5 bits)
   for (const skill of data.majorSkills) {
-    writer.writeBits(skills.indexOf(skill), 5);
+    writer.writeBits(Math.max(0, skills.indexOf(skill)), 5);
   }
 
   // Active Abilities (11-bit bitmask)
@@ -218,36 +218,32 @@ export function decodeBuild(code: string): BuildData | null {
 
     // Race
     const raceIdx = reader.readBits(4);
-    const race = races[raceIdx];
-    if (!race) return null;
+    const race = races[raceIdx] ?? races[0];
 
     // Gender
     const genderIdx = reader.readBits(1);
-    const gender = genders[genderIdx];
-    if (!gender) return null;
+    const gender = genders[genderIdx] ?? genders[0];
 
     // Birthsign
     const birthsignIdx = reader.readBits(4);
-    const birthsign = birthsigns[birthsignIdx];
-    if (!birthsign) return null;
+    const birthsign = birthsigns[birthsignIdx] ?? birthsigns[0];
 
     // Specialization
     const specIdx = reader.readBits(2);
-    const specialization = specializations[specIdx];
-    if (!specialization) return null;
+    const specialization = specializations[specIdx] ?? specializations[0];
 
     // Favored Attributes
     const favoredAttributes: Attribute[] = [];
     for (let i = 0; i < 2; i++) {
       const idx = reader.readBits(3);
-      favoredAttributes.push(attributes[idx]);
+      favoredAttributes.push(attributes[idx] ?? attributes[0]);
     }
 
     // Major Skills
     const majorSkills: Skill[] = [];
     for (let i = 0; i < 7; i++) {
       const idx = reader.readBits(5);
-      majorSkills.push(skills[idx]);
+      majorSkills.push(skills[idx] ?? skills[0]);
     }
 
     // Active Abilities
