@@ -8,7 +8,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import ImportContacts from '@mui/icons-material/ImportContacts';
 import ShareIcon from '@mui/icons-material/Share';
 import Skeleton from '@mui/material/Skeleton';
-import { Button, Snackbar, StyledEngineProvider, Switch } from '@mui/material';
+import { Button, Drawer, Snackbar, StyledEngineProvider, Switch, useMediaQuery } from '@mui/material';
 
 import { useShareBuild } from '@/hooks/useShareBuild';
 import { type BuildData } from '@/utils/buildCodec';
@@ -20,7 +20,8 @@ import type { Level, LevelUp } from '@/utils/levelUtils';
 import LevelRow from '@/components/LevelRow';
 import ModifyLevelRow from '@/components/ModifyLevelRow';
 import ConfirmDialog from '@/components/ConfirmDialog';
-import CharacterDialog from '@/components/CharacterDialog';
+import CharacterDialog, { CHARACTER_DRAWER_WIDTH } from '@/components/CharacterDialog';
+import CharacterSummary from '@/components/CharacterSummary';
 import AbilitiesDialog from '@/components/AbilitiesDialog';
 
 import { useCharacterStore } from '@/data/characterStore';
@@ -201,48 +202,97 @@ export default function Planner({ sharedBuild }: PlannerProps) {
   const handleCommitLevelUp = (levelUp: LevelUp) =>
     modifyingLevel !== null ? commitLevelUp(levelUp, modifyingLevel) : commitLevelUp(levelUp);
 
+  const isLargeScreen = useMediaQuery('(min-width: 1024px)');
+  const isDrawerOpen = isLargeScreen && (isViewOnly || isCharacterCreationOpen);
+
   return (
     <StyledEngineProvider injectFirst>
       <ThemeProvider theme={theme}>
         <CssBaseline />
-        <div className="flex h-screen flex-col place-items-center overflow-y-auto bg-inherit">
+        {!isViewOnly && (
+          <CharacterDialog
+            open={isCharacterCreationOpen}
+            remastered={remastered}
+            handleClose={() => setIsCharacterCreationOpen(false)}
+          />
+        )}
+        {isViewOnly && isLargeScreen && (
+          <Drawer
+            variant="persistent"
+            anchor="left"
+            open
+            sx={{
+              width: CHARACTER_DRAWER_WIDTH,
+              flexShrink: 0,
+              '& .MuiDrawer-paper': {
+                width: CHARACTER_DRAWER_WIDTH,
+                boxSizing: 'border-box',
+                display: 'flex',
+                flexDirection: 'column',
+              },
+            }}
+          >
+            <div className="min-h-0 flex-1 overflow-x-hidden overflow-y-auto p-4">
+              <CharacterSummary
+                race={sharedBuild!.race}
+                gender={sharedBuild!.gender}
+                birthsign={sharedBuild!.birthsign}
+                specialization={sharedBuild!.specialization}
+                favoredAttributes={sharedBuild!.favoredAttributes}
+                majorSkills={sharedBuild!.majorSkills}
+                activeAbilities={sharedBuild!.activeAbilities}
+                remastered={sharedBuild!.remastered}
+              />
+            </div>
+          </Drawer>
+        )}
+        <div
+          className="flex h-screen flex-col place-items-center overflow-x-hidden overflow-y-auto bg-inherit"
+          style={{
+            marginLeft: isDrawerOpen ? CHARACTER_DRAWER_WIDTH : 0,
+            transition: 'margin-left 225ms cubic-bezier(0, 0, 0.2, 1)',
+          }}
+        >
           <h1 className="absolute z-30 items-center text-lg">Oblivion Planner</h1>
 
           {/* Shared Build Banner */}
           {isViewOnly && (
-            <div className="sticky top-0 z-20 flex w-full flex-col bg-yellow-900/80 px-4 py-2 text-sm text-yellow-200 backdrop-blur-sm">
-              <div className="flex items-center justify-between">
-                <span>Viewing a shared build</span>
-                <div className="flex gap-2">
-                  <Button
-                    size="small"
-                    variant="contained"
-                    color="secondary"
-                    onClick={handleCopyToMyPlanner}
-                  >
-                    Copy to my planner
-                  </Button>
-                  <Button
-                    size="small"
-                    variant="outlined"
-                    color="inherit"
-                    href="/"
-                  >
-                    Back to my build
-                  </Button>
-                </div>
+            <div className="sticky top-0 z-20 flex w-full items-center justify-between bg-yellow-900/80 px-4 py-2 text-sm text-yellow-200 backdrop-blur-sm">
+              <span>Viewing a shared build</span>
+              <div className="flex gap-2">
+                <Button
+                  size="small"
+                  variant="contained"
+                  color="secondary"
+                  onClick={handleCopyToMyPlanner}
+                >
+                  Copy to my planner
+                </Button>
+                <Button
+                  size="small"
+                  variant="outlined"
+                  color="inherit"
+                  href="/"
+                >
+                  Back to my build
+                </Button>
               </div>
-              <div className="flex flex-wrap gap-x-4 gap-y-1 pt-1 text-xs text-yellow-100/80">
-                <span>{sharedBuild!.gender} {sharedBuild!.race}</span>
-                <span>{sharedBuild!.birthsign}</span>
-                <span>{sharedBuild!.specialization}</span>
-                <span>Favored: {sharedBuild!.favoredAttributes.join(', ')}</span>
-                <span>Major: {sharedBuild!.majorSkills.join(', ')}</span>
-                {sharedBuild!.activeAbilities.length > 0 && (
-                  <span>Abilities: {sharedBuild!.activeAbilities.join(', ')}</span>
-                )}
-                {sharedBuild!.remastered && <span>Remastered</span>}
-              </div>
+            </div>
+          )}
+
+          {/* Inline character summary for small screens in view-only mode */}
+          {isViewOnly && !isLargeScreen && (
+            <div className="w-full border-b border-gray-700 px-4 py-4">
+              <CharacterSummary
+                race={sharedBuild!.race}
+                gender={sharedBuild!.gender}
+                birthsign={sharedBuild!.birthsign}
+                specialization={sharedBuild!.specialization}
+                favoredAttributes={sharedBuild!.favoredAttributes}
+                majorSkills={sharedBuild!.majorSkills}
+                activeAbilities={sharedBuild!.activeAbilities}
+                remastered={sharedBuild!.remastered}
+              />
             </div>
           )}
 
@@ -431,7 +481,13 @@ export default function Planner({ sharedBuild }: PlannerProps) {
           )}
         </div>
 
-        <footer className="mt-16 w-full border-t border-gray-700 bg-neutral-900 px-6 py-8 text-sm text-gray-400">
+        <footer
+          className="mt-16 w-full border-t border-gray-700 bg-neutral-900 px-6 py-8 text-sm text-gray-400"
+          style={{
+            marginLeft: isDrawerOpen ? CHARACTER_DRAWER_WIDTH : 0,
+            transition: 'margin-left 225ms cubic-bezier(0, 0, 0.2, 1)',
+          }}
+        >
           <div className="mx-auto flex w-full max-w-4xl flex-col gap-4 text-center sm:text-left">
             <div className="space-y-2">
               <p>Oblivion Tool Suite © 2025 Scott McDermid</p>
@@ -486,11 +542,6 @@ export default function Planner({ sharedBuild }: PlannerProps) {
               open={isConfirmingRemastered}
               description="This will delete all levels"
               handleClose={handleRemasteredToggle}
-            />
-            <CharacterDialog
-              open={isCharacterCreationOpen}
-              remastered={remastered}
-              handleClose={() => setIsCharacterCreationOpen(false)}
             />
             <AbilitiesDialog open={isAbilitiesOpen} handleClose={() => setIsAbilitiesOpen(false)} />
           </>
