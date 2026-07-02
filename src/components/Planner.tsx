@@ -8,7 +8,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import ImportContacts from '@mui/icons-material/ImportContacts';
 import ShareIcon from '@mui/icons-material/Share';
 import Skeleton from '@mui/material/Skeleton';
-import { Button, Snackbar, StyledEngineProvider, Switch } from '@mui/material';
+import { Button, Snackbar, StyledEngineProvider, Switch, useMediaQuery } from '@mui/material';
 
 import { useShareBuild } from '@/hooks/useShareBuild';
 import { type BuildData } from '@/utils/buildCodec';
@@ -20,7 +20,7 @@ import type { Level, LevelUp } from '@/utils/levelUtils';
 import LevelRow from '@/components/LevelRow';
 import ModifyLevelRow from '@/components/ModifyLevelRow';
 import ConfirmDialog from '@/components/ConfirmDialog';
-import CharacterDialog from '@/components/CharacterDialog';
+import CharacterDialog, { CHARACTER_DRAWER_WIDTH } from '@/components/CharacterDialog';
 import AbilitiesDialog from '@/components/AbilitiesDialog';
 
 import { useCharacterStore } from '@/data/characterStore';
@@ -201,11 +201,27 @@ export default function Planner({ sharedBuild }: PlannerProps) {
   const handleCommitLevelUp = (levelUp: LevelUp) =>
     modifyingLevel !== null ? commitLevelUp(levelUp, modifyingLevel) : commitLevelUp(levelUp);
 
+  const isLargeScreen = useMediaQuery('(min-width: 1024px)');
+  const isDrawerOpen = !isViewOnly && isLargeScreen && isCharacterCreationOpen;
+
   return (
     <StyledEngineProvider injectFirst>
       <ThemeProvider theme={theme}>
         <CssBaseline />
-        <div className="flex h-screen flex-col place-items-center overflow-y-auto bg-inherit">
+        {!isViewOnly && (
+          <CharacterDialog
+            open={isCharacterCreationOpen}
+            remastered={remastered}
+            handleClose={() => setIsCharacterCreationOpen(false)}
+          />
+        )}
+        <div
+          className="flex h-screen flex-col place-items-center overflow-x-hidden overflow-y-auto bg-inherit"
+          style={{
+            marginLeft: isDrawerOpen ? CHARACTER_DRAWER_WIDTH : 0,
+            transition: 'margin-left 225ms cubic-bezier(0, 0, 0.2, 1)',
+          }}
+        >
           <h1 className="absolute z-30 items-center text-lg">Oblivion Planner</h1>
 
           {/* Shared Build Banner */}
@@ -431,7 +447,13 @@ export default function Planner({ sharedBuild }: PlannerProps) {
           )}
         </div>
 
-        <footer className="mt-16 w-full border-t border-gray-700 bg-neutral-900 px-6 py-8 text-sm text-gray-400">
+        <footer
+          className="mt-16 w-full border-t border-gray-700 bg-neutral-900 px-6 py-8 text-sm text-gray-400"
+          style={{
+            marginLeft: isDrawerOpen ? CHARACTER_DRAWER_WIDTH : 0,
+            transition: 'margin-left 225ms cubic-bezier(0, 0, 0.2, 1)',
+          }}
+        >
           <div className="mx-auto flex w-full max-w-4xl flex-col gap-4 text-center sm:text-left">
             <div className="space-y-2">
               <p>Oblivion Tool Suite © 2025 Scott McDermid</p>
@@ -486,11 +508,6 @@ export default function Planner({ sharedBuild }: PlannerProps) {
               open={isConfirmingRemastered}
               description="This will delete all levels"
               handleClose={handleRemasteredToggle}
-            />
-            <CharacterDialog
-              open={isCharacterCreationOpen}
-              remastered={remastered}
-              handleClose={() => setIsCharacterCreationOpen(false)}
             />
             <AbilitiesDialog open={isAbilitiesOpen} handleClose={() => setIsAbilitiesOpen(false)} />
           </>
