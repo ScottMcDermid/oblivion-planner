@@ -210,25 +210,38 @@ export default function Planner({ sharedBuild }: PlannerProps) {
 
           {/* Shared Build Banner */}
           {isViewOnly && (
-            <div className="sticky top-0 z-20 flex w-full items-center justify-between bg-yellow-900/80 px-4 py-2 text-sm text-yellow-200 backdrop-blur-sm">
-              <span>Viewing a shared build</span>
-              <div className="flex gap-2">
-                <Button
-                  size="small"
-                  variant="contained"
-                  color="secondary"
-                  onClick={handleCopyToMyPlanner}
-                >
-                  Copy to my planner
-                </Button>
-                <Button
-                  size="small"
-                  variant="outlined"
-                  color="inherit"
-                  href="/"
-                >
-                  Back to my build
-                </Button>
+            <div className="sticky top-0 z-20 flex w-full flex-col bg-yellow-900/80 px-4 py-2 text-sm text-yellow-200 backdrop-blur-sm">
+              <div className="flex items-center justify-between">
+                <span>Viewing a shared build</span>
+                <div className="flex gap-2">
+                  <Button
+                    size="small"
+                    variant="contained"
+                    color="secondary"
+                    onClick={handleCopyToMyPlanner}
+                  >
+                    Copy to my planner
+                  </Button>
+                  <Button
+                    size="small"
+                    variant="outlined"
+                    color="inherit"
+                    href="/"
+                  >
+                    Back to my build
+                  </Button>
+                </div>
+              </div>
+              <div className="flex flex-wrap gap-x-4 gap-y-1 pt-1 text-xs text-yellow-100/80">
+                <span>{sharedBuild!.gender} {sharedBuild!.race}</span>
+                <span>{sharedBuild!.birthsign}</span>
+                <span>{sharedBuild!.specialization}</span>
+                <span>Favored: {sharedBuild!.favoredAttributes.join(', ')}</span>
+                <span>Major: {sharedBuild!.majorSkills.join(', ')}</span>
+                {sharedBuild!.activeAbilities.length > 0 && (
+                  <span>Abilities: {sharedBuild!.activeAbilities.join(', ')}</span>
+                )}
+                {sharedBuild!.remastered && <span>Remastered</span>}
               </div>
             </div>
           )}
