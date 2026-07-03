@@ -14,6 +14,7 @@ import type { AbilityName } from '@/utils/abilityUtils';
 
 import attributes, { skillsByAttribute, shorthandByAttribute } from '@/utils/attributeUtils';
 import { locationOriginByRaceAndGender } from '@/utils/raceUtils';
+import SkillIcon from '@/components/SkillIcon';
 
 interface CharacterSummaryProps {
   race: Race;
@@ -85,7 +86,7 @@ export default function CharacterSummary({
                 </span>
                 <div className="flex flex-wrap gap-1">
                   {majors.map((skill) => (
-                    <Chip key={skill} label={skill} size="small" variant="outlined" />
+                    <Chip key={skill} icon={<SkillIcon skill={skill} size={14} />} label={skill} size="small" variant="outlined" />
                   ))}
                 </div>
               </div>

@@ -2,6 +2,7 @@ import React from 'react';
 import Box from '@mui/material/Box';
 import { shorthandBySkill, Skill } from '@/utils/skillUtils';
 import { ToggleButton, ToggleButtonGroup, Typography } from '@mui/material';
+import SkillIcon from '@/components/SkillIcon';
 
 export default function SkillSelector({
   skill,
@@ -30,11 +31,13 @@ export default function SkillSelector({
         {...(major !== false ? { color: 'default' } : { color: 'grey' })}
         className="whitespace-nowrap text-center text-xs"
       >
-        <Typography className="hidden lg:block" component={'span'}>
+        <Typography className="hidden lg:inline-flex lg:items-center" component={'span'}>
+          <SkillIcon skill={skill} size={14} style={{ marginRight: 4 }} />
           {skill}
           {major ? '*' : ''}
         </Typography>
-        <Typography className="block lg:hidden" component={'span'}>
+        <Typography className="inline-flex items-center lg:hidden" component={'span'}>
+          <SkillIcon skill={skill} size={14} style={{ marginRight: 4 }} />
           {shorthandBySkill[skill]}
           {major ? '*' : ''}
         </Typography>

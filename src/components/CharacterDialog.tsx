@@ -39,6 +39,7 @@ import genders, { genderByLocationOrigin } from '@/utils/genderUtils';
 import birthsigns from '@/utils/birthsignUtils';
 import { NUM_MAJOR_SKILLS, shorthandBySkill } from '@/utils/skillUtils';
 import ToggleButtons from '@/components/ToggleButtons';
+import SkillIcon from '@/components/SkillIcon';
 
 export const CHARACTER_DRAWER_WIDTH = 420;
 
@@ -176,6 +177,7 @@ function CharacterContent({
                   value={skill}
                   onChange={() => handleToggleMajorSkill(skill)}
                 >
+                  <SkillIcon skill={skill} size={14} style={{ marginRight: 4 }} />
                   <span className="hidden sm:inline lg:hidden">{skill}</span>
                   <span className="sm:hidden lg:inline">{shorthandBySkill[skill]}</span>
                 </ToggleButton>
