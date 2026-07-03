@@ -12,6 +12,7 @@ export function useShareBuild() {
 
   const getShareUrl = useCallback((): string => {
     const buildData: BuildData = {
+      characterName: state.characterName ?? '',
       remastered: state.remastered,
       race: state.race,
       gender: state.gender,
@@ -27,6 +28,7 @@ export function useShareBuild() {
     const origin = typeof window !== 'undefined' ? window.location.origin : '';
     return `${origin}/b/${code}`;
   }, [
+    state.characterName,
     state.remastered,
     state.race,
     state.gender,

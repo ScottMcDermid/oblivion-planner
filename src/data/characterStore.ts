@@ -18,6 +18,7 @@ import attributes, { NUM_FAVORED_ATTRIBUTES, shorthandByAttribute } from '@/util
 import skills, { getSkillsSetTemplate, NUM_MAJOR_SKILLS } from '@/utils/skillUtils';
 
 type State = {
+  characterName: string;
   remastered: boolean;
   activeAbilities: AbilityName[];
   abilityModifiers: SkillsSet;
@@ -49,6 +50,7 @@ const useCharacterStore = create<CharacterStore>()(
   persist(
     (set) => {
       return {
+        characterName: '',
         remastered: false,
         activeAbilities: [],
         abilityModifiers: getSkillsSetTemplate(),
@@ -105,6 +107,7 @@ const useCharacterStore = create<CharacterStore>()(
         () => (typeof window !== 'undefined' ? localStorage : ({} as Storage)), // Fallback for SSR; you might implement a noop Storage if needed
       ),
       partialize: (state) => ({
+        characterName: state.characterName,
         remastered: state.remastered,
         activeAbilities: state.activeAbilities,
         abilityModifiers: state.abilityModifiers,
