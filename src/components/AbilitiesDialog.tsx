@@ -136,6 +136,7 @@ export default function AbilitiesDialog(props: { open: boolean; handleClose: () 
     <Dialog
       onClose={() => props.handleClose()}
       open={props.open}
+      maxWidth="lg"
       keepMounted={false}
       TransitionProps={{
         onExited: () => props.handleClose,
@@ -156,13 +157,13 @@ export default function AbilitiesDialog(props: { open: boolean; handleClose: () 
         <div className="my-2 text-3xl">Abilities</div>
         <div className="my-4">Modify skills without altering level progress.</div>
 
-        <div className="grid w-full max-w-8xl grid-cols-[1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr] place-items-center overflow-x-hidden lg:grid-cols-[1fr_1fr_1fr_1fr_1fr_1fr_1fr]">
+        <div className="grid w-full max-w-8xl grid-cols-4 place-items-center overflow-x-hidden sm:grid-cols-7 lg:grid-cols-[1fr_1fr_1fr_1fr_1fr_1fr_1fr]">
           {attributes.map(
             (attribute) =>
               skillsByAttribute[attribute].length > 0 && (
                 <div key={attribute}>
                   {skillsByAttribute[attribute].map((skill) => (
-                    <Box key={skill} className="w-full sm:w-16 lg:w-[6.5rem]">
+                    <Box key={skill} className="w-full lg:w-[6.5rem]">
                       <SkillSelector
                         skill={skill}
                         color={
@@ -184,33 +185,33 @@ export default function AbilitiesDialog(props: { open: boolean; handleClose: () 
                 </div>
               ),
           )}
-
-          <div className="w-full">
-            {selectedSkill && (
-              <SkillFineTuner
-                className="lg:hidden"
-                skill={selectedSkill}
-                value={abilityModifiers[selectedSkill]}
-                onIncrement={() => {
-                  setCharacterData({
-                    abilityModifiers: {
-                      ...abilityModifiers,
-                      [selectedSkill]: abilityModifiers[selectedSkill] + 1,
-                    },
-                  });
-                }}
-                onDecrement={() => {
-                  setCharacterData({
-                    abilityModifiers: {
-                      ...abilityModifiers,
-                      [selectedSkill]: abilityModifiers[selectedSkill] - 1,
-                    },
-                  });
-                }}
-              />
-            )}
-          </div>
         </div>
+
+        {selectedSkill && (
+          <div className="mt-2 flex justify-center lg:hidden">
+            <SkillFineTuner
+              className=""
+              skill={selectedSkill}
+              value={abilityModifiers[selectedSkill]}
+              onIncrement={() => {
+                setCharacterData({
+                  abilityModifiers: {
+                    ...abilityModifiers,
+                    [selectedSkill]: abilityModifiers[selectedSkill] + 1,
+                  },
+                });
+              }}
+              onDecrement={() => {
+                setCharacterData({
+                  abilityModifiers: {
+                    ...abilityModifiers,
+                    [selectedSkill]: abilityModifiers[selectedSkill] - 1,
+                  },
+                });
+              }}
+            />
+          </div>
+        )}
 
         <Divider className="my-4" />
         <div className="mt-6 text-lg">Abilities</div>
