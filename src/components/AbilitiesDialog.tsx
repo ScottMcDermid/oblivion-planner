@@ -162,7 +162,7 @@ export default function AbilitiesDialog(props: { open: boolean; handleClose: () 
               skillsByAttribute[attribute].length > 0 && (
                 <div key={attribute}>
                   {skillsByAttribute[attribute].map((skill) => (
-                    <Box key={skill} className="w-full sm:w-16 lg:w-full">
+                    <Box key={skill} className="w-full sm:w-16 lg:w-[6.5rem]">
                       <SkillSelector
                         skill={skill}
                         color={
