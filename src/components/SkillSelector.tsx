@@ -37,7 +37,6 @@ export default function SkillSelector({
           {major ? '*' : ''}
         </Typography>
         <Typography className="inline-flex items-center lg:hidden" component={'span'}>
-          <SkillIcon skill={skill} size={14} style={{ marginRight: 4 }} />
           {shorthandBySkill[skill]}
           {major ? '*' : ''}
         </Typography>

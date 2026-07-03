@@ -233,7 +233,7 @@ export default function RemasteredModifyLevelRow({
           skillsByAttribute[attribute].length > 0 && (
             <div key={attribute}>
               {skillsByAttribute[attribute].map((skill) => (
-                <Box key={`${level.level}-${skill}`} className="w-full sm:w-16 lg:w-24">
+                <Box key={`${level.level}-${skill}`} className="w-full sm:w-16 lg:w-full">
                   <SkillSelector
                     skill={skill}
                     color={skillUps[skill] > 0 ? 'secondary' : skillUps[skill] < 0 ? 'error' : ''}

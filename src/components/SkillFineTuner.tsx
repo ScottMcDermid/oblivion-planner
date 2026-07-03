@@ -30,7 +30,6 @@ export default function SkillFineTuner({
           {skill}
         </Typography>
         <Typography className="inline-flex items-center whitespace-nowrap text-xs lg:hidden">
-          <SkillIcon skill={skill} size={14} style={{ marginRight: 4 }} />
           {shorthandBySkill[skill]}
         </Typography>
         <div className="flex flex-row place-items-center">
