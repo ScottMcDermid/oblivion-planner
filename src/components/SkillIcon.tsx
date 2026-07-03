@@ -12,14 +12,20 @@ import {
   GiBreastplate,
   GiDominoMask,
   GiLeatherArmor,
-  GiPadlock,
   GiHood,
   GiChatBubble,
 } from 'react-icons/gi';
-import { FaVial, FaFeather, FaShieldAlt, FaFireAlt } from 'react-icons/fa';
+import {
+  FaVial,
+  FaFeather,
+  FaShieldAlt,
+  FaFireAlt,
+  FaUnlockAlt,
+  FaBriefcaseMedical,
+} from 'react-icons/fa';
 import { TbArcheryArrow, TbCrystalBall } from 'react-icons/tb';
 import { LuSword } from 'react-icons/lu';
-import { MdAttachMoney, MdHealthAndSafety } from 'react-icons/md';
+import { MdAttachMoney } from 'react-icons/md';
 
 const iconBySkill: { [key in Skill]: React.ComponentType<IconBaseProps> } = {
   Acrobatics: GiLeg,
@@ -39,8 +45,8 @@ const iconBySkill: { [key in Skill]: React.ComponentType<IconBaseProps> } = {
   Marksman: TbArcheryArrow,
   Mercantile: MdAttachMoney,
   Mysticism: TbCrystalBall,
-  Restoration: MdHealthAndSafety,
-  Security: GiPadlock,
+  Restoration: FaBriefcaseMedical,
+  Security: FaUnlockAlt,
   Sneak: GiHood,
   Speechcraft: GiChatBubble,
 };
