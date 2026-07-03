@@ -2,6 +2,7 @@ import React from 'react';
 import Box from '@mui/material/Box';
 import { shorthandBySkill, Skill } from '@/utils/skillUtils';
 import { ToggleButton, ToggleButtonGroup, Typography } from '@mui/material';
+import SkillIcon from '@/components/SkillIcon';
 
 export default function SkillSelector({
   skill,
@@ -9,6 +10,7 @@ export default function SkillSelector({
   base,
   value,
   color,
+  compact,
   selectHandler,
   unselectHandler,
   incrementHandler,
@@ -19,6 +21,7 @@ export default function SkillSelector({
   base: number;
   value: number;
   color?: string;
+  compact?: boolean;
   selectHandler: () => void;
   unselectHandler: () => void;
   incrementHandler: () => void;
@@ -30,17 +33,25 @@ export default function SkillSelector({
         {...(major !== false ? { color: 'default' } : { color: 'grey' })}
         className="whitespace-nowrap text-center text-xs"
       >
-        <Typography className="hidden lg:block" component={'span'}>
+        <Typography
+          className={compact ? 'hidden' : 'hidden lg:inline-flex lg:items-center'}
+          component={'span'}
+        >
+          <SkillIcon skill={skill} size={14} style={{ marginRight: 4 }} />
           {skill}
           {major ? '*' : ''}
         </Typography>
-        <Typography className="block lg:hidden" component={'span'}>
+        <Typography
+          className={compact ? 'inline-flex items-center' : 'inline-flex items-center lg:hidden'}
+          component={'span'}
+        >
+          <SkillIcon skill={skill} size={14} style={{ marginRight: 4 }} />
           {shorthandBySkill[skill]}
           {major ? '*' : ''}
         </Typography>
       </Typography>
       <ToggleButton
-        className="p-1 lg:hidden"
+        className={compact ? 'p-1' : 'p-1 lg:hidden'}
         value={value}
         selected={value !== base}
         onClick={() => {
@@ -51,7 +62,7 @@ export default function SkillSelector({
       >
         <Typography color={color || 'primary'}>{value}</Typography>
       </ToggleButton>
-      <ToggleButtonGroup className="hidden min-w-20 p-1 lg:flex">
+      <ToggleButtonGroup className={compact ? 'hidden' : 'hidden min-w-20 p-1 lg:flex'}>
         <ToggleButton
           className="w-6 p-0 text-lg"
           value={false}

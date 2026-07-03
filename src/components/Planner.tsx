@@ -203,7 +203,9 @@ export default function Planner({ sharedBuild }: PlannerProps) {
     modifyingLevel !== null ? commitLevelUp(levelUp, modifyingLevel) : commitLevelUp(levelUp);
 
   const isLargeScreen = useMediaQuery('(min-width: 1024px)');
+  const isLargeWithDrawer = useMediaQuery(`(min-width: ${1024 + CHARACTER_DRAWER_WIDTH}px)`);
   const isDrawerOpen = isLargeScreen && (isViewOnly || isCharacterCreationOpen);
+  const isCompactSkills = isDrawerOpen && !isLargeWithDrawer;
 
   return (
     <StyledEngineProvider injectFirst>
@@ -401,6 +403,7 @@ export default function Planner({ sharedBuild }: PlannerProps) {
                         abilities={abilityModifiers}
                         level={levels[i - 1]}
                         levelUp={levelUps[level.level - 2]}
+                        compact={isCompactSkills}
                         onCommitLevelUp={handleCommitLevelUp}
                         onCancelHandler={() => setModifyingLevel(null)}
                       />
@@ -410,6 +413,7 @@ export default function Planner({ sharedBuild }: PlannerProps) {
                         abilities={abilityModifiers}
                         level={levels[i - 1]}
                         levelUp={levelUps[level.level - 2]}
+                        compact={isCompactSkills}
                         onCommitLevelUp={handleCommitLevelUp}
                         onCancelHandler={() => setModifyingLevel(null)}
                       />
@@ -454,6 +458,7 @@ export default function Planner({ sharedBuild }: PlannerProps) {
                       abilities={abilityModifiers}
                       level={currentLevel}
                       levelUp={currentLevelUp}
+                      compact={isCompactSkills}
                       onLevelUpChange={handleLevelUpChange}
                       onCommitLevelUp={handleCommitLevelUp}
                     />
@@ -462,6 +467,7 @@ export default function Planner({ sharedBuild }: PlannerProps) {
                       abilities={abilityModifiers}
                       level={currentLevel}
                       levelUp={currentLevelUp}
+                      compact={isCompactSkills}
                       onLevelUpChange={handleLevelUpChange}
                       onCommitLevelUp={handleCommitLevelUp}
                     />

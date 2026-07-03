@@ -41,6 +41,7 @@ export default function ModifyLevelRow({
   abilities = getSkillsSetTemplate(),
   level,
   levelUp,
+  compact,
   onCommitLevelUp,
   onLevelUpChange,
   onCancelHandler,
@@ -48,6 +49,7 @@ export default function ModifyLevelRow({
   abilities?: SkillsSet;
   level: Level;
   levelUp?: LevelUp;
+  compact?: boolean;
   onCommitLevelUp: (levelUp: LevelUp) => void;
   onLevelUpChange?: (levelUp: LevelUp) => void;
   onCancelHandler?: () => void;
@@ -248,9 +250,10 @@ export default function ModifyLevelRow({
           skillsByAttribute[attribute].length > 0 && (
             <div key={attribute}>
               {skillsByAttribute[attribute].map((skill) => (
-                <Box key={`${level.level}-${skill}`} className="w-full sm:w-16 lg:w-24">
+                <Box key={`${level.level}-${skill}`} className={compact ? 'w-full sm:w-16' : 'w-full sm:w-16 lg:w-[6.5rem]'}>
                   <SkillSelector
                     skill={skill}
+                    compact={compact}
                     color={skillUps[skill] > 0 ? 'secondary' : skillUps[skill] < 0 ? 'error' : ''}
                     base={baseSkills[skill]}
                     value={abilities[skill] + nextLevel.skills[skill]}
@@ -269,7 +272,8 @@ export default function ModifyLevelRow({
       <div className="col-span-2 w-full justify-start xl:col-span-6">
         {selectedSkill && (
           <SkillFineTuner
-            className="lg:hidden"
+            className={compact ? '' : 'lg:hidden'}
+            compact={compact}
             skill={selectedSkill}
             value={skillUps[selectedSkill]}
             onIncrement={() => {
