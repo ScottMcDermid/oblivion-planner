@@ -118,6 +118,7 @@ export default function Planner({ sharedBuild }: PlannerProps) {
   const handleCopyToMyPlanner = () => {
     if (!sharedBuild) return;
     setCharacterData({
+      characterName: sharedBuild.characterName ?? '',
       remastered: sharedBuild.remastered,
       race: sharedBuild.race,
       gender: sharedBuild.gender,
@@ -236,6 +237,7 @@ export default function Planner({ sharedBuild }: PlannerProps) {
           >
             <div className="min-h-0 flex-1 overflow-x-hidden overflow-y-auto p-4">
               <CharacterSummary
+                characterName={sharedBuild!.characterName}
                 race={sharedBuild!.race}
                 gender={sharedBuild!.gender}
                 birthsign={sharedBuild!.birthsign}
@@ -286,6 +288,7 @@ export default function Planner({ sharedBuild }: PlannerProps) {
           {isViewOnly && !isLargeScreen && (
             <div className="w-full border-b border-gray-700 px-4 py-4">
               <CharacterSummary
+                characterName={sharedBuild!.characterName}
                 race={sharedBuild!.race}
                 gender={sharedBuild!.gender}
                 birthsign={sharedBuild!.birthsign}

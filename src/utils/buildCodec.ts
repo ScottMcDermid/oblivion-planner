@@ -46,7 +46,7 @@ const ABILITIES_LIST: AbilityName[] = [
   "Crusader's Arm (Mace)",
 ];
 
-const CODEC_VERSION = 1;
+const CODEC_VERSION = 2;
 
 // ─── Bit Writer / Reader ────────────────────────────────────────────────────
 
@@ -106,6 +106,7 @@ class BitReader {
 // ─── Encode ─────────────────────────────────────────────────────────────────
 
 export interface BuildData {
+  characterName: string;
   remastered: boolean;
   race: Race;
   gender: Gender;
@@ -122,6 +123,13 @@ export function encodeBuild(data: BuildData): string {
 
   // Version byte (8 bits)
   writer.writeBits(CODEC_VERSION, 8);
+
+  // Character name: 8-bit length + UTF-8 bytes (each 8 bits)
+  const nameBytes = new TextEncoder().encode((data.characterName ?? '').slice(0, 255));
+  writer.writeBits(nameBytes.length, 8);
+  for (let i = 0; i < nameBytes.length; i++) {
+    writer.writeBits(nameBytes[i], 8);
+  }
 
   // Remastered (1 bit)
   writer.writeBits(data.remastered ? 1 : 0, 1);
@@ -211,7 +219,18 @@ export function decodeBuild(code: string): BuildData | null {
 
     // Version
     const version = reader.readBits(8);
-    if (version !== CODEC_VERSION) return null;
+    if (version !== 1 && version !== 2) return null;
+
+    // Character name (v2+): 8-bit length + UTF-8 bytes
+    let characterName = '';
+    if (version >= 2) {
+      const nameLen = reader.readBits(8);
+      const nameBytes = new Uint8Array(nameLen);
+      for (let i = 0; i < nameLen; i++) {
+        nameBytes[i] = reader.readBits(8);
+      }
+      characterName = new TextDecoder().decode(nameBytes);
+    }
 
     // Remastered
     const remastered = reader.readBits(1) === 1;
@@ -282,6 +301,7 @@ export function decodeBuild(code: string): BuildData | null {
     }
 
     return {
+      characterName,
       remastered,
       race,
       gender,

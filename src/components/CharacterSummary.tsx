@@ -17,6 +17,7 @@ import { locationOriginByRaceAndGender } from '@/utils/raceUtils';
 import SkillIcon from '@/components/SkillIcon';
 
 interface CharacterSummaryProps {
+  characterName?: string;
   race: Race;
   gender: Gender;
   birthsign: Birthsign;
@@ -37,6 +38,7 @@ function InfoRow({ label, value }: { label: string; value: string }) {
 }
 
 export default function CharacterSummary({
+  characterName,
   race,
   gender,
   birthsign,
@@ -48,7 +50,7 @@ export default function CharacterSummary({
 }: CharacterSummaryProps) {
   return (
     <div>
-      <div className="mb-4 text-3xl">Character</div>
+      <div className="mb-4 text-3xl">{characterName || 'Character'}</div>
       <InfoRow label="Race" value={race} />
       {remastered ? (
         <InfoRow label="Origin" value={locationOriginByRaceAndGender[race][gender]} />

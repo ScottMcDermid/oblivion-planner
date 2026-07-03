@@ -10,6 +10,7 @@ import {
   DialogContent,
   Drawer,
   IconButton,
+  TextField,
   ToggleButton,
   ToggleButtonGroup,
   useMediaQuery,
@@ -49,6 +50,7 @@ function CharacterContent({
   remastered: boolean;
 }) {
   const {
+    characterName,
     race,
     gender,
     birthsign,
@@ -103,7 +105,18 @@ function CharacterContent({
 
   return (
     <>
-      <div className="my-2 text-3xl">Character</div>
+      <div className="my-2 text-3xl">{characterName || 'Character'}</div>
+      <TextField
+        label="Name"
+        placeholder="e.g. Hero of Kvatch"
+        value={characterName ?? ''}
+        onChange={(e) => setCharacterData({ characterName: e.target.value.slice(0, 255) })}
+        variant="outlined"
+        size="small"
+        fullWidth
+        slotProps={{ htmlInput: { maxLength: 255 } }}
+        sx={{ my: 1 }}
+      />
       <DropDown
         label="Race"
         value={race}
