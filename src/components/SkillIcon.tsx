@@ -22,8 +22,9 @@ import {
   FaFireAlt,
   FaUnlockAlt,
   FaBriefcaseMedical,
+  FaEye,
 } from 'react-icons/fa';
-import { TbArcheryArrow, TbCrystalBall } from 'react-icons/tb';
+import { TbArcheryArrow } from 'react-icons/tb';
 import { LuSword } from 'react-icons/lu';
 import { MdAttachMoney } from 'react-icons/md';
 
@@ -44,7 +45,7 @@ const iconBySkill: { [key in Skill]: React.ComponentType<IconBaseProps> } = {
   'Light Armor': GiLeatherArmor,
   Marksman: TbArcheryArrow,
   Mercantile: MdAttachMoney,
-  Mysticism: TbCrystalBall,
+  Mysticism: FaEye,
   Restoration: FaBriefcaseMedical,
   Security: FaUnlockAlt,
   Sneak: GiHood,
