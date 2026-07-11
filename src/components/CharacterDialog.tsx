@@ -44,8 +44,15 @@ import birthsigns from '@/utils/birthsignUtils';
 import { NUM_MAJOR_SKILLS, shorthandBySkill } from '@/utils/skillUtils';
 import ToggleButtons from '@/components/ToggleButtons';
 import SkillIcon from '@/components/SkillIcon';
+import { GiCrossedSwords, GiSpellBook, GiRogue } from 'react-icons/gi';
 
 export const CHARACTER_DRAWER_WIDTH = 420;
+
+const specializationIcons: Record<string, React.ComponentType<{ size?: number }>> = {
+  Combat: GiCrossedSwords,
+  Magic: GiSpellBook,
+  Stealth: GiRogue,
+};
 
 // Shared panel wrapper
 function Panel({ children }: { children: React.ReactNode }) {
@@ -216,14 +223,22 @@ function CharacterContent({
             <Typography variant="caption" sx={{ color: 'text.secondary', fontSize: '0.7rem', pl: 0.5 }}>
               Specialization
             </Typography>
-            <ToggleButtons
-              name="Specialization"
+            <ToggleButtonGroup
+              exclusive
               value={specialization}
-              options={specializations}
-              onChangeHandler={(specialization) =>
-                setCharacterData({ specialization: specialization as Specialization })
-              }
-            />
+              onChange={(_e, val) => { if (val) setCharacterData({ specialization: val as Specialization }); }}
+              sx={{ width: '100%' }}
+            >
+              {specializations.map((spec) => {
+                const Icon = specializationIcons[spec];
+                return (
+                  <ToggleButton key={spec} value={spec} sx={{ flex: 1, gap: 0.75, py: 0.5, fontSize: '0.75rem' }}>
+                    <Icon size={14} />
+                    {spec}
+                  </ToggleButton>
+                );
+              })}
+            </ToggleButtonGroup>
           </Box>
           <Typography variant="caption" sx={{ color: 'text.secondary', pt: 0.5 }}>
             Choose 2 favored attributes and 7 major skills
