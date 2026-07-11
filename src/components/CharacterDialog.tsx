@@ -59,7 +59,6 @@ function Panel({ children }: { children: React.ReactNode }) {
   return (
     <Box
       sx={{
-        backgroundColor: 'background.paper',
         border: '1px solid',
         borderColor: 'divider',
         borderRadius: 1,
