@@ -109,7 +109,7 @@ function CharacterContent({
 
   return (
     <>
-      <div className="my-2 text-3xl">{characterName || 'Character'}</div>
+      <div className="my-1 text-3xl">{characterName || 'Character'}</div>
       <TextField
         label="Name"
         placeholder="e.g. Hero of Kvatch"
@@ -119,7 +119,7 @@ function CharacterContent({
         size="small"
         fullWidth
         slotProps={{ htmlInput: { maxLength: 255 } }}
-        sx={{ my: 1 }}
+        sx={{ my: 0.5 }}
       />
       <DropDown
         label="Race"
@@ -151,8 +151,8 @@ function CharacterContent({
         options={birthsigns}
         onChangeHandler={(birthsign) => setCharacterData({ birthsign: birthsign as Birthsign })}
       />
-      <Divider className="my-4" />
-      <div className="my-2 text-3xl">Class</div>
+      <Divider className="my-2" />
+      <div className="my-1 text-3xl">Class</div>
       <ToggleButtons
         label="Specialization"
         name="Specialization"
@@ -164,8 +164,8 @@ function CharacterContent({
           })
         }
       />
-      <div className="mt-6 text-xs">Choose 2 favored attributes and 7 major skills</div>
-      <div className="my-4 grid grid-cols-[3rem_1fr_3fr] place-items-center">
+      <div className="mt-3 text-xs">Choose 2 favored attributes and 7 major skills</div>
+      <div className="my-2 grid grid-cols-[3rem_1fr_3fr] place-items-center">
         <div></div>
         <div className="text-lg">Favored</div>
         <div className="text-lg">Skills</div>
@@ -265,12 +265,12 @@ export default function CharacterDialog(props: {
           },
         }}
       >
-        <div className="flex items-center justify-end p-2">
+        <div className="flex items-center justify-end p-1">
           <IconButton aria-label="close" onClick={props.handleClose}>
             <ChevronLeftIcon />
           </IconButton>
         </div>
-        <div className="min-h-0 flex-1 overflow-x-hidden overflow-y-auto p-3">
+        <div className="min-h-0 flex-1 overflow-x-hidden overflow-y-auto p-2">
           <CharacterContent remastered={props.remastered} />
         </div>
         {footer}
