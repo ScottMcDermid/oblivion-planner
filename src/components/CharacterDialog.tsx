@@ -29,6 +29,7 @@ import type { Skill } from '@/utils/skillUtils';
 import type { Specialization } from '@/utils/specializationUtils';
 
 import DropDown from '@/components/DropDown';
+import { Panel, PanelHeader } from '@/components/Panel';
 
 import { useCharacterStore } from '@/data/characterStore';
 
@@ -54,47 +55,6 @@ const specializationIcons: Record<string, React.ComponentType<{ size?: number }>
   Stealth: GiRogue,
 };
 
-// Shared panel wrapper
-function Panel({ children }: { children: React.ReactNode }) {
-  return (
-    <Box
-      sx={{
-        border: '1px solid',
-        borderColor: 'divider',
-        borderRadius: 1,
-        mb: 1.5,
-        overflow: 'hidden',
-      }}
-    >
-      {children}
-    </Box>
-  );
-}
-
-// Panel section header row
-function PanelHeader({ label, action }: { label: string; action?: React.ReactNode }) {
-  return (
-    <Box
-      sx={{
-        px: 1.5,
-        py: 0.75,
-        borderBottom: '1px solid',
-        borderColor: 'divider',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-      }}
-    >
-      <Typography
-        variant="caption"
-        sx={{ textTransform: 'uppercase', letterSpacing: '0.08em', color: 'text.secondary', fontWeight: 'bold' }}
-      >
-        {label}
-      </Typography>
-      {action}
-    </Box>
-  );
-}
 
 function CharacterContent({
   remastered,
