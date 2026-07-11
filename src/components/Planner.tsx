@@ -4,11 +4,11 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { ThemeProvider } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import PersonIcon from '@mui/icons-material/Person';
-import DeleteIcon from '@mui/icons-material/Delete';
+
 import ImportContacts from '@mui/icons-material/ImportContacts';
 import ShareIcon from '@mui/icons-material/Share';
 import Skeleton from '@mui/material/Skeleton';
-import { Button, Drawer, Snackbar, StyledEngineProvider, Switch, useMediaQuery } from '@mui/material';
+import { AppBar, Box, Button, Drawer, Snackbar, StyledEngineProvider, Toolbar, Typography, useMediaQuery } from '@mui/material';
 
 import { useShareBuild } from '@/hooks/useShareBuild';
 import { type BuildData } from '@/utils/buildCodec';
@@ -216,7 +216,13 @@ export default function Planner({ sharedBuild }: PlannerProps) {
           <CharacterDialog
             open={isCharacterCreationOpen}
             remastered={remastered}
+            levelsExist={levels.length > 1}
             handleClose={() => setIsCharacterCreationOpen(false)}
+            onRemasteredToggle={() => {
+              if (levels.length > 1) setIsConfirmingRemastered(true);
+              else handleRemasteredToggle(true);
+            }}
+            onReset={() => setIsConfirmingReset(true)}
           />
         )}
         {isViewOnly && isLargeScreen && (
@@ -257,7 +263,49 @@ export default function Planner({ sharedBuild }: PlannerProps) {
             transition: 'margin-left 225ms cubic-bezier(0, 0, 0.2, 1)',
           }}
         >
-          <h1 className="absolute z-30 items-center text-lg">Oblivion Planner</h1>
+          <AppBar position="static" sx={{ backgroundColor: 'background.paper' }} elevation={1}>
+            <Toolbar variant="dense" sx={{ gap: 1, overflow: 'hidden' }}>
+              <Typography
+                variant="h6"
+                noWrap
+                sx={{ fontSize: '1rem', fontWeight: 'bold', color: 'secondary.main' }}
+              >
+                Oblivion Planner
+              </Typography>
+
+              <Box sx={{ flex: 1 }} />
+
+              {!isViewOnly && (
+                <>
+                  <Button
+                    variant="contained"
+                    size="small"
+                    aria-label="Character Creation"
+                    onClick={() => setIsCharacterCreationOpen(!isCharacterCreationOpen)}
+                  >
+                    <PersonIcon fontSize="small" />
+                    <Box component="span" sx={{ display: { xs: 'none', sm: 'inline' }, ml: 0.5 }}>Character</Box>
+                  </Button>
+                  <Button
+                    size="small"
+                    aria-label="Share Build"
+                    onClick={handleShare}
+                  >
+                    <ShareIcon fontSize="small" />
+                    <Box component="span" sx={{ display: { xs: 'none', sm: 'inline' }, ml: 0.5 }}>Share</Box>
+                  </Button>
+                  <Button
+                    size="small"
+                    aria-label="Abilities"
+                    onClick={() => setIsAbilitiesOpen(true)}
+                  >
+                    <ImportContacts fontSize="small" />
+                    <Box component="span" sx={{ display: { xs: 'none', sm: 'inline' }, ml: 0.5 }}>Abilities</Box>
+                  </Button>
+                </>
+              )}
+            </Toolbar>
+          </AppBar>
 
           {/* Shared Build Banner */}
           {isViewOnly && (
@@ -300,72 +348,6 @@ export default function Planner({ sharedBuild }: PlannerProps) {
               />
             </div>
           )}
-
-          <div className="flex w-full flex-row justify-between pl-2 pt-6 sm:pt-2">
-            <div className="flex place-items-center">
-              {!isViewOnly && (
-                <>
-                  <Button
-                    variant="contained"
-                    aria-label="Character Creation"
-                    onClick={() => {
-                      setIsCharacterCreationOpen(true);
-                    }}
-                  >
-                    <PersonIcon />
-                    <div className="hidden sm:block">&nbsp;Character</div>
-                  </Button>
-                  {levels.length > 1 && (
-                    <Button
-                      className="mx-2"
-                      color="error"
-                      aria-label="Reset Character"
-                      onClick={() => {
-                        setIsConfirmingReset(true);
-                      }}
-                    >
-                      <DeleteIcon />
-                      <div className="hidden sm:block">&nbsp;Reset</div>
-                    </Button>
-                  )}
-                </>
-              )}
-            </div>
-
-            <div className="flex place-items-center">
-              {!isViewOnly && (
-                <>
-                  <Button
-                    className="mx-2"
-                    aria-label="Share Build"
-                    onClick={handleShare}
-                  >
-                    <ShareIcon />
-                    <div className="hidden sm:block">&nbsp;Share</div>
-                  </Button>
-                  <Button
-                    className="mx-2"
-                    aria-label=""
-                    onClick={() => {
-                      setIsAbilitiesOpen(true);
-                    }}
-                  >
-                    <ImportContacts />
-                    <div className="hidden sm:block">&nbsp;Abilities</div>
-                  </Button>
-                  <div>Remastered</div>
-                  <Switch
-                    checked={remastered}
-                    color="secondary"
-                    onClick={() => {
-                      if (levels.length > 1) setIsConfirmingRemastered(true);
-                      else handleRemasteredToggle(true);
-                    }}
-                  />
-                </>
-              )}
-            </div>
-          </div>
 
           {/* Table Header */}
           <div

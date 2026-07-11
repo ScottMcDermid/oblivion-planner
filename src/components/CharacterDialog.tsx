@@ -3,6 +3,7 @@
 import React, { useMemo } from 'react';
 import Divider from '@mui/material/Divider';
 import {
+  Box,
   Button,
   Checkbox,
   Dialog,
@@ -10,13 +11,16 @@ import {
   DialogContent,
   Drawer,
   IconButton,
+  Switch,
   TextField,
   ToggleButton,
   ToggleButtonGroup,
+  Typography,
   useMediaQuery,
 } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
+import DeleteIcon from '@mui/icons-material/Delete';
 
 import type { Attribute } from '@/utils/attributeUtils';
 import type { Birthsign } from '@/utils/birthsignUtils';
@@ -210,9 +214,38 @@ function CharacterContent({
 export default function CharacterDialog(props: {
   open: boolean;
   remastered: boolean;
+  levelsExist: boolean;
   handleClose: () => void;
+  onRemasteredToggle: () => void;
+  onReset: () => void;
 }) {
   const isLargeScreen = useMediaQuery('(min-width: 1024px)');
+
+  const footer = (
+    <Box sx={{ borderTop: '1px solid', borderColor: 'divider', p: 2, display: 'flex', flexDirection: 'column', gap: 1.5 }}>
+      <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+        <Typography variant="body2" sx={{ fontSize: '0.8rem' }}>Remastered</Typography>
+        <Switch
+          checked={props.remastered}
+          color="secondary"
+          size="small"
+          onClick={props.onRemasteredToggle}
+        />
+      </Box>
+      {props.levelsExist && (
+        <Button
+          size="small"
+          color="error"
+          variant="outlined"
+          startIcon={<DeleteIcon />}
+          onClick={props.onReset}
+          fullWidth
+        >
+          Reset levels
+        </Button>
+      )}
+    </Box>
+  );
 
   if (isLargeScreen) {
     return (
@@ -239,6 +272,7 @@ export default function CharacterDialog(props: {
         <div className="min-h-0 flex-1 overflow-x-hidden overflow-y-auto p-3">
           <CharacterContent remastered={props.remastered} />
         </div>
+        {footer}
       </Drawer>
     );
   }
@@ -259,8 +293,11 @@ export default function CharacterDialog(props: {
       <DialogContent className="p-3">
         <CharacterContent remastered={props.remastered} />
       </DialogContent>
-      <DialogActions className="pull-right">
-        <Button onClick={props.handleClose}>Done</Button>
+      <DialogActions sx={{ flexDirection: 'column', alignItems: 'stretch', p: 0 }}>
+        {footer}
+        <Box sx={{ display: 'flex', justifyContent: 'flex-end', px: 2, pb: 1 }}>
+          <Button onClick={props.handleClose}>Done</Button>
+        </Box>
       </DialogActions>
     </Dialog>
   );
