@@ -8,7 +8,7 @@ import PersonIcon from '@mui/icons-material/Person';
 import ImportContacts from '@mui/icons-material/ImportContacts';
 import ShareIcon from '@mui/icons-material/Share';
 import Skeleton from '@mui/material/Skeleton';
-import { AppBar, Box, Button, Drawer, Snackbar, StyledEngineProvider, Toolbar, Typography, useMediaQuery } from '@mui/material';
+import { AppBar, Box, Button, Drawer, IconButton, Snackbar, StyledEngineProvider, Toolbar, Typography, useMediaQuery } from '@mui/material';
 
 import { useShareBuild } from '@/hooks/useShareBuild';
 import { type BuildData } from '@/utils/buildCodec';
@@ -265,6 +265,16 @@ export default function Planner({ sharedBuild }: PlannerProps) {
         >
           <AppBar position="static" sx={{ backgroundColor: 'background.paper' }} elevation={1}>
             <Toolbar variant="dense" sx={{ gap: 1, overflow: 'hidden' }}>
+              <IconButton
+                component="a"
+                href="https://oblivion.tools"
+                size="small"
+                aria-label="Oblivion Tools home"
+                sx={{ p: 0.5 }}
+              >
+                <img src="/oblivion-tools-icon.ico" alt="Oblivion Tools" width={16} height={16} style={{ display: 'block' }} />
+              </IconButton>
+
               <Typography
                 variant="h6"
                 noWrap
