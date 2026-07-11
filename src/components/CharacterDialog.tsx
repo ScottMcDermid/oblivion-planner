@@ -186,13 +186,14 @@ function CharacterContent({
                 },
               }}
             />
-            <ToggleButtonGroup value={majorSkills} sx={{ flexWrap: 'wrap' }}>
+            <ToggleButtonGroup value={majorSkills} sx={{ flexWrap: 'wrap', width: '100%' }}>
               {skillsByAttribute[attribute].map((skill) => (
                 <ToggleButton
                   key={skill}
-                  className="min-w-14 py-1 sm:min-w-32 lg:min-w-14"
+                  className="py-1"
                   value={skill}
                   onChange={() => handleToggleMajorSkill(skill)}
+                  sx={{ flex: 1 }}
                 >
                   <SkillIcon skill={skill} size={14} style={{ marginRight: 4 }} />
                   <span className="hidden sm:inline lg:hidden">{skill}</span>
