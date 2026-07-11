@@ -1,7 +1,6 @@
 'use client';
 
 import React, { useMemo } from 'react';
-import Divider from '@mui/material/Divider';
 import {
   Box,
   Button,
@@ -48,10 +47,57 @@ import SkillIcon from '@/components/SkillIcon';
 
 export const CHARACTER_DRAWER_WIDTH = 420;
 
+// Shared panel wrapper
+function Panel({ children }: { children: React.ReactNode }) {
+  return (
+    <Box
+      sx={{
+        backgroundColor: 'background.paper',
+        border: '1px solid',
+        borderColor: 'divider',
+        borderRadius: 1,
+        mb: 1.5,
+        overflow: 'hidden',
+      }}
+    >
+      {children}
+    </Box>
+  );
+}
+
+// Panel section header row
+function PanelHeader({ label, action }: { label: string; action?: React.ReactNode }) {
+  return (
+    <Box
+      sx={{
+        px: 1.5,
+        py: 0.75,
+        borderBottom: '1px solid',
+        borderColor: 'divider',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+      }}
+    >
+      <Typography
+        variant="caption"
+        sx={{ textTransform: 'uppercase', letterSpacing: '0.08em', color: 'text.secondary', fontWeight: 'bold' }}
+      >
+        {label}
+      </Typography>
+      {action}
+    </Box>
+  );
+}
+
 function CharacterContent({
   remastered,
+  onClose,
+  isDrawer,
 }: {
   remastered: boolean;
+  onClose?: () => void;
+  isDrawer?: boolean;
 }) {
   const {
     characterName,
@@ -67,147 +113,163 @@ function CharacterContent({
   const favoredAttributesError = useMemo(() => {
     if (favoredAttributes.length !== NUM_FAVORED_ATTRIBUTES) {
       return `Choose exactly ${NUM_FAVORED_ATTRIBUTES} favored attributes`;
-    } else {
-      return '';
     }
+    return '';
   }, [favoredAttributes]);
+
   const majorSkillsError = useMemo(() => {
     if (majorSkills.length !== NUM_MAJOR_SKILLS) {
       return `Choose exactly ${NUM_MAJOR_SKILLS} major skills`;
-    } else {
-      return '';
     }
+    return '';
   }, [majorSkills]);
 
   const handleToggleFavoredAttribute = (attribute: Attribute) => {
-    const currentIndex = favoredAttributes.indexOf(attribute);
     const newFavoredAttributes = [...favoredAttributes];
-
-    if (currentIndex === -1) {
-      newFavoredAttributes.push(attribute);
-    } else {
-      newFavoredAttributes.splice(currentIndex, 1);
-    }
-    setCharacterData({
-      favoredAttributes: newFavoredAttributes,
-    });
+    const idx = newFavoredAttributes.indexOf(attribute);
+    if (idx === -1) newFavoredAttributes.push(attribute);
+    else newFavoredAttributes.splice(idx, 1);
+    setCharacterData({ favoredAttributes: newFavoredAttributes });
   };
 
   const handleToggleMajorSkill = (skill: Skill) => {
-    const currentIndex = majorSkills.indexOf(skill);
     const newMajorSkills = [...majorSkills];
-
-    if (currentIndex === -1) {
-      newMajorSkills.push(skill);
-    } else {
-      newMajorSkills.splice(currentIndex, 1);
-    }
-    setCharacterData({
-      majorSkills: newMajorSkills,
-    });
+    const idx = newMajorSkills.indexOf(skill);
+    if (idx === -1) newMajorSkills.push(skill);
+    else newMajorSkills.splice(idx, 1);
+    setCharacterData({ majorSkills: newMajorSkills });
   };
 
   return (
     <>
-      <div className="my-1 text-3xl">{characterName || 'Character'}</div>
-      <TextField
-        label="Name"
-        placeholder="e.g. Hero of Kvatch"
-        value={characterName ?? ''}
-        onChange={(e) => setCharacterData({ characterName: e.target.value.slice(0, 255) })}
-        variant="outlined"
-        size="small"
-        fullWidth
-        slotProps={{ htmlInput: { maxLength: 255 } }}
-        sx={{ my: 0.5 }}
-      />
-      <DropDown
-        label="Race"
-        value={race}
-        options={races}
-        onChangeHandler={(race) => setCharacterData({ race: race as Race })}
-      />
-      {remastered ? (
-        <ToggleButtons
-          name="Location Origin"
-          value={locationOriginByRaceAndGender[race][gender]}
-          options={locationOriginsByRace[race]}
-          onChangeHandler={(locationOrigin) =>
-            setCharacterData({ gender: genderByLocationOrigin[locationOrigin as LocationOrigin] })
+      {/* Character panel */}
+      <Panel>
+        <PanelHeader
+          label={characterName || 'Character'}
+          action={
+            isDrawer && onClose ? (
+              <IconButton size="small" aria-label="close" onClick={onClose}>
+                <ChevronLeftIcon fontSize="small" />
+              </IconButton>
+            ) : undefined
           }
         />
-      ) : (
-        <ToggleButtons
-          name="Gender"
-          value={gender}
-          options={genders}
-          onChangeHandler={(gender) => setCharacterData({ gender: gender as Gender })}
-        />
-      )}
+        <Box sx={{ p: 1.5, display: 'flex', flexDirection: 'column', gap: 1 }}>
+          <TextField
+            label="Name"
+            placeholder="e.g. Hero of Kvatch"
+            value={characterName ?? ''}
+            onChange={(e) => setCharacterData({ characterName: e.target.value.slice(0, 255) })}
+            variant="outlined"
+            size="small"
+            fullWidth
+            slotProps={{ htmlInput: { maxLength: 255 } }}
+          />
+          <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
+            <Box sx={{ flex: 1 }}>
+              <DropDown
+                label="Race"
+                value={race}
+                options={races}
+                onChangeHandler={(race) => setCharacterData({ race: race as Race })}
+              />
+            </Box>
+            <Box sx={{ flex: 1 }}>
+              {remastered ? (
+                <DropDown
+                  label="Origin"
+                  value={locationOriginByRaceAndGender[race][gender]}
+                  options={locationOriginsByRace[race]}
+                  onChangeHandler={(locationOrigin) =>
+                    setCharacterData({ gender: genderByLocationOrigin[locationOrigin as LocationOrigin] })
+                  }
+                />
+              ) : (
+                <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.5 }}>
+                  <Typography variant="caption" sx={{ color: 'text.secondary', fontSize: '0.7rem', pl: 0.5 }}>
+                    Gender
+                  </Typography>
+                  <ToggleButtons
+                    name="Gender"
+                    value={gender}
+                    options={genders}
+                    onChangeHandler={(gender) => setCharacterData({ gender: gender as Gender })}
+                  />
+                </Box>
+              )}
+            </Box>
+          </Box>
+          <DropDown
+            label="Birthsign"
+            value={birthsign}
+            options={birthsigns}
+            onChangeHandler={(birthsign) => setCharacterData({ birthsign: birthsign as Birthsign })}
+          />
+        </Box>
+      </Panel>
 
-      <DropDown
-        label="Birthsign"
-        value={birthsign}
-        options={birthsigns}
-        onChangeHandler={(birthsign) => setCharacterData({ birthsign: birthsign as Birthsign })}
-      />
-      <Divider className="my-2" />
-      <div className="my-1 text-3xl">Class</div>
-      <ToggleButtons
-        label="Specialization"
-        name="Specialization"
-        value={specialization}
-        options={specializations}
-        onChangeHandler={(specialization) =>
-          setCharacterData({
-            specialization: specialization as Specialization,
-          })
-        }
-      />
-      <div className="mt-3 text-xs">Choose 2 favored attributes and 7 major skills</div>
-      <div className="my-2 grid grid-cols-[3rem_1fr_3fr] place-items-center">
-        <div></div>
-        <div className="text-lg">Favored</div>
-        <div className="text-lg">Skills</div>
-        {attributes.map((attribute) => (
-          <React.Fragment key={attribute}>
-            <div className="mt-1 w-full text-right">
-              {shorthandByAttribute[attribute]}
-            </div>
-            <Checkbox
-              checked={favoredAttributes.includes(attribute)}
-              onChange={() => {
-                handleToggleFavoredAttribute(attribute);
-              }}
-              sx={{
-                color: 'var(--primary)',
-                '&.Mui-checked': {
-                  color: 'var(--primary)',
-                },
-              }}
+      {/* Class panel */}
+      <Panel>
+        <PanelHeader label="Class" />
+        <Box sx={{ p: 1.5, display: 'flex', flexDirection: 'column', gap: 1 }}>
+          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.5 }}>
+            <Typography variant="caption" sx={{ color: 'text.secondary', fontSize: '0.7rem', pl: 0.5 }}>
+              Specialization
+            </Typography>
+            <ToggleButtons
+              name="Specialization"
+              value={specialization}
+              options={specializations}
+              onChangeHandler={(specialization) =>
+                setCharacterData({ specialization: specialization as Specialization })
+              }
             />
-            <ToggleButtonGroup value={majorSkills} sx={{ flexWrap: 'wrap', width: '100%' }}>
-              {skillsByAttribute[attribute].map((skill) => (
-                <ToggleButton
-                  key={skill}
-                  className="py-1"
-                  value={skill}
-                  onChange={() => handleToggleMajorSkill(skill)}
-                  sx={{ flex: 1 }}
-                >
-                  <SkillIcon skill={skill} size={14} style={{ marginRight: 4 }} />
-                  <span className="hidden sm:inline lg:hidden">{skill}</span>
-                  <span className="sm:hidden lg:inline">{shorthandBySkill[skill]}</span>
-                </ToggleButton>
-              ))}
-            </ToggleButtonGroup>
-          </React.Fragment>
-        ))}
-      </div>
-      <div className="h-6 text-xs text-error">
-        <span>{favoredAttributesError}</span>
-        {!favoredAttributesError && <span>{majorSkillsError}</span>}
-      </div>
+          </Box>
+          <Typography variant="caption" sx={{ color: 'text.secondary', pt: 0.5 }}>
+            Choose 2 favored attributes and 7 major skills
+          </Typography>
+          <div className="grid grid-cols-[2.5rem_1fr_3fr] place-items-center gap-y-0.5">
+            <div />
+            <Typography variant="caption" sx={{ color: 'text.secondary', fontSize: '0.7rem' }}>Favored</Typography>
+            <Typography variant="caption" sx={{ color: 'text.secondary', fontSize: '0.7rem', justifySelf: 'start', pl: 1 }}>Skills</Typography>
+            {attributes.map((attribute) => (
+              <React.Fragment key={attribute}>
+                <Typography variant="caption" sx={{ textAlign: 'right', width: '100%', color: 'text.primary', fontSize: '0.7rem' }}>
+                  {shorthandByAttribute[attribute]}
+                </Typography>
+                <Checkbox
+                  size="small"
+                  checked={favoredAttributes.includes(attribute)}
+                  onChange={() => handleToggleFavoredAttribute(attribute)}
+                  sx={{
+                    p: 0.5,
+                    color: 'text.primary',
+                    '&.Mui-checked': { color: 'text.primary' },
+                  }}
+                />
+                <ToggleButtonGroup value={majorSkills} sx={{ flexWrap: 'wrap', width: '100%' }}>
+                  {skillsByAttribute[attribute].map((skill) => (
+                    <ToggleButton
+                      key={skill}
+                      value={skill}
+                      onChange={() => handleToggleMajorSkill(skill)}
+                      sx={{ flex: 1, py: 0.5, fontSize: '0.7rem' }}
+                    >
+                      <SkillIcon skill={skill} size={12} style={{ marginRight: 3 }} />
+                      {shorthandBySkill[skill]}
+                    </ToggleButton>
+                  ))}
+                </ToggleButtonGroup>
+              </React.Fragment>
+            ))}
+          </div>
+          <Box sx={{ minHeight: '1.25rem' }}>
+            <Typography variant="caption" sx={{ color: 'error.main', fontSize: '0.7rem' }}>
+              {favoredAttributesError || majorSkillsError}
+            </Typography>
+          </Box>
+        </Box>
+      </Panel>
     </>
   );
 }
@@ -223,9 +285,11 @@ export default function CharacterDialog(props: {
   const isLargeScreen = useMediaQuery('(min-width: 1024px)');
 
   const footer = (
-    <Box sx={{ borderTop: '1px solid', borderColor: 'divider', p: 2, display: 'flex', flexDirection: 'column', gap: 1.5 }}>
+    <Box sx={{ borderTop: '1px solid', borderColor: 'divider', px: 1.5, py: 1, display: 'flex', flexDirection: 'column', gap: 1 }}>
       <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-        <Typography variant="body2" sx={{ fontSize: '0.8rem' }}>Remastered</Typography>
+        <Typography variant="caption" sx={{ textTransform: 'uppercase', letterSpacing: '0.08em', color: 'text.secondary', fontWeight: 'bold' }}>
+          Remastered
+        </Typography>
         <Switch
           checked={props.remastered}
           color="secondary"
@@ -265,38 +329,29 @@ export default function CharacterDialog(props: {
           },
         }}
       >
-        <div className="flex items-center justify-end p-1">
-          <IconButton aria-label="close" onClick={props.handleClose}>
-            <ChevronLeftIcon />
-          </IconButton>
-        </div>
-        <div className="min-h-0 flex-1 overflow-x-hidden overflow-y-auto p-2">
-          <CharacterContent remastered={props.remastered} />
-        </div>
+        <Box className="min-h-0 flex-1 overflow-x-hidden overflow-y-auto" sx={{ p: 1.5 }}>
+          <CharacterContent remastered={props.remastered} onClose={props.handleClose} isDrawer />
+        </Box>
         {footer}
       </Drawer>
     );
   }
 
   return (
-    <Dialog onClose={() => props.handleClose()} open={props.open}>
+    <Dialog onClose={props.handleClose} open={props.open} fullWidth maxWidth="xs">
       <IconButton
         aria-label="close"
         onClick={props.handleClose}
-        sx={{
-          position: 'absolute',
-          right: 8,
-          top: 8,
-        }}
+        sx={{ position: 'absolute', right: 8, top: 8, zIndex: 1 }}
       >
         <CloseIcon />
       </IconButton>
-      <DialogContent className="p-3">
+      <DialogContent sx={{ pt: 2, pb: 0, px: 1.5 }}>
         <CharacterContent remastered={props.remastered} />
       </DialogContent>
       <DialogActions sx={{ flexDirection: 'column', alignItems: 'stretch', p: 0 }}>
         {footer}
-        <Box sx={{ display: 'flex', justifyContent: 'flex-end', px: 2, pb: 1 }}>
+        <Box sx={{ display: 'flex', justifyContent: 'flex-end', px: 1.5, pb: 1 }}>
           <Button onClick={props.handleClose}>Done</Button>
         </Box>
       </DialogActions>

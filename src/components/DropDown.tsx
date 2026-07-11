@@ -1,4 +1,6 @@
 import React from 'react';
+import FormControl from '@mui/material/FormControl';
+import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 
@@ -14,10 +16,10 @@ export default function DropDown({
   onChangeHandler: (a: string) => void;
 }) {
   return (
-    <div className="mx-1 my-2 min-w-48">
-      {label ? <div className="text-lg">{label}</div> : null}
+    <FormControl size="small" fullWidth>
+      {label && <InputLabel>{label}</InputLabel>}
       <Select
-        className="w-full"
+        label={label}
         value={value}
         onChange={(e: SelectChangeEvent) => onChangeHandler(e.target.value as string)}
       >
@@ -27,6 +29,6 @@ export default function DropDown({
           </MenuItem>
         ))}
       </Select>
-    </div>
+    </FormControl>
   );
 }
