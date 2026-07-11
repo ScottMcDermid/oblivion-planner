@@ -6,7 +6,7 @@ import attributes, {
 } from '@/utils/attributeUtils';
 import { Birthsign, birthsignModifiers } from '@/utils/birthsignUtils';
 import { Gender } from '@/utils/genderUtils';
-import { Race, raceModifiers } from '@/utils/raceUtils';
+import races, { Race, raceModifiers } from '@/utils/raceUtils';
 import skills, { baseSkills, getSkillsSetTemplate, Skill, SkillsSet } from '@/utils/skillUtils';
 import { skillsBySpecialization, Specialization } from '@/utils/specializationUtils';
 
@@ -112,7 +112,7 @@ export const getBaseLevel = (
     const base = baseAttributes[attribute] ?? 0;
     const birthsignModifier = birthsignAttributeModifiers[attribute] ?? 0;
     const favored = favoredAttributes.includes(attribute) ? FAVORED_ATTRIBUTE_BONUS : 0;
-    const modifier: number = raceModifiers[race].attributes[gender][attribute] ?? 0;
+    const modifier: number = (raceModifiers[race] ?? raceModifiers[races[0]]).attributes[gender][attribute] ?? 0;
     return {
       ...newAttributes,
       [attribute]: base + modifier + birthsignModifier + favored,
@@ -121,7 +121,7 @@ export const getBaseLevel = (
   const specializationSkills = skillsBySpecialization[specialization] ?? [];
   const newSkills: SkillsSet = skills.reduce((newSkills, skill) => {
     const base = baseSkills[skill];
-    const modifier: number = raceModifiers[race].skills[skill] ?? 0;
+    const modifier: number = (raceModifiers[race] ?? raceModifiers[races[0]]).skills[skill] ?? 0;
     const specializationBonus = specializationSkills.includes(skill)
       ? SPECIALIZATION_BONUS
       : 0;
@@ -143,7 +143,7 @@ export const getBaseLevel = (
 
   // compute magicka
   const birthsignMagickaBonus = birthsignModifiers[birthsign].magicka ?? 0;
-  const raceMagickaBonus = raceModifiers[race].magicka ?? 0;
+  const raceMagickaBonus = (raceModifiers[race] ?? raceModifiers[races[0]]).magicka ?? 0;
   const baseMagicka = Intelligence * MAGICKA_MULTIPLIER;
   const magicka = baseMagicka + birthsignMagickaBonus + raceMagickaBonus;
 

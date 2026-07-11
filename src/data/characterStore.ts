@@ -66,7 +66,7 @@ const useCharacterStore = create<CharacterStore>()(
         setCurrentLevelUp: levelUpTemplate,
         levels: [],
         levelUps: [],
-        version: 2,
+        version: 3,
         actions: {
           setCharacterData: (state: Partial<State>) => set(() => ({ ...state })),
           setLevels: (levels) =>
@@ -102,7 +102,7 @@ const useCharacterStore = create<CharacterStore>()(
     },
     {
       name: 'oblivion-planner',
-      version: 2,
+      version: 3,
       storage: createJSONStorage(
         () => (typeof window !== 'undefined' ? localStorage : ({} as Storage)), // Fallback for SSR; you might implement a noop Storage if needed
       ),
@@ -204,6 +204,20 @@ const useCharacterStore = create<CharacterStore>()(
             );
           }
 
+          console.log('Finished migrating!');
+          return newState;
+        }
+        if (version < 3) {
+          console.log('Migrating from version 2 to 3...');
+          const raceRenames: Record<string, string> = {
+            Altmer: 'High Elf',
+            Bosmer: 'Wood Elf',
+            Dunmer: 'Dark Elf',
+          };
+          const newState = { ...state };
+          if (state.race && raceRenames[state.race]) {
+            newState.race = raceRenames[state.race] as Race;
+          }
           console.log('Finished migrating!');
           return newState;
         }

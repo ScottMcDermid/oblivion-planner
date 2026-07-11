@@ -11,7 +11,7 @@ export type RaceModifier = {
 export const raceModifiers: {
   [key in Race]: RaceModifier;
 } = {
-  Altmer: {
+  'High Elf': {
     attributes: {
       Male: {
         Strength: -10,
@@ -59,7 +59,7 @@ export const raceModifiers: {
       Security: 10,
     },
   },
-  Bosmer: {
+  'Wood Elf': {
     attributes: {
       Male: {
         Strength: -10,
@@ -112,7 +112,7 @@ export const raceModifiers: {
       Restoration: 10,
     },
   },
-  Dunmer: {
+  'Dark Elf': {
     attributes: {
       Male: {
         Willpower: -10,
@@ -259,11 +259,11 @@ export const raceModifiers: {
 };
 
 export const locationOriginsByRace: { [key in Race]: LocationOrigin[] } = {
-  Altmer: ['Auridon', 'Summerset Isle'],
+  'High Elf': ['Auridon', 'Summerset Isle'],
   Argonian: ['Arnesia', 'Thornmarsh'],
-  Bosmer: ['Grahtwood', "Reaper's March"],
+  'Wood Elf': ['Grahtwood', "Reaper's March"],
   Breton: ['Systres', 'High Rock'],
-  Dunmer: ['Vvardenfell', 'Mainland'],
+  'Dark Elf': ['Vvardenfell', 'Mainland'],
   Imperial: ['Nibenay', 'Colovia'],
   Khajiit: ['Anequina', 'Pellitine'],
   Nord: ['Western', 'Eastern'],
@@ -273,11 +273,11 @@ export const locationOriginsByRace: { [key in Race]: LocationOrigin[] } = {
 
 export const locationOriginByRaceAndGender: { [key in Race]: { [key in Gender]: LocationOrigin } } =
   {
-    Altmer: { Male: 'Auridon', Female: 'Summerset Isle' },
+    'High Elf': { Male: 'Auridon', Female: 'Summerset Isle' },
     Argonian: { Male: 'Arnesia', Female: 'Thornmarsh' },
-    Bosmer: { Male: 'Grahtwood', Female: "Reaper's March" },
+    'Wood Elf': { Male: 'Grahtwood', Female: "Reaper's March" },
     Breton: { Male: 'Systres', Female: 'High Rock' },
-    Dunmer: { Male: 'Vvardenfell', Female: 'Mainland' },
+    'Dark Elf': { Male: 'Vvardenfell', Female: 'Mainland' },
     Imperial: { Male: 'Nibenay', Female: 'Colovia' },
     Khajiit: { Male: 'Anequina', Female: 'Pellitine' },
     Nord: { Male: 'Western', Female: 'Eastern' },
@@ -286,11 +286,11 @@ export const locationOriginByRaceAndGender: { [key in Race]: { [key in Gender]: 
   };
 
 export type Race =
-  | 'Altmer'
+  | 'High Elf'
   | 'Argonian'
-  | 'Bosmer'
+  | 'Wood Elf'
   | 'Breton'
-  | 'Dunmer'
+  | 'Dark Elf'
   | 'Imperial'
   | 'Khajiit'
   | 'Nord'
@@ -298,11 +298,11 @@ export type Race =
   | 'Redguard';
 
 const races: Race[] = [
-  'Altmer',
+  'High Elf',
   'Argonian',
-  'Bosmer',
+  'Wood Elf',
   'Breton',
-  'Dunmer',
+  'Dark Elf',
   'Imperial',
   'Khajiit',
   'Nord',
