@@ -373,101 +373,106 @@ export default function Planner({ sharedBuild }: PlannerProps) {
             <div></div>
           </div>
 
-          {levels.length > 0 ? (
-            <>
-              {/* Table Body */}
-              <div
-                className="grid w-full max-w-8xl grid-cols-[3rem_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr] place-items-center sm:grid-cols-[5rem_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr] xl:grid-cols-[5rem_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr]"
-                style={{ gridAutoRows: 'minmax(3rem, auto)' }}
-              >
-                {levels.map((level, i) =>
-                  !isViewOnly && modifyingLevel !== null && modifyingLevel === level.level ? (
-                    remastered ? (
-                      <RemasteredModifyLevelRow
-                        key={level.level}
-                        abilities={abilityModifiers}
-                        level={levels[i - 1]}
-                        levelUp={levelUps[level.level - 2]}
-                        compact={isCompactSkills}
-                        onCommitLevelUp={handleCommitLevelUp}
-                        onCancelHandler={() => setModifyingLevel(null)}
-                      />
-                    ) : (
-                      <ModifyLevelRow
-                        key={level.level}
-                        abilities={abilityModifiers}
-                        level={levels[i - 1]}
-                        levelUp={levelUps[level.level - 2]}
-                        compact={isCompactSkills}
-                        onCommitLevelUp={handleCommitLevelUp}
-                        onCancelHandler={() => setModifyingLevel(null)}
-                      />
-                    )
-                  ) : remastered ? (
-                    <RemasteredLevelRow
-                      key={level.level}
-                      level={level}
-                      {...(!isViewOnly && level.level > 1
-                        ? {
-                            onRemoveHandler: () => promptConfirmRemoveLevel(level.level),
-                            onModifyHandler: () => setModifyingLevel(level.level),
-                          }
-                        : {})}
-                      previousLevel={levels[i - 1]}
-                    />
-                  ) : (
-                    <LevelRow
-                      key={level.level}
-                      abilities={abilityModifiers}
-                      level={level}
-                      {...(!isViewOnly && level.level > 1
-                        ? {
-                            onRemoveHandler: () => promptConfirmRemoveLevel(level.level),
-                            onModifyHandler: () => setModifyingLevel(level.level),
-                          }
-                        : {})}
-                      previousLevel={levels[i - 1]}
-                    />
-                  ),
-                )}
-              </div>
-
-              {/* Table Footer — level-up editor (only in editable mode) */}
-              {!isViewOnly && (
-                <div
-                  className="grid w-full max-w-8xl grid-cols-[3rem_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr] place-items-center pb-24 sm:grid-cols-[5rem_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr] xl:grid-cols-[5rem_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr]"
-                  style={{ gridAutoRows: 'minmax(3rem, auto)' }}
-                >
-                  {remastered ? (
+          {/* Table Body */}
+          <div
+            className="grid w-full max-w-8xl grid-cols-[3rem_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr] place-items-center sm:grid-cols-[5rem_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr] xl:grid-cols-[5rem_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr]"
+            style={{ gridAutoRows: 'minmax(3rem, auto)' }}
+          >
+            {levels.length > 0 ? (
+              levels.map((level, i) =>
+                !isViewOnly && modifyingLevel !== null && modifyingLevel === level.level ? (
+                  remastered ? (
                     <RemasteredModifyLevelRow
+                      key={level.level}
                       abilities={abilityModifiers}
-                      level={currentLevel}
-                      levelUp={currentLevelUp}
+                      level={levels[i - 1]}
+                      levelUp={levelUps[level.level - 2]}
                       compact={isCompactSkills}
-                      onLevelUpChange={handleLevelUpChange}
                       onCommitLevelUp={handleCommitLevelUp}
+                      onCancelHandler={() => setModifyingLevel(null)}
                     />
                   ) : (
                     <ModifyLevelRow
+                      key={level.level}
                       abilities={abilityModifiers}
-                      level={currentLevel}
-                      levelUp={currentLevelUp}
+                      level={levels[i - 1]}
+                      levelUp={levelUps[level.level - 2]}
                       compact={isCompactSkills}
-                      onLevelUpChange={handleLevelUpChange}
                       onCommitLevelUp={handleCommitLevelUp}
+                      onCancelHandler={() => setModifyingLevel(null)}
                     />
-                  )}
-                </div>
+                  )
+                ) : remastered ? (
+                  <RemasteredLevelRow
+                    key={level.level}
+                    level={level}
+                    {...(!isViewOnly && level.level > 1
+                      ? {
+                          onRemoveHandler: () => promptConfirmRemoveLevel(level.level),
+                          onModifyHandler: () => setModifyingLevel(level.level),
+                        }
+                      : {})}
+                    previousLevel={levels[i - 1]}
+                  />
+                ) : (
+                  <LevelRow
+                    key={level.level}
+                    abilities={abilityModifiers}
+                    level={level}
+                    {...(!isViewOnly && level.level > 1
+                      ? {
+                          onRemoveHandler: () => promptConfirmRemoveLevel(level.level),
+                          onModifyHandler: () => setModifyingLevel(level.level),
+                        }
+                      : {})}
+                    previousLevel={levels[i - 1]}
+                  />
+                ),
+              )
+            ) : (
+              <>
+                {[...Array(6)].map((_, row) => (
+                  <React.Fragment key={row}>
+                    <Skeleton variant="text" width={28} />
+                    {[...Array(9)].map((__, col) => (
+                      <Skeleton key={col} variant="text" width={32} />
+                    ))}
+                    <div className="hidden xl:block"><Skeleton variant="text" width={40} /></div>
+                    <div className="hidden xl:block"><Skeleton variant="text" width={40} /></div>
+                    <div className="hidden xl:block"><Skeleton variant="text" width={40} /></div>
+                    <div className="hidden xl:block"><Skeleton variant="text" width={40} /></div>
+                    <div />
+                  </React.Fragment>
+                ))}
+              </>
+            )}
+          </div>
+
+          {/* Table Footer — level-up editor (only in editable mode) */}
+          {levels.length > 0 && !isViewOnly && (
+            <div
+              className="grid w-full max-w-8xl grid-cols-[3rem_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr] place-items-center pb-24 sm:grid-cols-[5rem_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr] xl:grid-cols-[5rem_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr]"
+              style={{ gridAutoRows: 'minmax(3rem, auto)' }}
+            >
+              {remastered ? (
+                <RemasteredModifyLevelRow
+                  abilities={abilityModifiers}
+                  level={currentLevel}
+                  levelUp={currentLevelUp}
+                  compact={isCompactSkills}
+                  onLevelUpChange={handleLevelUpChange}
+                  onCommitLevelUp={handleCommitLevelUp}
+                />
+              ) : (
+                <ModifyLevelRow
+                  abilities={abilityModifiers}
+                  level={currentLevel}
+                  levelUp={currentLevelUp}
+                  compact={isCompactSkills}
+                  onLevelUpChange={handleLevelUpChange}
+                  onCommitLevelUp={handleCommitLevelUp}
+                />
               )}
-            </>
-          ) : (
-            <div className="w-11/12 p-5">
-              <Skeleton height={50} />
-              <Skeleton height={50} />
-              <Skeleton height={50} />
-              <Skeleton height={50} />
-              <Skeleton height={50} />
-              <Skeleton height={50} />
             </div>
           )}
         </div>
