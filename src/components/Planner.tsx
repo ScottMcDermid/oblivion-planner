@@ -278,15 +278,6 @@ export default function Planner({ sharedBuild }: PlannerProps) {
               {!isViewOnly && (
                 <>
                   <Button
-                    variant="contained"
-                    size="small"
-                    aria-label="Character Creation"
-                    onClick={() => setIsCharacterCreationOpen(!isCharacterCreationOpen)}
-                  >
-                    <PersonIcon fontSize="small" />
-                    <Box component="span" sx={{ display: { xs: 'none', sm: 'inline' }, ml: 0.5 }}>Character</Box>
-                  </Button>
-                  <Button
                     size="small"
                     aria-label="Share Build"
                     onClick={handleShare}
@@ -301,6 +292,15 @@ export default function Planner({ sharedBuild }: PlannerProps) {
                   >
                     <ImportContacts fontSize="small" />
                     <Box component="span" sx={{ display: { xs: 'none', sm: 'inline' }, ml: 0.5 }}>Abilities</Box>
+                  </Button>
+                  <Button
+                    variant="contained"
+                    size="small"
+                    aria-label="Character Creation"
+                    onClick={() => setIsCharacterCreationOpen(!isCharacterCreationOpen)}
+                  >
+                    <PersonIcon fontSize="small" />
+                    <Box component="span" sx={{ display: { xs: 'none', sm: 'inline' }, ml: 0.5 }}>Character</Box>
                   </Button>
                 </>
               )}
