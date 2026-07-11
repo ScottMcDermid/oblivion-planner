@@ -361,7 +361,7 @@ export default function CharacterDialog(props: {
       >
         <CloseIcon />
       </IconButton>
-      <DialogContent sx={{ pt: 2, pb: 0, px: 1.5 }}>
+      <DialogContent sx={{ pt: 5, pb: 0, px: 1.5 }}>
         <CharacterContent remastered={props.remastered} />
       </DialogContent>
       <DialogActions sx={{ flexDirection: 'column', alignItems: 'stretch', p: 0 }}>
