@@ -44,7 +44,7 @@ export default function SkillFineTuner({
               : 'inline-flex items-center whitespace-nowrap text-xs lg:hidden'
           }
         >
-          <SkillIcon skill={skill} size={14} style={{ marginRight: 4 }} />
+          <SkillIcon skill={skill} size={14} style={{ marginRight: 4 }} className="hidden sm:inline-block" />
           {shorthandBySkill[skill]}
         </Typography>
         <div className="flex flex-row place-items-center">

@@ -45,7 +45,7 @@ export default function SkillSelector({
           className={compact ? 'inline-flex items-center' : 'inline-flex items-center lg:hidden'}
           component={'span'}
         >
-          <SkillIcon skill={skill} size={14} style={{ marginRight: 4 }} />
+          <SkillIcon skill={skill} size={14} style={{ marginRight: 4 }} className="hidden sm:inline-block" />
           {shorthandBySkill[skill]}
           {major ? '*' : ''}
         </Typography>
