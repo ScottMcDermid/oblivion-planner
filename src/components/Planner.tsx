@@ -291,7 +291,7 @@ export default function Planner({ sharedBuild }: PlannerProps) {
                     size="small"
                     aria-label="Share Build"
                     onClick={handleShare}
-                    sx={{ minWidth: 0, px: { xs: 1, sm: 2 } }}
+                    sx={{ minWidth: 0, px: { xs: '6px', sm: undefined } }}
                   >
                     <ShareIcon fontSize="small" />
                     <Box component="span" sx={{ display: { xs: 'none', sm: 'inline' }, ml: 0.5 }}>Share</Box>
@@ -300,7 +300,7 @@ export default function Planner({ sharedBuild }: PlannerProps) {
                     size="small"
                     aria-label="Abilities"
                     onClick={() => setIsAbilitiesOpen(true)}
-                    sx={{ minWidth: 0, px: { xs: 1, sm: 2 } }}
+                    sx={{ minWidth: 0, px: { xs: '6px', sm: undefined } }}
                   >
                     <ImportContacts fontSize="small" />
                     <Box component="span" sx={{ display: { xs: 'none', sm: 'inline' }, ml: 0.5 }}>Abilities</Box>
@@ -310,7 +310,7 @@ export default function Planner({ sharedBuild }: PlannerProps) {
                     size="small"
                     aria-label="Character Creation"
                     onClick={() => setIsCharacterCreationOpen(!isCharacterCreationOpen)}
-                    sx={{ minWidth: 0, px: { xs: 1, sm: 2 } }}
+                    sx={{ minWidth: 0, px: { xs: '6px', sm: undefined } }}
                   >
                     <PersonIcon fontSize="small" />
                     <Box component="span" sx={{ display: { xs: 'none', sm: 'inline' }, ml: 0.5 }}>Character</Box>
