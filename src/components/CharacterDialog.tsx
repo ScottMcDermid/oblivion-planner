@@ -300,6 +300,8 @@ export default function CharacterDialog(props: {
             boxSizing: 'border-box',
             display: 'flex',
             flexDirection: 'column',
+            position: 'relative',
+            height: '100%',
           },
         }}
       >

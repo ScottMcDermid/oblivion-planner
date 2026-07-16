@@ -212,59 +212,8 @@ export default function Planner({ sharedBuild }: PlannerProps) {
     <StyledEngineProvider injectFirst>
       <ThemeProvider theme={theme}>
         <CssBaseline />
-        {!isViewOnly && (
-          <CharacterDialog
-            open={isCharacterCreationOpen}
-            remastered={remastered}
-            levelsExist={levels.length > 1}
-            handleClose={() => setIsCharacterCreationOpen(false)}
-            onRemasteredToggle={() => {
-              if (levels.length > 1) setIsConfirmingRemastered(true);
-              else handleRemasteredToggle(true);
-            }}
-            onReset={() => setIsConfirmingReset(true)}
-          />
-        )}
-        {isViewOnly && isLargeScreen && (
-          <Drawer
-            variant="persistent"
-            anchor="right"
-            open
-            sx={{
-              width: CHARACTER_DRAWER_WIDTH,
-              flexShrink: 0,
-              '& .MuiDrawer-paper': {
-                width: CHARACTER_DRAWER_WIDTH,
-                boxSizing: 'border-box',
-                display: 'flex',
-                flexDirection: 'column',
-              },
-            }}
-          >
-            <div className="min-h-0 flex-1 overflow-x-hidden overflow-y-auto p-4">
-              <CharacterSummary
-                characterName={sharedBuild!.characterName}
-                race={sharedBuild!.race}
-                gender={sharedBuild!.gender}
-                birthsign={sharedBuild!.birthsign}
-                specialization={sharedBuild!.specialization}
-                favoredAttributes={sharedBuild!.favoredAttributes}
-                majorSkills={sharedBuild!.majorSkills}
-                activeAbilities={sharedBuild!.activeAbilities}
-                remastered={sharedBuild!.remastered}
-              />
-            </div>
-          </Drawer>
-        )}
-        <div
-          className="flex h-screen flex-col place-items-center overflow-x-hidden overflow-y-auto bg-inherit"
-          style={{
-            marginRight: isDrawerOpen ? CHARACTER_DRAWER_WIDTH : 0,
-            transition: 'margin-right 225ms cubic-bezier(0, 0, 0.2, 1)',
-          }}
-        >
-          <AppBar position="static" sx={{ backgroundColor: 'background.paper' }} elevation={1}>
-            <Toolbar variant="dense" sx={{ gap: 1, overflow: 'hidden' }}>
+        <AppBar position="static" sx={{ backgroundColor: 'background.paper' }} elevation={1}>
+          <Toolbar variant="dense" sx={{ gap: 1, overflow: 'hidden' }}>
               <IconButton
                 component="a"
                 href="https://oblivion.tools"
@@ -319,6 +268,10 @@ export default function Planner({ sharedBuild }: PlannerProps) {
               )}
             </Toolbar>
           </AppBar>
+
+          <Box sx={{ display: 'flex', height: 'calc(100vh - 48px)', overflow: 'hidden' }}>
+          <div className="flex min-w-0 flex-1 flex-col overflow-x-hidden overflow-y-auto bg-inherit">
+          <div className="flex min-h-full flex-1 flex-col place-items-center">
 
           {/* Shared Build Banner */}
           {isViewOnly && (
@@ -488,15 +441,9 @@ export default function Planner({ sharedBuild }: PlannerProps) {
               )}
             </div>
           )}
-        </div>
 
-        <footer
-          className="mt-16 w-full border-t border-gray-700 bg-neutral-900 px-6 py-8 text-sm text-gray-400"
-          style={{
-            marginRight: isDrawerOpen ? CHARACTER_DRAWER_WIDTH : 0,
-            transition: 'margin-right 225ms cubic-bezier(0, 0, 0.2, 1)',
-          }}
-        >
+          </div>
+          <footer className="w-full border-t border-gray-700 bg-neutral-900 px-6 py-8 text-sm text-gray-400">
           <div className="mx-auto flex w-full max-w-4xl flex-col gap-4 text-center sm:text-left">
             <div className="space-y-2">
               <p>Oblivion Tool Suite © 2025 Scott McDermid</p>
@@ -537,7 +484,56 @@ export default function Planner({ sharedBuild }: PlannerProps) {
               </a>
             </div>
           </div>
-        </footer>
+          </footer>
+          </div>
+
+          {!isViewOnly && (
+            <CharacterDialog
+              open={isCharacterCreationOpen}
+              remastered={remastered}
+              levelsExist={levels.length > 1}
+              handleClose={() => setIsCharacterCreationOpen(false)}
+              onRemasteredToggle={() => {
+                if (levels.length > 1) setIsConfirmingRemastered(true);
+                else handleRemasteredToggle(true);
+              }}
+              onReset={() => setIsConfirmingReset(true)}
+            />
+          )}
+          {isViewOnly && isLargeScreen && (
+            <Drawer
+              variant="persistent"
+              anchor="right"
+              open
+              sx={{
+                width: CHARACTER_DRAWER_WIDTH,
+                flexShrink: 0,
+                '& .MuiDrawer-paper': {
+                  width: CHARACTER_DRAWER_WIDTH,
+                  boxSizing: 'border-box',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  position: 'relative',
+                  height: '100%',
+                },
+              }}
+            >
+              <div className="min-h-0 flex-1 overflow-x-hidden overflow-y-auto p-4">
+                <CharacterSummary
+                  characterName={sharedBuild!.characterName}
+                  race={sharedBuild!.race}
+                  gender={sharedBuild!.gender}
+                  birthsign={sharedBuild!.birthsign}
+                  specialization={sharedBuild!.specialization}
+                  favoredAttributes={sharedBuild!.favoredAttributes}
+                  majorSkills={sharedBuild!.majorSkills}
+                  activeAbilities={sharedBuild!.activeAbilities}
+                  remastered={sharedBuild!.remastered}
+                />
+              </div>
+            </Drawer>
+          )}
+          </Box>
 
         {!isViewOnly && (
           <>
