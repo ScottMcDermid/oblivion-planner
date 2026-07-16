@@ -290,7 +290,7 @@ export default function CharacterDialog(props: {
     return (
       <Drawer
         variant="persistent"
-        anchor="left"
+        anchor="right"
         open={props.open}
         sx={{
           width: props.open ? CHARACTER_DRAWER_WIDTH : 0,

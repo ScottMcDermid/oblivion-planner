@@ -228,7 +228,7 @@ export default function Planner({ sharedBuild }: PlannerProps) {
         {isViewOnly && isLargeScreen && (
           <Drawer
             variant="persistent"
-            anchor="left"
+            anchor="right"
             open
             sx={{
               width: CHARACTER_DRAWER_WIDTH,
@@ -259,8 +259,8 @@ export default function Planner({ sharedBuild }: PlannerProps) {
         <div
           className="flex h-screen flex-col place-items-center overflow-x-hidden overflow-y-auto bg-inherit"
           style={{
-            marginLeft: isDrawerOpen ? CHARACTER_DRAWER_WIDTH : 0,
-            transition: 'margin-left 225ms cubic-bezier(0, 0, 0.2, 1)',
+            marginRight: isDrawerOpen ? CHARACTER_DRAWER_WIDTH : 0,
+            transition: 'margin-right 225ms cubic-bezier(0, 0, 0.2, 1)',
           }}
         >
           <AppBar position="static" sx={{ backgroundColor: 'background.paper' }} elevation={1}>
@@ -493,8 +493,8 @@ export default function Planner({ sharedBuild }: PlannerProps) {
         <footer
           className="mt-16 w-full border-t border-gray-700 bg-neutral-900 px-6 py-8 text-sm text-gray-400"
           style={{
-            marginLeft: isDrawerOpen ? CHARACTER_DRAWER_WIDTH : 0,
-            transition: 'margin-left 225ms cubic-bezier(0, 0, 0.2, 1)',
+            marginRight: isDrawerOpen ? CHARACTER_DRAWER_WIDTH : 0,
+            transition: 'margin-right 225ms cubic-bezier(0, 0, 0.2, 1)',
           }}
         >
           <div className="mx-auto flex w-full max-w-4xl flex-col gap-4 text-center sm:text-left">
